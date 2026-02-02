@@ -1,0 +1,79 @@
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.nav-link {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.nav-link:hover {
+  color: #9147ff !important;
+  transition: 0.2s;
+}
+/* General Navbar Styling */
+.navbar {
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+/* Nav Links Spacing */
+.nav-link {
+  font-weight: 500;
+  color: #333 !important;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: #f40076 !important;
+}
+
+/* Profile Image Styling */
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #eee;
+  transition: transform 0.2s;
+}
+
+.user-avatar:hover {
+  transform: scale(1.05);
+}
+
+/* 📱 Mobile & Tablet Adjustments */
+@media (max-width: 991px) {
+  .navbar-collapse {
+    background: #fff;
+    padding: 1.5rem;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+    border-radius: 8px;
+  }
+
+  .mx-auto.gap-4 {
+    gap: 1rem !important; /* Smaller gap for mobile menu items */
+    margin-bottom: 1.5rem;
+  }
+
+  /* Make buttons full width on mobile */
+  .complete-profile-btn {
+    width: 100%;
+    margin-bottom: 1rem;
+    margin-right: 0 !important;
+  }
+
+  .notification-icon {
+    margin-bottom: 1rem;
+    display: inline-block;
+  }
+}
+
+/* 💻 Laptop & Desktop Adjustments */
+@media (min-width: 992px) {
+  .navbar-brand span {
+    font-size: 1.25rem;
+  }
+}

@@ -1,0 +1,59 @@
+.category-card {
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.category-card:hover {
+  background: #eceaff;
+  transform: translateY(-5px);
+}
+/* Companies Marquee Animation */
+.companies-marquee {
+    max-width: 100%;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 20px 0;
+    margin: 20px 0;
+    /* backdrop-filter: blur(10px); */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: scroll-left 25s linear infinite;
+    gap: 30px;
+    padding: 0 50px;
+}
+
+.company-card {
+    min-width: 160px;
+    flex-shrink: 0;
+}
+
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* Pause on hover */
+.companies-marquee:hover .marquee-track {
+    animation-play-state: paused;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .marquee-track {
+        gap: 20px;
+        animation-duration: 20s;
+    }
+    
+    .company-card {
+        min-width: 130px;
+    }
+}

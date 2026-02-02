@@ -1,0 +1,10 @@
+.banner-wrapper {
+  background-color: #e8f7f2;
+  border: 1px solid #d7eee7;
+}
+
+.banner-img {
+  width: 250px;
+  max-width: 100%;
+  border-radius: 6px;
+}

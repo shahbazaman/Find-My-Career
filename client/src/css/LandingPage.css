@@ -1,0 +1,68 @@
+/* black neon-ish buttons */
+.glass-btn-black {
+  position: relative;
+  overflow: hidden;
+  padding: 8px 18px;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  background: rgba(0, 0, 0, 0.9) !important;
+  color: #f5f5f5 !important;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.glass-btn-black::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.35), transparent 55%) !important;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glass-btn-black:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75);
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  background: rgba(5, 5, 5, 0.95);
+}
+
+.glass-btn-black:hover::before {
+  opacity: 1;
+}
+
+.glass-btn-black:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.7);
+}
+
+/* subtle entrance animation */
+.cards-grid .cardDesign {
+  animation: cardFadeUp 0.5s ease forwards;
+  opacity: 0;
+}
+
+.cards-grid .cardDesign:nth-child(1) { animation-delay: 0.05s; }
+.cards-grid .cardDesign:nth-child(2) { animation-delay: 0.1s; }
+.cards-grid .cardDesign:nth-child(3) { animation-delay: 0.15s; }
+.cards-grid .cardDesign:nth-child(4) { animation-delay: 0.2s; }
+/* add more if needed */
+
+@keyframes cardFadeUp {
+  from {
+    transform: translateY(15px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}

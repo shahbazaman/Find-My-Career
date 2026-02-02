@@ -1,0 +1,58 @@
+.hero-section {
+  background: linear-gradient(135deg, #eaf2ff, #f8edff);
+  min-height: 85vh;
+}
+
+.ai-icon {
+  width: 200px;
+  height: 60px;
+  background: linear-gradient(135deg, #7f00ff, #00dbde);
+  color: white;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.slide-card {
+  width: 280px;
+  height: 420px;
+  border-radius: 20px;
+  transition: 0.4s ease;
+  transform: scale(0.85);
+  opacity: 0.6;
+  position: absolute;
+}
+
+.active-card {
+  transform: scale(1) translateY(-10px);
+  opacity: 1;
+  z-index: 10;
+}
+
+.slider-btn {
+  border: none;
+  background: white;
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 20;
+  box-shadow: 0 0 8px rgba(0,0,0,0.15);
+}
+
+.left-btn {
+  position: absolute;
+  left: 0;
+  top: 45%;
+}
+
+.right-btn {
+  position: absolute;
+  right: 0;
+  top: 45%;
+}

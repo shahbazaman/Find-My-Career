@@ -1,0 +1,71 @@
+.interview-card {
+  background: white;
+  border: 1px solid #efefef;
+  transition: 0.2s;
+}
+
+.interview-card:hover {
+  border-color: #d5d5d5;
+}
+
+.company-logo {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+}
+
+.role-row, .company-row {
+  cursor: pointer;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.role-row:hover, .company-row:hover {
+  background: #f8f9ff;
+}
+
+.illustration-box {
+  background: #fff5eb;
+  border: 1px solid #f2dfc4;
+}
+/* Scrollable list container */
+.scroll-list {
+  max-height: 220px;         /* adjust height as you like */
+  overflow-y: auto;
+  padding-right: 4px;        /* space for scrollbar */
+  scroll-behavior: smooth;   /* smooth wheel / keyboard scroll */
+}
+
+/* Optional: nicer custom scrollbar in WebKit browsers */
+.scroll-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+
+/* Row hover effect for both companies and roles */
+.company-row,
+.role-row {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  border-radius: 8px;
+  padding-inline: 6px;
+}
+
+.company-row:hover,
+.role-row:hover {
+  background-color: rgba(13, 110, 253, 0.06); /* light primary tint */
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+/* Optional: make the whole card feel scrollable on hover */
+.interview-card:hover .scroll-list {
+  box-shadow: inset 0 -8px 10px -10px rgba(0, 0, 0, 0.25);
+}

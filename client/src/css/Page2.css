@@ -1,0 +1,147 @@
+/* Clickable Dots */
+.dot {
+  cursor: pointer;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #cbd5e0;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.dot:hover {
+  background: #a0aec0;
+}
+
+.dot.active {
+  width: 30px;
+  background: #5f4f3c;
+  border-radius: 10px;
+}
+
+/* Entrance Animation for Cards */
+.animate-in {
+  animation: slideFadeIn 0.5s ease forwards;
+  opacity: 0;
+}
+
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered animation for list items */
+.role-card:nth-child(1) { animation-delay: 0.1s; }
+.role-card:nth-child(2) { animation-delay: 0.2s; }
+.role-card:nth-child(3) { animation-delay: 0.3s; }
+.role-card:nth-child(4) { animation-delay: 0.4s; }
+
+.card:hover {
+  background: #f8f7ff;
+}
+/* Container Styling */
+.job-opportunities-section {
+  background: radial-gradient(circle at top right, #f8f9ff 0%, #ffffff 100%);
+  border-radius: 40px;
+  padding: 80px 0;
+  margin-top: 50px;
+}
+
+.text-primary-gradient {
+  background: linear-gradient(45deg, #0d6efd, #667eea);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Button Styling */
+.btn-custom {
+  padding: 12px 35px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #7f00ff, #031546);
+  border: none;
+}
+
+.btn-custom:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(13, 110, 253, 0.2);
+}
+
+/* Card Styling */
+.role-card {
+  border-radius: 20px !important;
+  margin-bottom: 15px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.role-card:hover {
+  transform: translateX(10px);
+  background: #ffffff;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Icon Box */
+.icon-box {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 20px;
+}
+
+/* Badge Styling */
+.job-badge {
+  background: #f0f2ff;
+  color: #0d6efd;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Pagination Dots */
+.custom-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #dee2e6;
+  transition: 0.3s;
+}
+
+.dot.active {
+  width: 24px;
+  background: #0d6efd;
+  border-radius: 10px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+  .job-opportunities-section {
+    padding: 50px 20px;
+    border-radius: 0; /* Full width on mobile looks cleaner */
+  }
+  
+  .main-heading {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .role-card:hover {
+    transform: translateY(-5px); /* Move up instead of side on mobile */
+  }
+}
