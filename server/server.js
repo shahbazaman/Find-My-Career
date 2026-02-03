@@ -8,17 +8,44 @@ connectDB();
 
 const app = express();
 
-// Middleware
-app.use(cors());
+/* ===================== CORS CONFIG (FIXED) ===================== */
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://find-my-career-gg7zej7z1-shahbaz-amans-projects.vercel.app"
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin (like Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
+// 🔥 IMPORTANT: handle preflight explicitly
+app.options("*", cors());
+
+/* ===================== BODY PARSERS ===================== */
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// Test route
+/* ===================== TEST ROUTE ===================== */
 app.get("/", (req, res) => {
   res.send("FindMyCareer API is running 🚀");
 });
 
-// Routes
+/* ===================== ROUTES ===================== */
 import roleRoutes from "./routes/roleRoutes.js";
 import companyRoutes from "./routes/companyRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
@@ -50,9 +77,10 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/interviews", interviewRoutes);
 
-// ✅ START CRON JOB
+/* ===================== CRON ===================== */
 jobAutoClose();
 
+/* ===================== SERVER ===================== */
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
