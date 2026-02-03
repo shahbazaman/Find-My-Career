@@ -14,7 +14,7 @@ const JobView = () => {
     const fetchJob = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/jobs/${jobId}`
+          `${import.meta.env.VITE_API_BASE_URL}/jobs/${jobId}`
         );
         setJob(res.data);
       } catch (error) {
@@ -40,7 +40,7 @@ const JobView = () => {
       }
 
       await axios.post(
-        `http://localhost:5000/api/applications/apply/${jobId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/applications/apply/${jobId}`,
         {},
         {
           headers: {

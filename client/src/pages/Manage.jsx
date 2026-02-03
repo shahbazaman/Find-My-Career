@@ -32,7 +32,7 @@ export default function Manage() {
 const fetchProfile = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/profile/${userId}`,
+          `${import.meta.env.VITE_API_BASE_URL}/profile/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -102,7 +102,7 @@ const fetchProfile = async () => {
 
     try {
       await axios.delete(
-        "http://localhost:5000/api/users/delete",
+        "${import.meta.env.VITE_API_BASE_URL}/users/delete",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`

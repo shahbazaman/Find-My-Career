@@ -22,7 +22,7 @@ const EditUser = () => {
 
   useEffect(() => {
     axios.get(
-      `http://localhost:5000/api/admin/users/${id}`,
+      `${import.meta.env.VITE_API_BASE_URL}/admin/users/${id}`,
       {
         headers: {
           "x-admin-key": import.meta.env.VITE_ADMIN_SECRET
@@ -43,7 +43,7 @@ const EditUser = () => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/admin/users/${id}`,
+        `${import.meta.env.VITE_API_BASE_URL}/admin/users/${id}`,
         formData,
         {
           headers: {

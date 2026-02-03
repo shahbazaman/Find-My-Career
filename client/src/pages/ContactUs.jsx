@@ -27,7 +27,7 @@ const ContactUs = () => {
     }
 
     try {
-      await axios.post(`http://localhost:5000/api/queries/user/${userId}`, formData);
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/queries/user/${userId}`, formData);
       setSubmitted(true);
       setTimeout(() => {
         setSubmitted(false);

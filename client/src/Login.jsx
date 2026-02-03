@@ -50,7 +50,7 @@ const handleLogin = async (e) => {
 
   try {
     const res = await axios.post(
-      "http://localhost:5000/api/auth/login",
+      "${import.meta.env.VITE_API_BASE_URL}/auth/login",
       {
         email: form.email,
         password: form.password,
@@ -81,7 +81,7 @@ const handlePasswordAction = async () => {
     }
 
     const res = await fetch(
-      "http://localhost:5000/api/auth/password-reset",
+      "${import.meta.env.VITE_API_BASE_URL}/auth/password-reset",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -109,7 +109,7 @@ const handleGoogleLogin = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const idToken = await result.user.getIdToken();
-    const res = await axios.post("http://localhost:5000/api/auth/google", { idToken });
+    const res = await axios.post("${import.meta.env.VITE_API_BASE_URL}/auth/google", { idToken });
     const { token, user } = res.data;
     setAuth(token, user); 
     toast.success("Login successful");
@@ -148,7 +148,7 @@ const handleGoogleLogin = async () => {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "${import.meta.env.VITE_API_BASE_URL}/auth/register",
         form
       );
 

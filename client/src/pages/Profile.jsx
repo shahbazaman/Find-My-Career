@@ -127,7 +127,7 @@ useEffect(() => {
   const loadProfile = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/profile/${userId}`
+        `${import.meta.env.VITE_API_BASE_URL}/profile/${userId}`
       );
 
       if (res.data && res.data.userId) {
@@ -300,7 +300,7 @@ console.log("Saving profile for userId:", userId);
       };
 
       await axios.put(
-  `http://localhost:5000/api/profile/${userId}`,
+  `${import.meta.env.VITE_API_BASE_URL}/profile/${userId}`,
   payload
 );
     toast.success("Profile saved successfully 🎉");

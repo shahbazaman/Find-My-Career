@@ -78,7 +78,7 @@ const handleSubmit = async (e) => {
 
   try {
     await axios.post(
-      "http://localhost:5000/api/jobs",
+      "${import.meta.env.VITE_API_BASE_URL}/jobs",
       {
         companyName: formData.companyName,
         jobTitle: formData.jobTitle,

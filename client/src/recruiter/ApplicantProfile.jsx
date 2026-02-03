@@ -9,7 +9,7 @@ export default function ApplicantProfile() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/applications/${id}/profile`, {
+      .get(`${import.meta.env.VITE_API_BASE_URL}/applications/${id}/profile`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       .then(res => setApp(res.data))

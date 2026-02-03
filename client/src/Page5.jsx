@@ -13,8 +13,8 @@ const Page5 = () => {
     const fetchData = async () => {
       try {
         const [compRes, roleRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/companies"),
-          axios.get("http://localhost:5000/api/jobs/roles")
+          axios.get("${import.meta.env.VITE_API_BASE_URL}/companies"),
+          axios.get("${import.meta.env.VITE_API_BASE_URL}/jobs/roles")
         ]);
         setCompanies(compRes.data || []);
         setRoles(roleRes.data || []);

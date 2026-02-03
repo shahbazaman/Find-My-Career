@@ -52,7 +52,7 @@ const [currentPage, setCurrentPage] = useState(1);
 
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/applications/recruiter/applicants",
+          "${import.meta.env.VITE_API_BASE_URL}/applications/recruiter/applicants",
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -153,7 +153,7 @@ const paginatedApplicants = useMemo(() => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/applications/${applicant._id}/status`,
+        `${import.meta.env.VITE_API_BASE_URL}/applications/${applicant._id}/status`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -167,7 +167,7 @@ const paginatedApplicants = useMemo(() => {
           : `Your application for ${applicant.jobTitle} at ${companyName} was ${newStatus}. Please wait for HR contact.`;
 
       await axios.post(
-        `http://localhost:5000/api/notifications/user/${applicant.userId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/notifications/user/${applicant.userId}`,
         {
           title: "Application Status Updated",
           label: notificationMessage,

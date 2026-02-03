@@ -42,9 +42,9 @@ useEffect(() => {
       const token = localStorage.getItem("token");
 
       const [jobsRes, appliedRes] = await Promise.all([
-        axios.get("http://localhost:5000/api/jobs"),
+        axios.get("${import.meta.env.VITE_API_BASE_URL}/jobs"),
         token
-          ? axios.get("http://localhost:5000/api/applications/my", {
+          ? axios.get("${import.meta.env.VITE_API_BASE_URL}/applications/my", {
               headers: { Authorization: `Bearer ${token}` }
             })
           : Promise.resolve({ data: [] })
@@ -179,7 +179,7 @@ const mappedJobs = jobsRes.data.jobs.map(job => {
 const toggleApply = async (jobId) => {
   try {
     await axios.post(
-      `http://localhost:5000/api/applications/${jobId}`,
+      `${import.meta.env.VITE_API_BASE_URL}/applications/${jobId}`,
       {},
       {
         headers: {

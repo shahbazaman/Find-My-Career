@@ -23,7 +23,7 @@ export default function Notification() {
 
   const fetchNotifications = () => {
     axios
-      .get(`http://localhost:5000/api/notifications/user/${userId}`)
+      .get(`${import.meta.env.VITE_API_BASE_URL}/notifications/user/${userId}`)
       .then(res => setItems(res.data || []))
       .catch(err => console.error("Fetch error:", err));
   };

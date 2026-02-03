@@ -77,7 +77,7 @@ export default function Signup() {
     setIsLoading(true);
 
     try {
-      await axios.post("http://localhost:5000/api/auth/register", form);
+      await axios.post("${import.meta.env.VITE_API_BASE_URL}/auth/register", form);
 
       if (form.role === "recruiters") {
         toast.info(
@@ -111,7 +111,7 @@ export default function Signup() {
       const result = await signInWithPopup(auth, googleProvider);
       const idToken = await result.user.getIdToken();
 
-      await axios.post("http://localhost:5000/api/auth/google", { idToken });
+      await axios.post("${import.meta.env.VITE_API_BASE_URL}/auth/google", { idToken });
 
       toast.success("Google account linked. Please login.");
       navigate("/login");
@@ -131,7 +131,7 @@ export default function Signup() {
       setSending(true);
 
       const res = await fetch(
-        "http://localhost:5000/api/auth/password-reset",
+        "${import.meta.env.VITE_API_BASE_URL}/auth/password-reset",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

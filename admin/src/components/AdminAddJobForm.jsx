@@ -121,7 +121,7 @@ const AddJobForm = () => {
       });
 
       // API Call
-      await axios.post("http://localhost:5000/api/jobs", data, {
+      await axios.post("${import.meta.env.VITE_API_BASE_URL}/jobs", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

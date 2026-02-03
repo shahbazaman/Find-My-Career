@@ -18,7 +18,7 @@ export default function Page6() {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/applications/my", {
+        const res = await fetch("${import.meta.env.VITE_API_BASE_URL}/applications/my", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

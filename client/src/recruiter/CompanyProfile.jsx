@@ -18,7 +18,7 @@ const CompanyProfile = () => {
 
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/companies/me/profile",
+          "${import.meta.env.VITE_API_BASE_URL}/companies/me/profile",
           {
             headers: {
               Authorization: `Bearer ${token}`

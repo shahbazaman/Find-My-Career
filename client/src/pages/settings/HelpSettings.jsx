@@ -37,7 +37,7 @@ const handleSubmit = async (e) => {
 
   try {
     await axios.post(
-      `http://localhost:5000/api/queries/user/${userId}`,
+      `${import.meta.env.VITE_API_BASE_URL}/queries/user/${userId}`,
       formData
     );
 

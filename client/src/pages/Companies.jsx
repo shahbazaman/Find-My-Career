@@ -15,7 +15,7 @@ export default function Companies() {
 useEffect(() => {
   const fetchCompanies = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/companies");
+      const res = await axios.get("${import.meta.env.VITE_API_BASE_URL}/companies");
       setCompanies(res.data);
     } catch (err) {
       console.error("Failed to load companies", err);

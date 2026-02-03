@@ -117,7 +117,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/jobs")
+      .get("${import.meta.env.VITE_API_BASE_URL}/jobs")
       .then((res) => setJobsData(res.data.jobs || []))
       .catch(() => toast.error("Failed to load jobs"));
   }, []);
@@ -125,7 +125,7 @@ const AdminDashboard = () => {
     setLoadingRecruiters(true);
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/admin/recruiters/all",
+        "${import.meta.env.VITE_API_BASE_URL}/admin/recruiters/all",
         { headers: { "x-admin-key": import.meta.env.VITE_ADMIN_SECRET } },
       );
       setAllRecruiters(res.data);
@@ -139,7 +139,7 @@ const AdminDashboard = () => {
     setLoadingJobSeekers(true);
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/admin/jobseekers",
+        "${import.meta.env.VITE_API_BASE_URL}/admin/jobseekers",
         { headers: { "x-admin-key": import.meta.env.VITE_ADMIN_SECRET } },
       );
       const raw = res.data.jobSeekers || res.data.data || res.data || [];
@@ -156,7 +156,7 @@ const AdminDashboard = () => {
     setLoadingRecruiters(true);
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/admin/recruiters/pending",
+        "${import.meta.env.VITE_API_BASE_URL}/admin/recruiters/pending",
         { headers: { "x-admin-key": import.meta.env.VITE_ADMIN_SECRET } },
       );
       setRecruiters(res.data);
@@ -172,7 +172,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (activeMenu !== "dashboard") return;
     axios
-      .get("http://localhost:5000/api/queries/admin")
+      .get("${import.meta.env.VITE_API_BASE_URL}/queries/admin")
       .then((res) => setQueries(res.data || []))
       .catch((err) => console.error("Query fetch error:", err));
   }, [activeMenu]);
@@ -187,7 +187,7 @@ const AdminDashboard = () => {
   }, [activeMenu]);
   const postNotification = async (id, title) => {
     try {
-      await axios.post(`http://localhost:5000/api/notifications/user/${id}`, {
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/notifications/user/${id}`, {
         title,
         label: "Just now",
         type: "system",
@@ -202,7 +202,7 @@ const AdminDashboard = () => {
   const approveRecruiter = async (id) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/admin/recruiters/approve/${id}`,
+        `${import.meta.env.VITE_API_BASE_URL}/admin/recruiters/approve/${id}`,
         {},
         { headers: { "x-admin-key": import.meta.env.VITE_ADMIN_SECRET } },
       );
@@ -216,7 +216,7 @@ const AdminDashboard = () => {
   const rejectRecruiter = async (id) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/admin/recruiters/reject/${id}`,
+        `${import.meta.env.VITE_API_BASE_URL}/admin/recruiters/reject/${id}`,
         {},
         { headers: { "x-admin-key": import.meta.env.VITE_ADMIN_SECRET } },
       );
@@ -397,7 +397,7 @@ const AdminDashboard = () => {
   const handleDeleteUser = async (userId, type = "user") => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/users/${userId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/admin/users/${userId}`, {
         headers: {
           "x-admin-key": import.meta.env.VITE_ADMIN_SECRET,
         },
@@ -682,7 +682,7 @@ const AdminDashboard = () => {
                 onClick={async () => {
                   try {
                     await axios.post(
-                      `http://localhost:5000/api/queries/admin/reply/${replyingTo._id}`,
+                      `${import.meta.env.VITE_API_BASE_URL}/queries/admin/reply/${replyingTo._id}`,
                       { reply: replyText },
                     );
                     setQueries((prev) =>

@@ -24,7 +24,7 @@ export default function JobSearchPage() {
     if (!userId) return;
 
     axios
-  .get(`http://localhost:5000/api/users/${userId}`)
+  .get(`${import.meta.env.VITE_API_BASE_URL}/users/${userId}`)
   .then((res) => {
     console.log("ROLE FROM API 👉", res.data.role);
 setRole(res.data.role);

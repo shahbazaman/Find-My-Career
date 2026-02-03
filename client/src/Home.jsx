@@ -33,7 +33,7 @@ useEffect(() => {
       const userId = user.id || user._id;
 
       const res = await axios.get(
-        `http://localhost:5000/api/users/${userId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/users/${userId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

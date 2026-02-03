@@ -75,7 +75,7 @@ const handleSubmit = async (e) => {
 
   try {
     const request = axios.post(
-      "http://localhost:5000/api/users/create",
+      `${import.meta.env.VITE_API_BASE_URL}/users/create`,
       formData,
       {
         headers: {

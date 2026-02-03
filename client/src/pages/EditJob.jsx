@@ -46,7 +46,7 @@ const EditJob = () => {
     const fetchJob = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/jobs/${jobId}`,
+          `${import.meta.env.VITE_API_BASE_URL}/jobs/${jobId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -89,7 +89,7 @@ navigate("/recruiter");
 
     try {
       await axios.put(
-        `http://localhost:5000/api/jobs/${jobId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/jobs/${jobId}`,
         {
           ...formData,
           salaryMin: Number(formData.salaryMin) || 0,

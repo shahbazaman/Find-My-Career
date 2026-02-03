@@ -26,7 +26,7 @@ const RecruiterPages = () => {
       setLoadingJobs(true);
 
       // ✅ VALID backend route
-      const res = await axios.get("http://localhost:5000/api/jobs");
+      const res = await axios.get("${import.meta.env.VITE_API_BASE_URL}/jobs");
 
       // ✅ filter recruiter jobs client-side
       const recruiterJobs = (res.data?.jobs || []).filter(
@@ -110,7 +110,7 @@ const handleDelete = async (jobId) => {
   confirmDeleteWithToast(async () => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/jobs/${jobId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/jobs/${jobId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 

@@ -20,7 +20,7 @@ const MyJobs = () => {
     }
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/api/jobs/recruiter/my-jobs", {
+      const res = await axios.get("${import.meta.env.VITE_API_BASE_URL}/jobs/recruiter/my-jobs", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setJobs(Array.isArray(res.data) ? res.data : []);
@@ -34,7 +34,7 @@ const MyJobs = () => {
   // 2. The Actual Delete Logic
   const executeDelete = async (jobId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/jobs/${jobId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/jobs/${jobId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setJobs(prev => prev.filter(job => job._id !== jobId));

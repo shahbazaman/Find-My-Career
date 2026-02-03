@@ -8,7 +8,7 @@ const JobDetails = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/jobs/${jobId}`)
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/jobs/${jobId}`)
       .then(res => setJob(res.data))
       .catch(err => console.error(err));
   }, [jobId]);
@@ -17,7 +17,7 @@ const JobDetails = () => {
     const userId = localStorage.getItem("userId");
     if (!userId) return navigate("/login");
 
-    axios.post(`http://localhost:5000/api/jobs/${jobId}/apply`, { userId })
+    axios.post(`${import.meta.env.VITE_API_BASE_URL}/jobs/${jobId}/apply`, { userId })
       .then(() => alert("Applied successfully"))
       .catch(() => alert("Failed to apply"));
   };
