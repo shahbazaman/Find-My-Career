@@ -1,21 +1,14 @@
 import admin from "firebase-admin";
-import fs from "fs";
-import path from "path";
 
-// Path to your Firebase service account key
-const serviceAccountPath = path.resolve(
-  "firebaseServiceAccountKey.json"
-);
-
-// Read service account
+// Read Firebase service account from environment variable
 const serviceAccount = JSON.parse(
-  fs.readFileSync(serviceAccountPath, "utf8")
+  process.env.FIREBASE_SERVICE_ACCOUNT
 );
 
 // Initialize Firebase Admin
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+    credential: admin.credential.cert(serviceAccount),
   });
 }
 
