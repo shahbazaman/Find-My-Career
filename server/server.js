@@ -8,7 +8,7 @@ connectDB();
 
 const app = express();
 
-/* ===================== CORS CONFIG (FIXED) ===================== */
+/* ===================== CORS CONFIG (FINAL & STABLE) ===================== */
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
@@ -17,24 +17,21 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (Postman, server-to-server)
+    origin: (origin, callback) => {
+      // allow requests with no origin (Postman, mobile apps)
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
-      } else {
-        return callback(new Error("Not allowed by CORS"));
       }
+
+      return callback(new Error("Not allowed by CORS"));
     },
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
   })
 );
-
-// ✅ FIX: valid preflight handler for Express + path-to-regexp v6
-app.options("/*", cors());
 
 /* ===================== BODY PARSERS ===================== */
 app.use(express.json({ limit: "10mb" }));
