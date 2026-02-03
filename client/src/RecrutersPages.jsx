@@ -16,20 +16,26 @@ const RecruiterPages = () => {
   const [applications, setApplications] = useState([]);
 
   const [loadingJobs, setLoadingJobs] = useState(false);
-  const [loadingApps, setLoadingApps] = useState(false);
 
-  /* ================= FETCH JOBS (FIXED) ================= */
+  /* ================= FETCH JOBS ================= */
   const fetchMyJobs = async () => {
     if (!token || !userId) return;
 
     try {
       setLoadingJobs(true);
 
-      // ✅ VALID backend route
-      const res = await axios.get("${import.meta.env.VITE_API_BASE_URL}/jobs");
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/jobs`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
 
-      // ✅ filter recruiter jobs client-side
-      const recruiterJobs = (res.data?.jobs || []).filter(
+      const jobsArray = Array.isArray(res.data?.jobs)
+        ? res.data.jobs
+        : [];
+
+      const recruiterJobs = jobsArray.filter(
         job => job.recruiter === userId
       );
 
@@ -37,14 +43,14 @@ const RecruiterPages = () => {
     } catch (err) {
       console.error("FETCH JOBS ERROR:", err);
       setJobs([]);
+      toast.error("Failed to load jobs");
     } finally {
       setLoadingJobs(false);
     }
   };
 
-  /* ================= FETCH APPLICANTS (SAFE) ================= */
+  /* ================= FETCH APPLICANTS ================= */
   const fetchApplicants = async () => {
-    // ❗ backend route not implemented yet
     setApplications([]);
   };
 
@@ -55,75 +61,76 @@ const RecruiterPages = () => {
   }, []);
 
   const confirmDeleteWithToast = (onConfirm) => {
-  toast.warn(
-    <div>
-      <p style={{ fontWeight: 600, marginBottom: "6px" }}>
-        Delete this job?
-      </p>
-      <p style={{ fontSize: "13px", marginBottom: "10px" }}>
-        This action cannot be undone.
-      </p>
+    toast.warn(
+      <div>
+        <p style={{ fontWeight: 600, marginBottom: "6px" }}>
+          Delete this job?
+        </p>
+        <p style={{ fontSize: "13px", marginBottom: "10px" }}>
+          This action cannot be undone.
+        </p>
 
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
-        <button
-          onClick={() => {
-            toast.dismiss();
-            onConfirm();
-          }}
-          style={{
-            background: "#dc2626",
-            color: "white",
-            padding: "4px 10px",
-            borderRadius: "6px",
-            border: "none",
-            cursor: "pointer"
-          }}
-        >
-          Delete
-        </button>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+          <button
+            onClick={() => {
+              toast.dismiss();
+              onConfirm();
+            }}
+            style={{
+              background: "#dc2626",
+              color: "white",
+              padding: "4px 10px",
+              borderRadius: "6px",
+              border: "none",
+              cursor: "pointer"
+            }}
+          >
+            Delete
+          </button>
 
-        <button
-          onClick={() => toast.dismiss()}
-          style={{
-            background: "#e5e7eb",
-            padding: "4px 10px",
-            borderRadius: "6px",
-            border: "none",
-            cursor: "pointer"
-          }}
-        >
-          Cancel
-        </button>
-      </div>
-    </div>,
-    {
-      autoClose: false,
-      closeOnClick: false,
-      closeButton: false,
-      position: "top-center"
-    }
-  );
-};
+          <button
+            onClick={() => toast.dismiss()}
+            style={{
+              background: "#e5e7eb",
+              padding: "4px 10px",
+              borderRadius: "6px",
+              border: "none",
+              cursor: "pointer"
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>,
+      {
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+        position: "top-center"
+      }
+    );
+  };
 
   /* ================= DELETE JOB ================= */
-const handleDelete = async (jobId) => {
-  confirmDeleteWithToast(async () => {
-    try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_BASE_URL}/jobs/${jobId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  const handleDelete = async (jobId) => {
+    confirmDeleteWithToast(async () => {
+      try {
+        await axios.delete(
+          `${import.meta.env.VITE_API_BASE_URL}/jobs/${jobId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
 
-      setJobs(prev => prev.filter(job => job._id !== jobId));
-      toast.success("Job deleted");
-    } catch {
-      toast.error("Failed to delete job");
-    }
-  });
-};
+        setJobs(prev => prev.filter(job => job._id !== jobId));
+        toast.success("Job deleted");
+      } catch {
+        toast.error("Failed to delete job");
+      }
+    });
+  };
 
   return (
     <>
+      {/* ✅ RESTORED STYLE BLOCK (THIS WAS MISSED BEFORE) */}
       <style>{`
         .wrap {
           min-height: 100vh;
@@ -167,7 +174,6 @@ const handleDelete = async (jobId) => {
 
         .edit { background: #4facfe; color: white; }
         .delete { background: #ff4b2b; color: white; }
-        .view { background: #43e97b; color: white; }
 
         .table-wrapper { overflow-x: auto; }
         table { width: 100%; min-width: 700px; border-collapse: collapse; }
@@ -182,7 +188,7 @@ const handleDelete = async (jobId) => {
       `}</style>
 
       <div className="wrap">
-         <ToastContainer position="top-center" />
+        <ToastContainer position="top-center" />
         <h1 className="page-title">Recruiter Dashboard</h1>
 
         {/* ================= MY JOBS ================= */}
