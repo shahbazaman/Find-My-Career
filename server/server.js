@@ -12,13 +12,13 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
-  "https://find-my-career-gg7zej7z1-shahbaz-amans-projects.vercel.app"
+  "https://find-my-career-gg7zej7z1-shahbaz-amans-projects.vercel.app",
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (like Postman)
+      // Allow requests with no origin (Postman, server-to-server)
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
@@ -33,8 +33,8 @@ app.use(
   })
 );
 
-// 🔥 IMPORTANT: handle preflight explicitly
-app.options("*", cors());
+// ✅ FIX: valid preflight handler for Express + path-to-regexp v6
+app.options("/*", cors());
 
 /* ===================== BODY PARSERS ===================== */
 app.use(express.json({ limit: "10mb" }));
