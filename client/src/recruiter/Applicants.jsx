@@ -52,10 +52,9 @@ const [currentPage, setCurrentPage] = useState(1);
 
       try {
         const res = await axios.get(
-          "${import.meta.env.VITE_API_BASE_URL}/applications/recruiter/applicants",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
+  `${import.meta.env.VITE_API_BASE_URL}/applications/recruiter/applicants`,
+  { headers: { Authorization: `Bearer ${token}` } }
+);
         const mapped = Array.isArray(res.data)
           ? res.data.map((a) => ({
               _id: a._id,

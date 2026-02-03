@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-// 1. Import Toastify components and CSS
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const MyJobs = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -18,47 +18,77 @@ const MyJobs = () => {
       setLoading(false);
       return;
     }
+
     try {
       setLoading(true);
-      const res = await axios.get("${import.meta.env.VITE_API_BASE_URL}/jobs/recruiter/my-jobs", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/jobs/recruiter/my-jobs`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
       setJobs(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
+      console.error("MyJobs fetch error:", err);
       setError("Failed to load jobs");
+      setJobs([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // 2. The Actual Delete Logic
+  /* ================= DELETE LOGIC ================= */
   const executeDelete = async (jobId) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/jobs/${jobId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/jobs/${jobId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
       setJobs(prev => prev.filter(job => job._id !== jobId));
       toast.success("Job deleted successfully! 🗑️");
-    } catch (err) {
+    } catch {
       toast.error("Failed to delete the job.");
     }
   };
 
-  // 3. Custom Toast Confirmation
   const confirmDelete = (jobId) => {
     toast.warn(({ closeToast }) => (
       <div>
-        <p style={{ marginBottom: "10px", fontWeight: "600" }}>Are you sure you want to delete this job?</p>
+        <p style={{ marginBottom: "10px", fontWeight: "600" }}>
+          Are you sure you want to delete this job?
+        </p>
+
         <div style={{ display: "flex", gap: "10px" }}>
-          <button 
-            onClick={() => { executeDelete(jobId); closeToast(); }}
-            style={{ background: "#ff4b2b", color: "white", border: "none", padding: "5px 12px", borderRadius: "4px", cursor: "pointer" }}
+          <button
+            onClick={() => {
+              executeDelete(jobId);
+              closeToast();
+            }}
+            style={{
+              background: "#ff4b2b",
+              color: "white",
+              border: "none",
+              padding: "5px 12px",
+              borderRadius: "4px",
+              cursor: "pointer"
+            }}
           >
             Yes, Delete
           </button>
-          <button 
+
+          <button
             onClick={closeToast}
-            style={{ background: "#ccc", color: "white", border: "none", padding: "5px 12px", borderRadius: "4px", cursor: "pointer" }}
+            style={{
+              background: "#ccc",
+              color: "white",
+              border: "none",
+              padding: "5px 12px",
+              borderRadius: "4px",
+              cursor: "pointer"
+            }}
           >
             No
           </button>
@@ -72,11 +102,12 @@ const MyJobs = () => {
     });
   };
 
-  useEffect(() => { fetchMyJobs(); }, []);
+  useEffect(() => {
+    fetchMyJobs();
+  }, []);
 
   return (
     <div className="jobs-container">
-      {/* 4. Add the ToastContainer once in your component */}
       <ToastContainer position="top-center" autoClose={3000} />
 
       <style>{`
@@ -95,6 +126,7 @@ const MyJobs = () => {
         .apps-btn { background: #764ba2; }
         .del-btn { background: #ff4b2b; }
         .status-pill { padding: 4px 10px; border-radius: 20px; background: #e6fffa; color: #047857; font-size: 12px; font-weight: bold; }
+
         @media screen and (max-width: 770px) {
           .desktop-view { display: none; }
           .mobile-view { display: block; }
@@ -102,11 +134,12 @@ const MyJobs = () => {
         }
       `}</style>
 
-      <h2 style={{ marginBottom: "20px", color: "#2d3748" }}>My Posted Jobs</h2>
+      <h2 style={{ marginBottom: "20px", color: "#2d3748" }}>
+        My Posted Jobs
+      </h2>
 
       {loading && <p>Loading...</p>}
 
-      {/* DESKTOP VIEW */}
       {!loading && jobs.length > 0 && (
         <div className="desktop-view">
           <table>
@@ -119,17 +152,35 @@ const MyJobs = () => {
               </tr>
             </thead>
             <tbody>
-              {jobs.map((job) => (
+              {jobs.map(job => (
                 <tr key={job._id}>
                   <td>{job.jobTitle}</td>
                   <td>{job.companyName}</td>
-                  <td><span className="status-pill">{job.status || "Active"}</span></td>
+                  <td>
+                    <span className="status-pill">
+                      {job.status || "Active"}
+                    </span>
+                  </td>
                   <td>
                     <div className="btn-group">
-                      <button className="action-btn edit-btn" onClick={() => navigate(`/edit-job/${job._id}`)}>Edit</button>
-                      <button className="action-btn apps-btn" onClick={() => navigate(`/recruiter/applicants/${job._id}`)}>Applicants</button>
-                      {/* 5. Call confirmDelete */}
-                      <button className="action-btn del-btn" onClick={() => confirmDelete(job._id)}>Delete</button>
+                      <button
+                        className="action-btn edit-btn"
+                        onClick={() => navigate(`/edit-job/${job._id}`)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="action-btn apps-btn"
+                        onClick={() => navigate(`/recruiter/applicants/${job._id}`)}
+                      >
+                        Applicants
+                      </button>
+                      <button
+                        className="action-btn del-btn"
+                        onClick={() => confirmDelete(job._id)}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -139,31 +190,49 @@ const MyJobs = () => {
         </div>
       )}
 
-      {/* MOBILE VIEW */}
       {!loading && jobs.length > 0 && (
         <div className="mobile-view">
-          {jobs.map((job) => (
+          {jobs.map(job => (
             <div className="job-card" key={job._id}>
               <div className="card-row">
                 <span className="card-label">JOB TITLE</span>
-                <span className="card-value">{job.jobTitle}</span>
+                <span>{job.jobTitle}</span>
               </div>
+
               <div className="card-row">
                 <span className="card-label">COMPANY</span>
-                <span className="card-value">{job.companyName}</span>
+                <span>{job.companyName}</span>
               </div>
+
               <div className="card-row">
                 <span className="card-label">STATUS</span>
-                <span className="status-pill">{job.status || "Active"}</span>
+                <span className="status-pill">
+                  {job.status || "Active"}
+                </span>
               </div>
-              
+
               <div className="btn-group" style={{ flexDirection: "column" }}>
                 <div style={{ display: "flex", gap: "8px" }}>
-                  <button className="action-btn edit-btn" onClick={() => navigate(`/edit-job/${job._id}`)}>Edit</button>
-                  <button className="action-btn apps-btn" onClick={() => navigate(`/recruiter/applicants/${job._id}`)}>Applicants</button>
+                  <button
+                    className="action-btn edit-btn"
+                    onClick={() => navigate(`/edit-job/${job._id}`)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="action-btn apps-btn"
+                    onClick={() => navigate(`/recruiter/applicants/${job._id}`)}
+                  >
+                    Applicants
+                  </button>
                 </div>
-                {/* 5. Call confirmDelete */}
-                <button className="action-btn del-btn" onClick={() => confirmDelete(job._id)}>Delete</button>
+
+                <button
+                  className="action-btn del-btn"
+                  onClick={() => confirmDelete(job._id)}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}
