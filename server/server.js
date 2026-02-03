@@ -15,17 +15,25 @@ const allowedOrigins = [
   "https://find-my-career-gq0uii9i7-shahbaz-amans-projects.vercel.app",
 ];
 
+/* ===================== CORS CONFIG (VERCEL-SAFE) ===================== */
 const corsOptions = {
   origin: (origin, callback) => {
-    // allow requests with no origin (Postman, mobile apps)
+    // allow requests with no origin (Postman, server-to-server)
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
+    // allow localhost
+    if (
+      origin.startsWith("http://localhost")
+    ) {
       return callback(null, true);
     }
 
-    // ❌ DO NOT throw error here
-    // ✅ silently reject
+    // allow any Vercel preview / production domain
+    if (origin.endsWith(".vercel.app")) {
+      return callback(null, true);
+    }
+
+    // otherwise block
     return callback(null, false);
   },
   credentials: true,
