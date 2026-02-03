@@ -1,5 +1,5 @@
 import logo from "../../../client/src/assets/logo1.png";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {BsSearch, BsBell, BsPerson, BsGear,BsMoon,BsSun,BsEnvelope,BsChevronDown} from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 const AdminNavigationBar = () => {
@@ -13,6 +13,13 @@ const AdminNavigationBar = () => {
     { id: 3, title: "Job Posted", message: "Senior Frontend position is now live", time: "3h ago", unread: false },
   ];
   const unreadCount = notifications.filter(n => n.unread).length;
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+useEffect(() => {
+  const handleResize = () => setIsMobile(window.innerWidth < 768);
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
   return (
     <nav style={{
       height: "80px",
@@ -35,21 +42,7 @@ const AdminNavigationBar = () => {
         gap: "25px",
         flex: 1
       }}>
-        {/* Logo/Brand (Optional) */}
         <img src={logo} alt="logo" style={{width:"70px",height:"50px"}}/>
-        {/* <div style={{
-    fontSize: "clamp(16px, 2.5vw, 28px)", 
-    fontWeight: "800",
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-    margin: "auto",
-    whiteSpace: "nowrap", // Prevents text from stacking on mobile
-    textAlign: "center"
-}}>
-    Find My Career
-</div> */}
-      {/* SearchBar here if needded */}
       </div>
       {/* Right Section - Actions */}
       <div style={{
@@ -62,7 +55,6 @@ const AdminNavigationBar = () => {
 <button
   onClick={() => setShowNotifications(!showNotifications)}
   style={{
-    /* Dynamic width and height: scales between 36px and 48px */
     width: "clamp(36px, 8vw, 48px)",
     height: "clamp(36px, 8vw, 48px)",
     borderRadius: "clamp(10px, 2vw, 14px)",
@@ -74,10 +66,9 @@ const AdminNavigationBar = () => {
     cursor: "pointer",
     transition: "all 0.3s ease",
     position: "relative",
-    flexShrink: 0 // Prevents the button from being crushed in tight navbars
+    flexShrink: 0 
   }}
 >
-  {/* Dynamic Icon Size */}
   <BsBell 
     size="clamp(16px, 4vw, 20px)" 
     color={showNotifications ? "white" : "#64748b"} 
@@ -87,15 +78,13 @@ const AdminNavigationBar = () => {
   {unreadCount > 0 && (
     <div style={{
       position: "absolute",
-      /* Position scales with button size */
       top: "clamp(4px, 1.5vw, 8px)",
       right: "clamp(4px, 1.5vw, 8px)",
-      /* Badge size scales down on mobile */
       width: "clamp(10px, 2.5vw, 13px)",
       height: "clamp(10px, 2.5vw, 13px)",
       borderRadius: "50%",
       background: "#ef4444",
-      border: "2px solid white", // Slightly thinner border for mobile
+      border: "2px solid white", 
       fontSize: "clamp(8px, 2vw, 10px)",
       fontWeight: "700",
       color: "white",
@@ -107,16 +96,16 @@ const AdminNavigationBar = () => {
     </div>
   )}
 </button>
-
-          {/* Notification Dropdown */}
           {showNotifications && (
             <>
               <div 
                 onClick={() => setShowNotifications(false)}
                 style={{
-                  position: "fixed",
+                  position:"relative",
                   inset: 0,
-                  zIndex: 999
+                  zIndex: 999,
+                  marginLeft:  isMobile ? "260px" : "0px",
+                  padding:  isMobile ? "10px" : "0px",
                 }} 
               />
               <div style={{
@@ -131,7 +120,6 @@ const AdminNavigationBar = () => {
                 zIndex: 1000,
                 animation: "slideDown 0.3s ease-out"
               }}>
-                {/* Header */}
                 <div style={{
                   padding: "20px 25px",
                   borderBottom: "1px solid #f1f5f9",
@@ -139,9 +127,7 @@ const AdminNavigationBar = () => {
                   justifyContent: "space-between",
                   alignItems: "center"
                 }}>
-                  <h4 style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "#1e293b" }}>
-                    Notifications
-                  </h4>
+                  <h4 style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "#1e293b" }}>Notifications</h4>
                   <span style={{
                     fontSize: "12px",
                     padding: "4px 10px",
@@ -153,61 +139,75 @@ const AdminNavigationBar = () => {
                     {unreadCount} new
                   </span>
                 </div>
-
-                {/* Notifications List */}
-                <div style={{ maxHeight: "400px", overflowY: "auto" }}>
-                  {notifications.map((notif) => (
-                    <div
-                      key={notif.id}
-                      style={{
-                        padding: "18px 25px",
-                        borderBottom: "1px solid #f8fafc",
-                        cursor: "pointer",
-                        transition: "all 0.3s ease",
-                        background: notif.unread ? "#f8fafc" : "white"
-                      }}
-                      onMouseOver={(e) => e.currentTarget.style.background = "#f1f5f9"}
-                      onMouseOut={(e) => e.currentTarget.style.background = notif.unread ? "#f8fafc" : "white"}
-                    >
-                      <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-                        {notif.unread && (
-                          <div style={{
-                            width: "8px",
-                            height: "8px",
-                            borderRadius: "50%",
-                            background: "#667eea",
-                            marginTop: "6px",
-                            flexShrink: 0
-                          }} />
-                        )}
-                        <div style={{ flex: 1 }}>
-                          <div style={{
-                            fontSize: "14px",
-                            fontWeight: "600",
-                            color: "#1e293b",
-                            marginBottom: "4px"
-                          }}>
-                            {notif.title}
-                          </div>
-                          <div style={{
-                            fontSize: "13px",
-                            color: "#64748b",
-                            marginBottom: "6px"
-                          }}>
-                            {notif.message}
-                          </div>
-                          <div style={{
-                            fontSize: "12px",
-                            color: "#94a3b8"
-                          }}>
-                            {notif.time}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
+<div style={{ 
+    maxHeight: isMobile ? "70vh" : "400px", 
+    overflowY: "auto",
+    borderRadius: "8px",
+    border: isMobile ? "none" : "1px solid #e2e8f0"
+  }}>
+    {notifications.map((notif) => (
+      <div
+        key={notif.id}
+        style={{
+          padding: isMobile ? "12px 15px" : "18px 25px",
+          borderBottom: "1px solid #f8fafc",
+          cursor: "pointer",
+          transition: "all 0.3s ease",
+          background: notif.unread ? "#f8fafc" : "white"
+        }}
+        onMouseOver={(e) => (e.currentTarget.style.background = "#f1f5f9")}
+        onMouseOut={(e) => (e.currentTarget.style.background = notif.unread ? "#f8fafc" : "white")}
+      >
+        <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+          {notif.unread && (
+            <div style={{
+              width: "8px",
+              height: "8px",
+              borderRadius: "50%",
+              background: "#667eea",
+              marginTop: "6px",
+              flexShrink: 0
+            }} />
+          )}
+          <div style={{ flex: 1, minWidth: 0 }}> {/* minWidth: 0 prevents flex child overflow */}
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "4px",
+              gap: "10px"
+            }}>
+              <div style={{
+                fontSize: isMobile ? "13px" : "14px",
+                fontWeight: "600",
+                color: "#1e293b",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis"
+              }}>
+                {notif.title}
+              </div>
+              <div style={{
+                fontSize: "11px",
+                color: "#94a3b8",
+                flexShrink: 0
+              }}>
+                {notif.time}
+              </div>
+            </div>
+            <div style={{
+              fontSize: isMobile ? "12px" : "13px",
+              color: "#64748b",
+              lineHeight: "1.4",
+              wordWrap: "break-word"
+            }}>
+              {notif.message}
+            </div>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
                 {/* Footer */}
                 <div style={{
                   padding: "15px 25px",

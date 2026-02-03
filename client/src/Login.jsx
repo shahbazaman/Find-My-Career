@@ -104,44 +104,33 @@ const handlePasswordAction = async () => {
     setSending(false);
   }
 };
-
-  /* 🔹 GOOGLE LOGIN */
-  const handleGoogleLogin = async () => {
+/* 🔹 GOOGLE LOGIN */
+const handleGoogleLogin = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
-
     const idToken = await result.user.getIdToken();
-
-    const res = await axios.post("http://localhost:5000/api/auth/google", {
-  idToken
-});
-
-
-    localStorage.setItem("token", res.data.token);
-    localStorage.setItem("user", JSON.stringify(res.data.user));
-
-    navigate("/"); // HOME
+    const res = await axios.post("http://localhost:5000/api/auth/google", { idToken });
+    const { token, user } = res.data;
+    setAuth(token, user); 
+    toast.success("Login successful");
+    navigate("/"); 
   } catch (err) {
-  toast.error(err?.response?.data?.message || "Google login failed");
-}
+    console.error("Full Auth Error:", err);
+    toast.error(err?.response?.data?.message || "Google login failed");
+  }
 };
-
-  /* 🔹 LOGO UPLOAD */
   const handleLogoUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     setUploadingLogo(true);
     try {
       const data = new FormData();
       data.append("file", file);
       data.append("upload_preset", UPLOAD_PRESET);
-
       const res = await fetch(UPLOAD_URL, {
         method: "POST",
         body: data
       });
-
       const json = await res.json();
       if (json.secure_url) {
         setForm(prev => ({ ...prev, logo: json.secure_url }));
@@ -152,7 +141,6 @@ const handlePasswordAction = async () => {
       setUploadingLogo(false);
     }
   };
-
   /* 🔹 SIGN UP */
   const handleSignUp = async (e) => {
     e.preventDefault();
