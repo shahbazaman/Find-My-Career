@@ -111,7 +111,7 @@ export default function Signup() {
       const result = await signInWithPopup(auth, googleProvider);
       const idToken = await result.user.getIdToken();
 
-      await axios.post("${import.meta.env.VITE_API_BASE_URL}/auth/google", { idToken });
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/google`, { idToken });
 
       toast.success("Google account linked. Please login.");
       navigate("/login");

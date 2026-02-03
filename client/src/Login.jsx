@@ -109,7 +109,7 @@ const handleGoogleLogin = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const idToken = await result.user.getIdToken();
-    const res = await axios.post("${import.meta.env.VITE_API_BASE_URL}/auth/google", { idToken });
+    const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/google`, { idToken });
     const { token, user } = res.data;
     setAuth(token, user); 
     toast.success("Login successful");
