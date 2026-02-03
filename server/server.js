@@ -8,30 +8,32 @@ connectDB();
 
 const app = express();
 
-/* ===================== CORS CONFIG (FINAL & STABLE) ===================== */
+/* ===================== CORS CONFIG (FINAL & SAFE) ===================== */
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
-  "https://find-my-career-gg7zej7z1-shahbaz-amans-projects.vercel.app",
+  "https://find-my-career-gq0uii9i7-shahbaz-amans-projects.vercel.app",
 ];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // allow requests with no origin (Postman, mobile apps)
-      if (!origin) return callback(null, true);
+const corsOptions = {
+  origin: (origin, callback) => {
+    // allow requests with no origin (Postman, mobile apps)
+    if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
 
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+    // ❌ DO NOT throw error here
+    // ✅ silently reject
+    return callback(null, false);
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
 
 /* ===================== BODY PARSERS ===================== */
 app.use(express.json({ limit: "10mb" }));
