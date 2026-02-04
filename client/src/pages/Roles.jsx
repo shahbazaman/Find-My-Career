@@ -12,7 +12,7 @@ export default function Roles() {
     const fetchRoles = async () => {
       try {
         const res = await axios.get(
-          "${import.meta.env.VITE_API_BASE_URL}/jobs/roles"
+          `${import.meta.env.VITE_API_BASE_URL}/jobs/roles`
         );
         setRolesList(res.data);
       } catch (err) {

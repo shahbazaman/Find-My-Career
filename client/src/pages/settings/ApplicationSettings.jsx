@@ -54,7 +54,7 @@ const userId = userData ? JSON.parse(userData).id : null;
   const fetchStats = async () => {
     try {
       const res = await axios.get(
-        "${import.meta.env.VITE_API_BASE_URL}/applications/my/stats",
+        `${import.meta.env.VITE_API_BASE_URL}/applications/my/stats`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`

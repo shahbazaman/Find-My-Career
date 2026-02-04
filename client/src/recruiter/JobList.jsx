@@ -8,7 +8,7 @@ const JobList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("${import.meta.env.VITE_API_BASE_URL}/jobs")
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/jobs`)
       .then(res => setJobs(res.data))
       .catch(err => console.error(err));
   }, []);

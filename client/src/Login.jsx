@@ -50,7 +50,7 @@ const handleLogin = async (e) => {
 
   try {
     const res = await axios.post(
-      "${import.meta.env.VITE_API_BASE_URL}/auth/login",
+      `${import.meta.env.VITE_API_BASE_URL}/auth/login`,
       {
         email: form.email,
         password: form.password,
@@ -148,7 +148,7 @@ const handleGoogleLogin = async () => {
 
     try {
       await axios.post(
-        "${import.meta.env.VITE_API_BASE_URL}/auth/register",
+        `${import.meta.env.VITE_API_BASE_URL}/auth/register`,
         form
       );
 

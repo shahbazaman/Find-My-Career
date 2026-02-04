@@ -26,7 +26,7 @@ export default function ManageCompany() {
   /* ================= FETCH COMPANY PROFILE ================= */
 const fetchCompany = async () => {
     try {
-      const res = await axios.get("${import.meta.env.VITE_API_BASE_URL}/companies/me/profile", {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/companies/me/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

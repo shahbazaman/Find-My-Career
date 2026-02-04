@@ -77,7 +77,7 @@ export default function Signup() {
     setIsLoading(true);
 
     try {
-      await axios.post("${import.meta.env.VITE_API_BASE_URL}/auth/register", form);
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/register`, form);
 
       if (form.role === "recruiters") {
         toast.info(

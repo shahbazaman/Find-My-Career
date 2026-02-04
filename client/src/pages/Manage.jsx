@@ -101,8 +101,7 @@ const fetchProfile = async () => {
     if (!result.isConfirmed) return;
 
     try {
-      await axios.delete(
-        "${import.meta.env.VITE_API_BASE_URL}/users/delete",
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/users/delete`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`

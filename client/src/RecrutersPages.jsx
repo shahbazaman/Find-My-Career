@@ -115,8 +115,7 @@ const RecruiterPages = () => {
   const handleDelete = async (jobId) => {
     confirmDeleteWithToast(async () => {
       try {
-        await axios.delete(
-          `${import.meta.env.VITE_API_BASE_URL}/jobs/${jobId}`,
+        await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/jobs/${jobId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 

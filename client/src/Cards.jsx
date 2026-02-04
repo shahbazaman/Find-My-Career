@@ -42,9 +42,9 @@ useEffect(() => {
       const token = localStorage.getItem("token");
 
       const [jobsRes, appliedRes] = await Promise.all([
-        axios.get("${import.meta.env.VITE_API_BASE_URL}/jobs"),
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/jobs`),
         token
-          ? axios.get("${import.meta.env.VITE_API_BASE_URL}/applications/my", {
+          ? axios.get(`${import.meta.env.VITE_API_BASE_URL}/applications/my`, {
               headers: { Authorization: `Bearer ${token}` }
             })
           : Promise.resolve({ data: [] })

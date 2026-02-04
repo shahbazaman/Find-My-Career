@@ -117,7 +117,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     axios
-      .get("${import.meta.env.VITE_API_BASE_URL}/jobs")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/jobs`)
       .then((res) => setJobsData(res.data.jobs || []))
       .catch(() => toast.error("Failed to load jobs"));
   }, []);
@@ -125,7 +125,7 @@ const AdminDashboard = () => {
     setLoadingRecruiters(true);
     try {
       const res = await axios.get(
-        "${import.meta.env.VITE_API_BASE_URL}/admin/recruiters/all",
+        `${import.meta.env.VITE_API_BASE_URL}/admin/recruiters/all`,
         { headers: { "x-admin-key": import.meta.env.VITE_ADMIN_SECRET } },
       );
       setAllRecruiters(res.data);
@@ -139,7 +139,7 @@ const AdminDashboard = () => {
     setLoadingJobSeekers(true);
     try {
       const res = await axios.get(
-        "${import.meta.env.VITE_API_BASE_URL}/admin/jobseekers",
+        `${import.meta.env.VITE_API_BASE_URL}/admin/jobseekers`,
         { headers: { "x-admin-key": import.meta.env.VITE_ADMIN_SECRET } },
       );
       const raw = res.data.jobSeekers || res.data.data || res.data || [];
@@ -156,7 +156,7 @@ const AdminDashboard = () => {
     setLoadingRecruiters(true);
     try {
       const res = await axios.get(
-        "${import.meta.env.VITE_API_BASE_URL}/admin/recruiters/pending",
+        `${import.meta.env.VITE_API_BASE_URL}/admin/recruiters/pending`,
         { headers: { "x-admin-key": import.meta.env.VITE_ADMIN_SECRET } },
       );
       setRecruiters(res.data);
