@@ -5,13 +5,20 @@ import sendEmail from "../utils/sendEmail.js";
 
 /**
  * POST /api/interviews
- * Create interviews, update application status, send emails, and create notifications.
+ * Create interviews, update application status,
+ * send emails, and create notifications.
  */
 export const createInterviews = async (req, res) => {
   try {
-    // ✅ FIX: match JWT payload (protect middleware sets req.user.id)
+    /* ================= AUTH ================= */
+    // JWT payload contains: { id, role }
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     const recruiterId = req.user.id;
 
+    /* ================= BODY ================= */
     const {
       applicationIds,
       companyName,
@@ -26,6 +33,12 @@ export const createInterviews = async (req, res) => {
     /* ================= VALIDATION ================= */
     if (!Array.isArray(applicationIds) || applicationIds.length === 0) {
       return res.status(400).json({ message: "No applications selected" });
+    }
+
+    if (!interviewDate || !interviewTime || !mode || !locationOrLink) {
+      return res.status(400).json({
+        message: "Missing required interview details"
+      });
     }
 
     /* ================= FETCH APPLICATIONS ================= */
@@ -59,51 +72,49 @@ export const createInterviews = async (req, res) => {
       { $set: { status: "Interview Scheduled" } }
     );
 
-    /* ================= EMAIL + NOTIFICATION ================= */
-    const processEmails = applications.map(async (app) => {
+    /* ================= EMAILS + NOTIFICATIONS ================= */
+    const tasks = applications.map(async (app) => {
       try {
         const candidateName = `${app.user.firstName || ""} ${app.user.lastName || ""}`.trim();
         const locationLabel = mode === "Online" ? "Meeting Link" : "Office Location";
 
+        /* ---------- EMAIL ---------- */
         if (app.user.email) {
-          const emailHtml = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
-              <h2>Interview Scheduled</h2>
-              <p>Dear <strong>${candidateName}</strong>,</p>
+          await sendEmail({
+            to: app.user.email,
+            subject: `Interview Scheduled - ${jobTitle}`,
+            html: `
+              <p>Dear <strong>${candidateName || "Candidate"}</strong>,</p>
               <p>Your interview for <strong>${jobTitle}</strong> at <strong>${companyName}</strong> has been scheduled.</p>
               <p><strong>Date:</strong> ${interviewDate}</p>
               <p><strong>Time:</strong> ${interviewTime}</p>
               <p><strong>Mode:</strong> ${mode}</p>
               <p><strong>${locationLabel}:</strong> ${locationOrLink}</p>
               ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ""}
-              <p>Regards,<br/>${companyName}</p>
-            </div>
-          `;
-
-          await sendEmail({
-            to: app.user.email,
-            subject: `Interview Scheduled - ${jobTitle}`,
-            html: emailHtml
+              <p>Regards,<br/><strong>${companyName}</strong></p>
+            `
           });
         }
 
+        /* ---------- NOTIFICATION ---------- */
         await Notification.create({
-          userId: app.user._id,
+          user: app.user._id, // ✅ correct schema field
           title: "Interview Scheduled",
-          label: `Interview for ${jobTitle} on ${interviewDate}`,
+          label: `Interview for ${jobTitle} on ${interviewDate} at ${interviewTime}`,
           type: "meeting"
         });
 
       } catch (innerError) {
-        // email/notification failure should NOT break the whole flow
+        // email/notification failure must NOT break the whole request
         console.error(
-          `Interview email failed for ${app.user?.email || "unknown"}:`,
+          "INTERVIEW_SUBTASK_ERROR:",
+          app.user?.email || "unknown",
           innerError.message
         );
       }
     });
 
-    await Promise.all(processEmails);
+    await Promise.all(tasks);
 
     /* ================= SUCCESS ================= */
     return res.status(201).json({
