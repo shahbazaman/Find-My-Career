@@ -1,26 +1,22 @@
 import nodemailer from "nodemailer";
 
-/* ================= CREATE TRANSPORTER (ONCE) ================= */
+/* ================= CREATE TRANSPORTER ================= */
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
-  secure: true, // required for port 465
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS // MUST be Gmail App Password
-  }
+    pass: process.env.EMAIL_PASS
+  },
+
+  // 🔑 VERY IMPORTANT FOR RENDER
+  connectionTimeout: 5000, // 5 seconds
+  greetingTimeout: 5000,
+  socketTimeout: 5000
 });
 
-/* ================= VERIFY TRANSPORTER ================= */
-transporter.verify((error, success) => {
-  if (error) {
-    console.error("❌ EMAIL TRANSPORTER ERROR:", error.message);
-  } else {
-    console.log("✅ Email server is ready to send messages");
-  }
-});
-
-/* ================= SEND EMAIL ================= */
+/* ================= SEND EMAIL (NON-BLOCKING) ================= */
 const sendEmail = async ({ to, subject, html }) => {
   try {
     await transporter.sendMail({
@@ -29,13 +25,11 @@ const sendEmail = async ({ to, subject, html }) => {
       subject,
       html
     });
+
+    console.log("✅ Email sent to:", to);
   } catch (error) {
-    console.error("❌ SEND EMAIL FAILED:", {
-      to,
-      subject,
-      message: error.message
-    });
-    throw error; // important: bubble up to controller
+    // ❗ DO NOT THROW — this prevents "Processing…" freeze
+    console.error("❌ EMAIL FAILED (NON-BLOCKING):", error.message);
   }
 };
 

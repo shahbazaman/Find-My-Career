@@ -57,9 +57,7 @@ const [resetEmail, setResetEmail] = useState("");
         const userId = storedUser?.id || storedUser?._id;
         if (!userId) return;
 
-        const res = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/profile/${userId}`
-        );
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/profile/${userId}`);
         const data = await res.json();
 
         setProfile({
@@ -178,8 +176,7 @@ const handlePasswordAction = async () => {
         return;
       }
 
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/auth/set-password`,
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/set-password`,
         {
           method: "POST",
           headers: {
@@ -202,16 +199,13 @@ const handlePasswordAction = async () => {
     }
 
     // 🔵 EMAIL USER → AUTO SEND RESET LINK
-const res = await fetch(
-  `${import.meta.env.VITE_API_BASE_URL}/auth/password-reset`,
+const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/password-reset`,
   {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email: profile.email })
   }
 );
-
-
     const data = await res.json();
     if (!res.ok) {
       toast.error(data.message || "Failed to send reset email");
@@ -242,7 +236,6 @@ const quickActions = [
     icon: FaShieldAlt,
     label: "Privacy Settings",
     color: "from-purple-500 to-pink-500",
-    // add onClick when you implement it
   },
   {
     icon: FaBell,
@@ -254,7 +247,6 @@ const quickActions = [
     icon: FaGlobe,
     label: "Language",
     color: "from-orange-500 to-red-500",
-    // add onClick when you implement it
   },
   {
     icon: FaTrash,
@@ -312,11 +304,9 @@ const debouncedSaveName = () => {
   debounceTimer = setTimeout(saveNameToBackend, 600);
 };
 
-
   return (
     <div className="account-container">
           <ToastContainer position="top-center" />
-      {/* ================= HEADER ================= */}
 <div className="settings-header fade-in">
   <div className="header-icon-wrapper">
     <div className="header-icon-glow"></div>
@@ -478,7 +468,6 @@ const debouncedSaveName = () => {
     Saving...
   </span>
 )}
-
           </div>
         </div>
 
@@ -528,7 +517,6 @@ const debouncedSaveName = () => {
 }}
 
 />
-
           </div>
         </div>
       </div>
