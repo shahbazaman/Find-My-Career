@@ -1,24 +1,51 @@
-
 import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
-const protect = (req, res, next) => {
-  const authHeader = req.headers.authorization;
+/**
+ * Auth middleware
+ * - Verifies JWT token
+ * - Fetches user from DB
+ * - Attaches normalized req.user
+ */
+const protect = async (req, res, next) => {
+  let token;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Not authorized" });
+  /* ================= READ TOKEN ================= */
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer ")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+
+  if (!token) {
+    return res.status(401).json({
+      message: "Not authorized, token missing"
+    });
   }
 
   try {
-    const token = authHeader.split(" ")[1];
+    /* ================= VERIFY TOKEN ================= */
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = {
-  _id: decoded.id,
-  role: decoded.role
-};
+
+    /* ================= FETCH USER ================= */
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found"
+      });
+    }
+
+    /* ================= NORMALIZE req.user ================= */
+    req.user = user;          // full mongoose document
+    req.user.id = user._id;   // ensure req.user.id is always available
 
     next();
-  } catch {
-    res.status(401).json({ message: "Invalid token" });
+  } catch (error) {
+    return res.status(401).json({
+      message: "Invalid or expired token"
+    });
   }
 };
 
