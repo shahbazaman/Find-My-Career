@@ -172,7 +172,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (activeMenu !== "dashboard") return;
     axios
-      .get("${import.meta.env.VITE_API_BASE_URL}/queries/admin")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/queries/admin`)
       .then((res) => setQueries(res.data || []))
       .catch((err) => console.error("Query fetch error:", err));
   }, [activeMenu]);

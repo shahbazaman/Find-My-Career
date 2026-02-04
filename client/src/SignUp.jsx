@@ -131,7 +131,7 @@ export default function Signup() {
       setSending(true);
 
       const res = await fetch(
-        "${import.meta.env.VITE_API_BASE_URL}/auth/password-reset",
+        `${import.meta.env.VITE_API_BASE_URL}/auth/password-reset`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

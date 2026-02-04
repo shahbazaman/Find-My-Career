@@ -53,7 +53,7 @@ const ScheduleInterview = () => {
     const companyName = storedUser.companyName || `${storedUser.firstName} ${storedUser.lastName}`;
 
     try {
-      const response = await fetch("${import.meta.env.VITE_API_BASE_URL}/interviews", {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/interviews`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

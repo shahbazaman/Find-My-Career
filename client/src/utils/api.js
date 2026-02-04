@@ -3,7 +3,7 @@ import { getToken } from "./auth";
 
 /* ===================== AXIOS INSTANCE ===================== */
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "${import.meta.env.VITE_API_BASE_URL}",
+  baseURL: import.meta.env.VITE_API_BASE_URL || `${import.meta.env.VITE_API_BASE_URL}`,
 });
 
 /* ===================== ATTACH TOKEN ===================== */

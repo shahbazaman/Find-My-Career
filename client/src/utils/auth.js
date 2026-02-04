@@ -4,7 +4,7 @@ import { auth, googleProvider } from "../firebase";
 
 /* ===================== AXIOS INSTANCE ===================== */
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "${import.meta.env.VITE_API_BASE_URL}"
+  baseURL: import.meta.env.VITE_API_BASE_URL || `${import.meta.env.VITE_API_BASE_URL}`
 });
 
 /* ===================== AUTH HELPERS ===================== */

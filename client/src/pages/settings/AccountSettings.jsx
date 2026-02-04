@@ -146,7 +146,7 @@ const confirmDeleteWithToast = (onConfirm) => {
 const handleDeleteAccount = async () => {
   confirmDeleteWithToast(async () => {
     try {
-      const res = await fetch("${import.meta.env.VITE_API_BASE_URL}/users/delete", {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/delete`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`
@@ -179,7 +179,7 @@ const handlePasswordAction = async () => {
       }
 
       const res = await fetch(
-        "${import.meta.env.VITE_API_BASE_URL}/auth/set-password",
+        `${import.meta.env.VITE_API_BASE_URL}/auth/set-password`,
         {
           method: "POST",
           headers: {
@@ -203,7 +203,7 @@ const handlePasswordAction = async () => {
 
     // 🔵 EMAIL USER → AUTO SEND RESET LINK
 const res = await fetch(
-  "${import.meta.env.VITE_API_BASE_URL}/auth/password-reset",
+  `${import.meta.env.VITE_API_BASE_URL}/auth/password-reset`,
   {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -281,7 +281,7 @@ const saveNameToBackend = async () => {
   try {
     setSavingField("name");
 
-    const res = await fetch("${import.meta.env.VITE_API_BASE_URL}/users/update-name", {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/update-name`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -452,7 +452,7 @@ const debouncedSaveName = () => {
   try {
     setSavingField("contact");
 
-    await fetch("${import.meta.env.VITE_API_BASE_URL}/users/update-contact", {
+    await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/update-contact`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -507,7 +507,7 @@ const debouncedSaveName = () => {
   try {
     setSavingField("contact");
 
-    await fetch("${import.meta.env.VITE_API_BASE_URL}/users/update-contact", {
+    await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/update-contact`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
