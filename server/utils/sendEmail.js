@@ -2,21 +2,21 @@ import nodemailer from "nodemailer";
 
 /* ================= CREATE TRANSPORTER ================= */
 const transporter = nodemailer.createTransport({
-  service: "gmail", // Adding this helps Nodemailer auto-configure Gmail settings
   host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
+  port: 587,              // 👈 Changed from 465
+  secure: false,          // 👈 Must be false for port 587
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   },
-  // 🔑 INCREASED TIMEOUTS FOR RENDER (5s is too short for cloud handshake)
-  connectionTimeout: 15000, 
-  greetingTimeout: 15000,
-  socketTimeout: 15000,
-  pool: true // 🚀 Added pooling for "Schedule Interview" (handles multiple emails better)
+  tls: {
+    rejectUnauthorized: false // 👈 Helps avoid "self-signed certificate" issues on Render
+  },
+  connectionTimeout: 20000, 
+  greetingTimeout: 20000,
+  socketTimeout: 20000,
+  pool: true
 });
-
 /* ================= SEND EMAIL ================= */
 const sendEmail = async ({ to, subject, html }) => {
   try {
