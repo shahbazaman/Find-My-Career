@@ -175,19 +175,23 @@ export const requestPasswordReset = async (req, res) => {
     user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
     await user.save();
 
-    const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
-
-    await sendEmail({
-      to: user.email,
-      subject: "Reset Your Password",
-      html: `
-        <p>You requested a password reset.</p>
-        <p>
-          <a href="${resetLink}">${resetLink}</a>
-        </p>
-        <p>This link expires in 15 minutes.</p>
-      `
-    });
+    // 1. Check your .env variable naming. You have CLIENT_URL in Render.
+// 2. Ensure there is no trailing slash in CLIENT_URL to avoid "app.com//reset-password"
+// Clean the CLIENT_URL of any trailing slashes, then add the route
+const resetLink = `${process.env.CLIENT_URL.replace(/\/$/, "")}/reset-password/${resetToken}`;
+await sendEmail({
+  to: user.email,
+  subject: "Reset Your Password - FindMyCareer", // Added branding
+  html: `
+    <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee;">
+      <h2>Password Reset Request</h2>
+      <p>Click the button below to reset your password. This link is valid for 15 minutes.</p>
+      <a href="${resetLink}" style="background: #6366f1; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
+      <p style="margin-top: 20px; color: #666; font-size: 12px;">If you didn't request this, please ignore this email.</p>
+      <p style="word-break: break-all;">${resetLink}</p>
+    </div>
+  `
+});
 
     res.json({ message: "Password reset email sent" });
   } catch (error) {

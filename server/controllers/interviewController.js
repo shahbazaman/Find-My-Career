@@ -2,7 +2,6 @@ import Interview from "../models/Interview.js";
 import Application from "../models/Application.js";
 import Notification from "../models/notificationModel.js";
 import sendEmail from "../utils/sendEmail.js";
-
 /**
  * POST /api/interviews
  * Create interviews, update application status,
@@ -15,9 +14,7 @@ export const createInterviews = async (req, res) => {
     if (!req.user || !req.user.id) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-
     const recruiterId = req.user.id;
-
     /* ================= BODY ================= */
     const {
       applicationIds,
@@ -29,18 +26,15 @@ export const createInterviews = async (req, res) => {
       locationOrLink,
       notes
     } = req.body;
-
     /* ================= VALIDATION ================= */
     if (!Array.isArray(applicationIds) || applicationIds.length === 0) {
       return res.status(400).json({ message: "No applications selected" });
     }
-
     if (!interviewDate || !interviewTime || !mode || !locationOrLink) {
       return res.status(400).json({
         message: "Missing required interview details"
       });
     }
-
     /* ================= FETCH APPLICATIONS ================= */
     const applications = await Application.find({
       _id: { $in: applicationIds }
@@ -49,7 +43,6 @@ export const createInterviews = async (req, res) => {
     if (!applications.length) {
       return res.status(404).json({ message: "Applications not found" });
     }
-
     /* ================= CREATE INTERVIEWS ================= */
     const interviewsToCreate = applications.map((app) => ({
       applicationId: app._id,
@@ -63,60 +56,61 @@ export const createInterviews = async (req, res) => {
       notes,
       createdBy: recruiterId
     }));
-
     await Interview.insertMany(interviewsToCreate);
-
     /* ================= UPDATE APPLICATION STATUS ================= */
     await Application.updateMany(
       { _id: { $in: applicationIds } },
       { $set: { status: "Interview Scheduled" } }
     );
-
-    /* ================= EMAILS + NOTIFICATIONS ================= */
-    const tasks = applications.map(async (app) => {
+    /* ================= EMAILS + NOTIFICATIONS (FIXED FOR RENDER) ================= */
+    for (const app of applications) {
       try {
         const candidateName = `${app.user.firstName || ""} ${app.user.lastName || ""}`.trim();
         const locationLabel = mode === "Online" ? "Meeting Link" : "Office Location";
-
         /* ---------- EMAIL ---------- */
         if (app.user.email) {
           await sendEmail({
             to: app.user.email,
             subject: `Interview Scheduled - ${jobTitle}`,
             html: `
-              <p>Dear <strong>${candidateName || "Candidate"}</strong>,</p>
-              <p>Your interview for <strong>${jobTitle}</strong> at <strong>${companyName}</strong> has been scheduled.</p>
-              <p><strong>Date:</strong> ${interviewDate}</p>
-              <p><strong>Time:</strong> ${interviewTime}</p>
-              <p><strong>Mode:</strong> ${mode}</p>
-              <p><strong>${locationLabel}:</strong> ${locationOrLink}</p>
-              ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ""}
-              <p>Regards,<br/><strong>${companyName}</strong></p>
+              <div style="font-family: sans-serif; line-height: 1.6;">
+                <p>Dear <strong>${candidateName || "Candidate"}</strong>,</p>
+                <p>Your interview for <strong>${jobTitle}</strong> at <strong>${companyName}</strong> has been scheduled.</p>
+                <div style="background: #f4f7fe; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+                  <p style="margin: 5px 0;"><strong>📅 Date:</strong> ${interviewDate}</p>
+                  <p style="margin: 5px 0;"><strong>⏰ Time:</strong> ${interviewTime}</p>
+                  <p style="margin: 5px 0;"><strong>💻 Mode:</strong> ${mode}</p>
+                  <p style="margin: 5px 0;"><strong>📍 ${locationLabel}:</strong> <a href="${locationOrLink}">${locationOrLink}</a></p>
+                </div>
+                ${notes ? `<p style="margin-top: 15px;"><strong>📝 Notes:</strong> ${notes}</p>` : ""}
+                <p style="margin-top: 20px;">Regards,<br/><strong>${companyName}</strong></p>
+              </div>
             `
           });
         }
-
         /* ---------- NOTIFICATION ---------- */
         await Notification.create({
-          user: app.user._id, // ✅ correct schema field
+          user: app.user._id, 
           title: "Interview Scheduled",
           label: `Interview for ${jobTitle} on ${interviewDate} at ${interviewTime}`,
           type: "meeting"
         });
-
+        console.log(`✅ Processed email & notification for: ${app.user.email}`);
       } catch (innerError) {
-        // email/notification failure must NOT break the whole request
         console.error(
-          "INTERVIEW_SUBTASK_ERROR:",
+          "INTERVIEW_SUBTASK_ERROR for:",
           app.user?.email || "unknown",
           innerError.message
         );
       }
+    }
+
+    return res.status(201).json({
+      success: true,
+      message: "Interviews scheduled successfully",
+      count: interviewsToCreate.length
     });
 
-    await Promise.all(tasks);
-
-    /* ================= SUCCESS ================= */
     return res.status(201).json({
       success: true,
       message: "Interviews scheduled successfully",
