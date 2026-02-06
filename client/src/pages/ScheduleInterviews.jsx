@@ -203,10 +203,12 @@ const ScheduleInterview = () => {
       <form onSubmit={handleSubmit} style={styles.card}>
         <div style={styles.inputGroup}>
           <div>
-            <label style={styles.label}><FiCalendar /> Interview Date</label>
+            <label htmlFor="date" style={styles.label}><FiCalendar /> Interview Date</label>
             <input 
+              id="date" // 👈 Added ID
               type="date" 
               name="date" 
+              autoComplete="off" // 👈 Added autocomplete
               style={styles.input} 
               required 
               onChange={handleChange} 
