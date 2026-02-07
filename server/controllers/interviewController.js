@@ -1,7 +1,11 @@
 import Interview from "../models/Interview.js";
 import axios from "axios";
 
-console.log("🟣 [BACKEND] interviewController loaded");
+/* =========================================================
+   INTERVIEW CONTROLLER – BREVO HTTP API (RENDER SAFE)
+========================================================= */
+
+console.log("🔥🔥🔥 EMAIL INTERVIEW CONTROLLER DEPLOYED 🔥🔥🔥");
 
 /* ================= SAFETY CHECK ================= */
 if (!process.env.BREVO_API_KEY) {
@@ -11,7 +15,7 @@ if (!process.env.FROM_EMAIL) {
   console.error("❌ FROM_EMAIL is MISSING");
 }
 
-/* ================= SEND EMAIL VIA BREVO API ================= */
+/* ================= SEND EMAIL VIA BREVO ================= */
 const sendInterviewEmail = async ({
   to,
   name,
@@ -23,7 +27,7 @@ const sendInterviewEmail = async ({
   locationOrLink,
   notes
 }) => {
-  console.log("🟣 [BACKEND] Sending email to:", to);
+  console.log("📧 Sending email to:", to);
 
   return axios.post(
     "https://api.brevo.com/v3/smtp/email",
@@ -32,19 +36,35 @@ const sendInterviewEmail = async ({
         name: companyName,
         email: process.env.FROM_EMAIL
       },
-      to: [{ email: to, name }],
+      to: [
+        {
+          email: to,
+          name
+        }
+      ],
       subject: `Interview Invitation – ${jobTitle}`,
       htmlContent: `
-        <p>Dear <b>${name}</b>,</p>
-        <p>You are invited to an interview with <b>${companyName}</b>.</p>
+        <p>Dear <strong>${name}</strong>,</p>
+
+        <p>
+          You are invited to an interview with
+          <strong>${companyName}</strong> for the role of
+          <strong>${jobTitle}</strong>.
+        </p>
+
         <ul>
-          <li><b>Date:</b> ${interviewDate}</li>
-          <li><b>Time:</b> ${interviewTime}</li>
-          <li><b>Mode:</b> ${mode}</li>
-          <li><b>${mode === "Online" ? "Meeting Link" : "Location"}:</b> ${locationOrLink}</li>
+          <li><strong>Date:</strong> ${interviewDate}</li>
+          <li><strong>Time:</strong> ${interviewTime}</li>
+          <li><strong>Mode:</strong> ${mode}</li>
+          <li>
+            <strong>${mode === "Online" ? "Meeting Link" : "Location"}:</strong>
+            ${locationOrLink}
+          </li>
         </ul>
-        ${notes ? `<p><b>Notes:</b> ${notes}</p>` : ""}
-        <p>Best regards,<br/>${companyName}</p>
+
+        ${notes ? `<p><strong>Notes:</strong><br/>${notes}</p>` : ""}
+
+        <p>Best regards,<br/><strong>${companyName}</strong></p>
       `
     },
     {
@@ -58,8 +78,8 @@ const sendInterviewEmail = async ({
 
 /* ================= CREATE INTERVIEW ================= */
 export const createInterview = async (req, res) => {
-  console.log("🟣 [BACKEND] /api/interviews HIT");
-  console.log("🟣 [BACKEND] Body:", req.body);
+  console.log("🔥🔥🔥 EMAIL CONTROLLER HIT 🔥🔥🔥");
+  console.log("📦 REQUEST BODY:", req.body);
 
   try {
     const {
@@ -74,6 +94,7 @@ export const createInterview = async (req, res) => {
       notes
     } = req.body;
 
+    /* ===== SAVE INTERVIEW ===== */
     const interview = await Interview.create({
       applicationIds,
       companyName,
@@ -85,13 +106,18 @@ export const createInterview = async (req, res) => {
       notes
     });
 
-    // ✅ Respond immediately
+    /* ===== RESPOND IMMEDIATELY ===== */
     res.status(201).json({
-      message: "Interview scheduled. Emails are being sent.",
-      interview
+      success: true,
+      message: "🔥 EMAIL CONTROLLER ACTIVE 🔥",
+      interviewId: interview._id
     });
 
-    if (!Array.isArray(applicants)) return;
+    /* ===== SEND EMAILS (ASYNC) ===== */
+    if (!Array.isArray(applicants)) {
+      console.warn("⚠️ No applicants array received");
+      return;
+    }
 
     for (const c of applicants) {
       if (!c?.email) continue;
@@ -108,19 +134,23 @@ export const createInterview = async (req, res) => {
         notes
       })
         .then(() => {
-          console.log("🟢 [BACKEND] Email sent to:", c.email);
+          console.log("✅ Email sent to:", c.email);
         })
         .catch(err => {
           console.error(
-            "🔴 [BACKEND] Email failed:",
+            "❌ Email failed:",
             err.response?.data || err.message
           );
         });
     }
-  } catch (err) {
-    console.error("🔴 [BACKEND] Error:", err);
+  } catch (error) {
+    console.error("❌ INTERVIEW ERROR:", error);
+
     if (!res.headersSent) {
-      res.status(500).json({ message: "Interview failed" });
+      res.status(500).json({
+        success: false,
+        message: "Interview creation failed"
+      });
     }
   }
 };
