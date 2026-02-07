@@ -72,70 +72,44 @@ export const createInterviews = async (req, res) => {
 
     /* ================= EMAILS + NOTIFICATIONS ================= */
     for (const app of applications) {
-      try {
-        const candidateName = `${app.user.firstName || ""} ${app.user.lastName || ""}`.trim();
-        const locationLabel = mode === "Online" ? "Meeting Link" : "Office Location";
+  const candidateName = `${app.user.firstName || ""} ${app.user.lastName || ""}`.trim();
 
-        /* ---------- EMAIL ---------- */
-        let emailSent = false;
+  // 🔹 fire and forget email (DO NOT await)
+  sendEmail({
+    to: app.user.email,
+    subject: `Interview Scheduled - ${jobTitle}`,
+    html: `
+  <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+    <p>Dear <strong>${candidateName || "Candidate"}</strong>,</p>
 
-        if (app.user.email) {
-          emailSent = await sendEmail({
-            to: app.user.email,
-            subject: `Interview Scheduled - ${jobTitle}`,
-            html: `
-              <div style="font-family: sans-serif; line-height: 1.6;">
-                <p>Dear <strong>${candidateName || "Candidate"}</strong>,</p>
-                <p>
-                  Your interview for <strong>${jobTitle}</strong> at
-                  <strong>${companyName}</strong> has been scheduled.
-                </p>
-                <div style="background: #f4f7fe; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
-                  <p style="margin: 5px 0;"><strong>📅 Date:</strong> ${interviewDate}</p>
-                  <p style="margin: 5px 0;"><strong>⏰ Time:</strong> ${interviewTime}</p>
-                  <p style="margin: 5px 0;"><strong>💻 Mode:</strong> ${mode}</p>
-                  <p style="margin: 5px 0;">
-                    <strong>📍 ${locationLabel}:</strong>
-                    <a href="${locationOrLink}">${locationOrLink}</a>
-                  </p>
-                </div>
-                ${notes ? `<p style="margin-top: 15px;"><strong>📝 Notes:</strong> ${notes}</p>` : ""}
-                <p style="margin-top: 20px;">
-                  Regards,<br/>
-                  <strong>${companyName}</strong>
-                </p>
-              </div>
-            `
-          });
-        }
+    <p>
+      Your interview for <strong>${jobTitle}</strong> at
+      <strong>${companyName}</strong> has been scheduled.
+    </p>
 
-        if (!emailSent) {
-          console.warn(
-            "⚠️ Interview email failed for:",
-            app.user.email || "unknown"
-          );
-        }
+    <ul>
+      <li><strong>Date:</strong> ${interviewDate}</li>
+      <li><strong>Time:</strong> ${interviewTime}</li>
+      <li><strong>Mode:</strong> ${mode}</li>
+      <li><strong>Location / Link:</strong> ${locationOrLink}</li>
+    </ul>
 
-        /* ---------- NOTIFICATION ---------- */
-        await Notification.create({
-          user: app.user._id,
-          title: "Interview Scheduled",
-          label: `Interview for ${jobTitle} on ${interviewDate} at ${interviewTime}`,
-          type: "meeting"
-        });
+    ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ""}
 
-        console.log(
-          `✅ Interview processed for: ${app.user.email} | Email sent: ${emailSent}`
-        );
+    <p>Best regards,<br/><strong>${companyName}</strong></p>
+  </div>
+`,
+  }).catch(err => {
+    console.error("EMAIL_FAILED:", err.message);
+  });
 
-      } catch (innerError) {
-        console.error(
-          "INTERVIEW_SUBTASK_ERROR for:",
-          app.user?.email || "unknown",
-          innerError.message
-        );
-      }
-    }
+  await Notification.create({
+    user: app.user._id,
+    title: "Interview Scheduled",
+    label: `Interview for ${jobTitle} on ${interviewDate}`,
+    type: "meeting",
+  });
+}
 
     /* ================= RESPONSE ================= */
     return res.status(201).json({
