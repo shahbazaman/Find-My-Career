@@ -4,9 +4,6 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import Company from "../models/companyModel.js";
 import admin from "../utils/firebaseAdmin.js";
-import Interview from "../models/Interview.js";
-import Application from "../models/Application.js";
-import Notification from "../models/notificationModel.js";
 import sendEmail from "../utils/sendEmail.js";
 
 /* ================= REGISTER ================= */
@@ -39,9 +36,9 @@ export const registerUser = async (req, res) => {
       });
     }
 
-    res.status(201).json({ message: "User registered successfully" });
+    return res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -51,8 +48,9 @@ export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user)
+    if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
+    }
 
     if (user.provider === "google" && !user.hasLocalPassword) {
       return res.status(400).json({
@@ -61,8 +59,9 @@ export const loginUser = async (req, res) => {
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
+    if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
+    }
 
     if (user.role === "recruiters" && user.approvalStatus !== "approved") {
       return res.status(403).json({
@@ -76,7 +75,7 @@ export const loginUser = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    res.json({
+    return res.json({
       token,
       user: {
         id: user._id,
@@ -89,7 +88,7 @@ export const loginUser = async (req, res) => {
       }
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -131,7 +130,7 @@ export const googleLogin = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    res.json({
+    return res.json({
       token,
       user: {
         id: user._id,
@@ -145,11 +144,11 @@ export const googleLogin = async (req, res) => {
     });
   } catch (err) {
     console.error("Google login error:", err);
-    res.status(401).json({ message: "Google authentication failed" });
+    return res.status(401).json({ message: "Google authentication failed" });
   }
 };
 
-/* ================= REQUEST PASSWORD RESET (🔥 FIXED) ================= */
+/* ================= REQUEST PASSWORD RESET (LOCAL USERS ONLY) ================= */
 export const requestPasswordReset = async (req, res) => {
   try {
     const { email } = req.body;
@@ -175,29 +174,38 @@ export const requestPasswordReset = async (req, res) => {
     user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
     await user.save();
 
-    // 1. Check your .env variable naming. You have CLIENT_URL in Render.
-// 2. Ensure there is no trailing slash in CLIENT_URL to avoid "app.com//reset-password"
-// Clean the CLIENT_URL of any trailing slashes, then add the route
-const resetLink = `${process.env.CLIENT_URL.replace(/\/$/, "")}/reset-password/${resetToken}`;
-await sendEmail({
-  to: user.email,
-  subject: "Reset Your Password - FindMyCareer", // Added branding
-  html: `
-    <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee;">
-      <h2>Password Reset Request</h2>
-      <p>Click the button below to reset your password. This link is valid for 15 minutes.</p>
-      <a href="${resetLink}" style="background: #6366f1; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
-      <p style="margin-top: 20px; color: #666; font-size: 12px;">If you didn't request this, please ignore this email.</p>
-      <p style="word-break: break-all;">${resetLink}</p>
-    </div>
-  `
-});
+    const clientUrl = process.env.CLIENT_URL.replace(/\/$/, "");
+    const resetLink = `${clientUrl}/reset-password/${resetToken}`;
 
-    res.json({ message: "Password reset email sent" });
+    const emailSent = await sendEmail({
+      to: user.email,
+      subject: "Reset Your Password - FindMyCareer",
+      html: `
+        <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee;">
+          <h2>Password Reset Request</h2>
+          <p>This link is valid for 15 minutes.</p>
+          <a href="${resetLink}" style="background:#6366f1;color:#fff;padding:10px 20px;text-decoration:none;border-radius:5px;">Reset Password</a>
+          <p style="margin-top:20px;font-size:12px;color:#666;">If you didn't request this, ignore this email.</p>
+          <p style="word-break: break-all;">${resetLink}</p>
+        </div>
+      `
+    });
+
+    if (!emailSent) {
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+      await user.save();
+
+      return res.status(500).json({
+        message: "Failed to send password reset email. Please try again."
+      });
+    }
+
+    return res.json({ message: "Password reset email sent" });
   } catch (error) {
     console.error("PASSWORD_RESET_ERROR:", error);
-    res.status(500).json({
-      message: "Failed to send password reset email"
+    return res.status(500).json({
+      message: "Failed to process password reset request"
     });
   }
 };
@@ -226,9 +234,9 @@ export const resetPassword = async (req, res) => {
 
     await user.save();
 
-    res.json({ message: "Password reset successful" });
+    return res.json({ message: "Password reset successful" });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -245,7 +253,9 @@ export const setPassword = async (req, res) => {
     }
 
     const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     if (user.provider !== "google" || user.hasLocalPassword) {
       return res.status(400).json({
@@ -258,8 +268,8 @@ export const setPassword = async (req, res) => {
 
     await user.save();
 
-    res.json({ message: "Password set successfully" });
+    return res.json({ message: "Password set successfully" });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };

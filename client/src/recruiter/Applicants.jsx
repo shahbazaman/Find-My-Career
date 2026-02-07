@@ -62,6 +62,7 @@ const [currentPage, setCurrentPage] = useState(1);
               email: a.user?.email,
               name: `${a.user?.firstName || ""} ${a.user?.lastName || ""}`,
               jobTitle: a.job?.jobTitle || "—",
+              jobId: a.job?._id,
               status: a.status || "Applied",
               resumeUrl:
                 typeof a.profile?.resumeUrl === "string" &&
@@ -1110,14 +1111,17 @@ const paginatedApplicants = useMemo(() => {
   className="btn btn-primary"
   disabled={!selectedIds.length}
   onClick={() =>
-    navigate("/schedule-interview", {
-      state: {
-        applicants: applicants.filter(a =>
-          selectedIds.includes(a._id)
-        )
-      }
-    })
-  }
+  navigate("/schedule-interview", {
+    state: {
+      applicants: applicants.filter(a =>
+        selectedIds.includes(a._id)
+      ),
+      jobId: applicants.find(a =>
+        selectedIds.includes(a._id)
+      )?.jobId
+    }
+  })
+}
 >
   <FiCalendar />
   Schedule Interview ({selectedIds.length})

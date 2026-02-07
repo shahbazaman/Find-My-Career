@@ -1,31 +1,43 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
+/**
+ * Initialize Resend with API key
+ * Make sure RESEND_API_KEY is set in Render ENV
+ */
+const resend = new Resend(process.env.RESEND_API_KEY);
 
+/**
+ * Send transactional email using Resend
+ * Used for:
+ *  - Interview schedule alerts
+ *  - Admin / system notifications
+ *
+ * NOTE:
+ *  - Firebase handles forgot-password emails separately
+ */
 const sendEmail = async ({ to, subject, html }) => {
-  // 🚩 CHECKPOINT 1: See if the function starts
-  console.log("--- Attempting to send email to:", to, "---");
-  
   try {
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_FROM || `"FindMyCareer" <${process.env.EMAIL_USER}>`,
-      to,
+    if (!to || !subject || !html) {
+      console.error("❌ Email failed: Missing required fields");
+      return false;
+    }
+
+    const { data, error } = await resend.emails.send({
+      from: process.env.EMAIL_FROM || "FindMyCareer <onboarding@resend.dev>",
+      to: to, // string or array both supported
       subject,
-      html
+      html,
     });
-    
-    // 🚩 CHECKPOINT 2: Success
-    console.log("✅ NODEMAILER SUCCESS:", info.messageId);
+
+    if (error) {
+      console.error("❌ Resend error:", error);
+      return false;
+    }
+
+    console.log("✅ Email sent successfully:", data.id);
     return true;
-  } catch (error) {
-    // 🚩 CHECKPOINT 3: Failure
-    console.error("❌ NODEMAILER ERROR:", error.message);
+  } catch (err) {
+    console.error("❌ Resend system error:", err.message);
     return false;
   }
 };
