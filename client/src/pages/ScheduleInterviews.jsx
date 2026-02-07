@@ -37,61 +37,71 @@ const ScheduleInterview = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-    const storedUser = JSON.parse(localStorage.getItem("user")) || {};
-    
-    // Extracting data for the API and redirect
-    const firstApplicant = selectedApplicants[0];
-    const jobTitle = firstApplicant?.jobTitle || "Position";
-    
-    // Crucial: Finding the jobId to navigate back to /recruiter/applicants/:jobId
-    const jobId = state?.jobId || firstApplicant?.jobId || firstApplicant?.job?._id;
+  console.log("🟡 [FRONTEND] Submit clicked");
+  console.log("🟡 [FRONTEND] Selected applicants:", selectedApplicants);
+  console.log("🟡 [FRONTEND] Form data:", form);
 
-    const companyName = storedUser.companyName || `${storedUser.firstName} ${storedUser.lastName}`;
+  const storedUser = JSON.parse(localStorage.getItem("user")) || {};
+  const companyName =
+    storedUser.companyName ||
+    `${storedUser.firstName} ${storedUser.lastName}`;
 
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/interviews`, {
+  const jobTitle = selectedApplicants[0]?.jobTitle || "Position";
+  const jobId =
+    state?.jobId ||
+    selectedApplicants[0]?.jobId ||
+    selectedApplicants[0]?.job?._id;
+
+  const payload = {
+    applicationIds: selectedApplicants.map(a => a._id),
+    applicants: selectedApplicants.map(a => ({
+      name: a.name,
+      email: a.email
+    })),
+    companyName,
+    jobTitle,
+    interviewDate: form.date,
+    interviewTime: form.time,
+    mode: form.mode,
+    locationOrLink: form.locationOrLink,
+    notes: form.notes
+  };
+
+  console.log("🟡 [FRONTEND] Payload being sent:", payload);
+
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/interviews`,
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`
         },
-        body: JSON.stringify({
-          applicationIds: selectedApplicants.map(a => a._id),
-          companyName,
-          jobTitle,
-          interviewDate: form.date,
-          interviewTime: form.time,
-          mode: form.mode,
-          locationOrLink: form.locationOrLink,
-          notes: form.notes
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success(data.message || "Interviews scheduled successfully!");
-        
-        // Navigation matches your App.jsx route: /recruiter/applicants/:jobId
-        if (jobId) {
-          navigate(`/recruiter/applicants/${jobId}`);
-        } else {
-          navigate("/");
-        }
-      } else {
-        throw new Error(data.message || "Failed to schedule");
+        body: JSON.stringify(payload)
       }
-    } catch (error) {
-      console.error("Schedule interview error:", error);
-      toast.error(error.message || "Failed to schedule interview");
-    } finally {
-      setLoading(false);
+    );
+
+    console.log("🟢 [FRONTEND] Response received:", response.status);
+
+    const data = await response.json();
+    console.log("🟢 [FRONTEND] Response data:", data);
+
+    if (!response.ok) {
+      throw new Error(data.message || "Interview failed");
     }
-  };
+
+    navigate(`/recruiter/applicants/${jobId}`);
+  } catch (error) {
+    console.error("🔴 [FRONTEND] Submit error:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Prevent rendering if redirecting
   if (!selectedApplicants.length) return null;

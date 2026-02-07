@@ -1,10 +1,12 @@
 import express from "express";
-import { createInterviews } from "../controllers/interviewController.js";
 import protect from "../middleware/authMiddleware.js";
+import { createInterview } from "../controllers/interviewController.js";
 
 const router = express.Router();
 
-// POST /api/interviews
-router.post("/", protect, createInterviews);
+/**
+ * Create interview + send interview emails
+ */
+router.post("/", protect, createInterview);
 
 export default router;

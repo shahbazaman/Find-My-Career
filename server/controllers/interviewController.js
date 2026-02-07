@@ -1,22 +1,60 @@
 import Interview from "../models/Interview.js";
-import Application from "../models/Application.js";
-import Notification from "../models/notificationModel.js";
-import sendEmail from "../utils/sendEmail.js";
+import nodemailer from "nodemailer";
 
-/**
- * POST /api/interviews
- * Bulk schedule interviews + send emails
- */
-export const createInterviews = async (req, res) => {
+console.log("🟣 [BACKEND] interviewController loaded");
+
+/* ================= SMTP TRANSPORT ================= */
+console.log("🟣 [BACKEND] SMTP ENV CHECK", {
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  user: process.env.SMTP_USER ? "SET" : "MISSING",
+  pass: process.env.SMTP_PASS ? "SET" : "MISSING",
+  from: process.env.FROM_EMAIL
+});
+
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT || 587),
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
+  },
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 10000
+});
+
+/* ================= SMTP VERIFY ================= */
+transporter.verify((err) => {
+  if (err) {
+    console.error("🔴 [BACKEND] SMTP VERIFY FAILED:", err);
+  } else {
+    console.log("🟢 [BACKEND] SMTP READY");
+  }
+});
+
+/* ================= CONTROLLER ================= */
+export const createInterview = async (req, res) => {
+  console.log("🟣 [BACKEND] /api/interviews HIT");
+  console.log("🟣 [BACKEND] Request body:", req.body);
+
   try {
-    /* ================= AUTH ================= */
-    if (!req.user || !req.user.id) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    const recruiterId = req.user.id;
-
-    /* ================= BODY ================= */
     const {
+      applicationIds,
+      applicants,
+      companyName,
+      jobTitle,
+      interviewDate,
+      interviewTime,
+      mode,
+      locationOrLink,
+      notes
+    } = req.body;
+
+    console.log("🟣 [BACKEND] Saving interview...");
+
+    const interview = await Interview.create({
       applicationIds,
       companyName,
       jobTitle,
@@ -24,105 +62,53 @@ export const createInterviews = async (req, res) => {
       interviewTime,
       mode,
       locationOrLink,
-      notes,
-    } = req.body;
-
-    /* ================= VALIDATION ================= */
-    if (!Array.isArray(applicationIds) || applicationIds.length === 0) {
-      return res.status(400).json({ message: "No applications selected" });
-    }
-
-    if (!interviewDate || !interviewTime || !mode || !locationOrLink) {
-      return res.status(400).json({
-        message: "Missing required interview details",
-      });
-    }
-
-    /* ================= FETCH APPLICATIONS ================= */
-    const applications = await Application.find({
-      _id: { $in: applicationIds },
-    }).populate("user", "email firstName lastName");
-
-    if (!applications.length) {
-      return res.status(404).json({ message: "Applications not found" });
-    }
-
-    /* ================= CREATE INTERVIEWS ================= */
-    const interviewsToCreate = applications.map((app) => ({
-      applicationId: app._id,
-      userId: app.user._id,
-      jobTitle,
-      companyName,
-      interviewDate,
-      interviewTime,
-      mode,
-      locationOrLink,
-      notes,
-      createdBy: recruiterId,
-    }));
-
-    await Interview.insertMany(interviewsToCreate);
-
-    /* ================= UPDATE APPLICATION STATUS ================= */
-    await Application.updateMany(
-      { _id: { $in: applicationIds } },
-      { $set: { status: "Interview Scheduled" } }
-    );
-
-    /* ================= EMAILS + NOTIFICATIONS ================= */
-    for (const app of applications) {
-      const candidateName =
-        `${app.user.firstName || ""} ${app.user.lastName || ""}`.trim();
-
-      console.log("📨 Sending interview email for:", app.user.email);
-
-      const html = `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6">
-          <h2>Interview Scheduled</h2>
-          <p>Dear ${candidateName || "Candidate"},</p>
-          <p>
-            Your interview for <strong>${jobTitle}</strong> at
-            <strong>${companyName}</strong> has been scheduled.
-          </p>
-          <p>
-            <strong>Date:</strong> ${interviewDate}<br/>
-            <strong>Time:</strong> ${interviewTime}<br/>
-            <strong>Mode:</strong> ${mode}<br/>
-            <strong>Location / Link:</strong> ${locationOrLink}
-          </p>
-          ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ""}
-          <p>— FindMyCareer Team</p>
-        </div>
-      `;
-
-      // 🚨 MUST AWAIT FOR DEBUGGING
-      await sendEmail({
-        to: app.user.email,
-        subject: `Interview Scheduled – ${jobTitle}`,
-        html,
-      });
-
-      await Notification.create({
-        user: app.user._id,
-        title: "Interview Scheduled",
-        label: `Interview for ${jobTitle} on ${interviewDate}`,
-        type: "meeting",
-      });
-    }
-
-    /* ================= RESPONSE ================= */
-    return res.status(201).json({
-      success: true,
-      message: "Interviews scheduled successfully",
-      count: interviewsToCreate.length,
+      notes
     });
+
+    console.log("🟢 [BACKEND] Interview saved:", interview._id);
+
+    // Respond immediately
+    res.status(201).json({
+      message: "Interview scheduled (email sending in background)",
+      interview
+    });
+
+    if (!Array.isArray(applicants)) {
+      console.warn("🟡 [BACKEND] No applicants array");
+      return;
+    }
+
+    for (const candidate of applicants) {
+      console.log("🟣 [BACKEND] Sending email to:", candidate.email);
+
+      transporter
+        .sendMail({
+          from: `"${companyName}" <${process.env.FROM_EMAIL}>`,
+          to: candidate.email,
+          subject: `Interview Invitation – ${jobTitle}`,
+          html: `
+            <p>Hello ${candidate.name},</p>
+            <p>Your interview for <b>${jobTitle}</b> is scheduled.</p>
+            <p>Date: ${interviewDate}</p>
+            <p>Time: ${interviewTime}</p>
+            <p>${mode}: ${locationOrLink}</p>
+          `
+        })
+        .then(() => {
+          console.log("🟢 [BACKEND] Email sent to:", candidate.email);
+        })
+        .catch(err => {
+          console.error(
+            "🔴 [BACKEND] Email failed for:",
+            candidate.email,
+            err.message
+          );
+        });
+    }
   } catch (error) {
-    console.error("❌ CREATE_INTERVIEW_ERROR:", error.message);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to schedule interview",
-      error: error.message,
-    });
+    console.error("🔴 [BACKEND] Controller error:", error);
+    if (!res.headersSent) {
+      res.status(500).json({ message: "Interview creation failed" });
+    }
   }
 };
