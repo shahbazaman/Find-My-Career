@@ -2,15 +2,16 @@ import Interview from "../models/Interview.js";
 import axios from "axios";
 
 console.log("🟣 [BACKEND] interviewController loaded");
+
+/* ================= SAFETY CHECK ================= */
 if (!process.env.BREVO_API_KEY) {
   console.error("❌ BREVO_API_KEY is MISSING");
 }
-
 if (!process.env.FROM_EMAIL) {
   console.error("❌ FROM_EMAIL is MISSING");
 }
 
-/* ===================== SEND EMAIL VIA BREVO API ===================== */
+/* ================= SEND EMAIL VIA BREVO API ================= */
 const sendInterviewEmail = async ({
   to,
   name,
@@ -22,6 +23,8 @@ const sendInterviewEmail = async ({
   locationOrLink,
   notes
 }) => {
+  console.log("🟣 [BACKEND] Sending email to:", to);
+
   return axios.post(
     "https://api.brevo.com/v3/smtp/email",
     {
@@ -53,7 +56,7 @@ const sendInterviewEmail = async ({
   );
 };
 
-/* ===================== CREATE INTERVIEW ===================== */
+/* ================= CREATE INTERVIEW ================= */
 export const createInterview = async (req, res) => {
   console.log("🟣 [BACKEND] /api/interviews HIT");
   console.log("🟣 [BACKEND] Body:", req.body);
@@ -82,6 +85,7 @@ export const createInterview = async (req, res) => {
       notes
     });
 
+    // ✅ Respond immediately
     res.status(201).json({
       message: "Interview scheduled. Emails are being sent.",
       interview
@@ -109,7 +113,6 @@ export const createInterview = async (req, res) => {
         .catch(err => {
           console.error(
             "🔴 [BACKEND] Email failed:",
-            c.email,
             err.response?.data || err.message
           );
         });
