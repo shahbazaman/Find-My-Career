@@ -2,6 +2,13 @@ import Interview from "../models/Interview.js";
 import axios from "axios";
 
 console.log("🟣 [BACKEND] interviewController loaded");
+if (!process.env.BREVO_API_KEY) {
+  console.error("❌ BREVO_API_KEY is MISSING");
+}
+
+if (!process.env.FROM_EMAIL) {
+  console.error("❌ FROM_EMAIL is MISSING");
+}
 
 /* ===================== SEND EMAIL VIA BREVO API ===================== */
 const sendInterviewEmail = async ({
