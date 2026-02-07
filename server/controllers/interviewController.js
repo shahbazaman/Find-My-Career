@@ -71,36 +71,35 @@ export const createInterviews = async (req, res) => {
     );
 
     /* ================= EMAILS + NOTIFICATIONS ================= */
-    for (const app of applications) {
-  const candidateName = `${app.user.firstName || ""} ${app.user.lastName || ""}`.trim();
+for (const app of applications) {
+  const candidateName =
+    `${app.user.firstName || ""} ${app.user.lastName || ""}`.trim();
 
-  // 🔹 fire and forget email (DO NOT await)
-  sendEmail({
+  // ⛔ DO NOT use placeholder html
+  const html = `
+    <div style="font-family: Arial, sans-serif">
+      <h2>Interview Scheduled</h2>
+      <p>Dear ${candidateName || "Candidate"},</p>
+      <p>
+        Your interview for <strong>${jobTitle}</strong> at
+        <strong>${companyName}</strong> has been scheduled.
+      </p>
+      <p>
+        <strong>Date:</strong> ${interviewDate}<br/>
+        <strong>Time:</strong> ${interviewTime}<br/>
+        <strong>Mode:</strong> ${mode}<br/>
+        <strong>Location / Link:</strong> ${locationOrLink}
+      </p>
+      ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ""}
+      <p>– FindMyCareer Team</p>
+    </div>
+  `;
+
+  // ✅ MUST await for debugging
+  await sendEmail({
     to: app.user.email,
-    subject: `Interview Scheduled - ${jobTitle}`,
-    html: `
-  <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-    <p>Dear <strong>${candidateName || "Candidate"}</strong>,</p>
-
-    <p>
-      Your interview for <strong>${jobTitle}</strong> at
-      <strong>${companyName}</strong> has been scheduled.
-    </p>
-
-    <ul>
-      <li><strong>Date:</strong> ${interviewDate}</li>
-      <li><strong>Time:</strong> ${interviewTime}</li>
-      <li><strong>Mode:</strong> ${mode}</li>
-      <li><strong>Location / Link:</strong> ${locationOrLink}</li>
-    </ul>
-
-    ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ""}
-
-    <p>Best regards,<br/><strong>${companyName}</strong></p>
-  </div>
-`,
-  }).catch(err => {
-    console.error("EMAIL_FAILED:", err.message);
+    subject: `Interview Scheduled – ${jobTitle}`,
+    html,
   });
 
   await Notification.create({
