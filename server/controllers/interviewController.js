@@ -5,8 +5,7 @@ import sendEmail from "../utils/sendEmail.js";
 
 /**
  * POST /api/interviews
- * Create interviews, update application status,
- * send emails, and create notifications.
+ * Bulk schedule interviews + send emails
  */
 export const createInterviews = async (req, res) => {
   try {
@@ -25,7 +24,7 @@ export const createInterviews = async (req, res) => {
       interviewTime,
       mode,
       locationOrLink,
-      notes
+      notes,
     } = req.body;
 
     /* ================= VALIDATION ================= */
@@ -35,13 +34,13 @@ export const createInterviews = async (req, res) => {
 
     if (!interviewDate || !interviewTime || !mode || !locationOrLink) {
       return res.status(400).json({
-        message: "Missing required interview details"
+        message: "Missing required interview details",
       });
     }
 
     /* ================= FETCH APPLICATIONS ================= */
     const applications = await Application.find({
-      _id: { $in: applicationIds }
+      _id: { $in: applicationIds },
     }).populate("user", "email firstName lastName");
 
     if (!applications.length) {
@@ -59,7 +58,7 @@ export const createInterviews = async (req, res) => {
       mode,
       locationOrLink,
       notes,
-      createdBy: recruiterId
+      createdBy: recruiterId,
     }));
 
     await Interview.insertMany(interviewsToCreate);
@@ -71,58 +70,59 @@ export const createInterviews = async (req, res) => {
     );
 
     /* ================= EMAILS + NOTIFICATIONS ================= */
-for (const app of applications) {
-  const candidateName =
-    `${app.user.firstName || ""} ${app.user.lastName || ""}`.trim();
+    for (const app of applications) {
+      const candidateName =
+        `${app.user.firstName || ""} ${app.user.lastName || ""}`.trim();
 
-  // ⛔ DO NOT use placeholder html
-  const html = `
-    <div style="font-family: Arial, sans-serif">
-      <h2>Interview Scheduled</h2>
-      <p>Dear ${candidateName || "Candidate"},</p>
-      <p>
-        Your interview for <strong>${jobTitle}</strong> at
-        <strong>${companyName}</strong> has been scheduled.
-      </p>
-      <p>
-        <strong>Date:</strong> ${interviewDate}<br/>
-        <strong>Time:</strong> ${interviewTime}<br/>
-        <strong>Mode:</strong> ${mode}<br/>
-        <strong>Location / Link:</strong> ${locationOrLink}
-      </p>
-      ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ""}
-      <p>– FindMyCareer Team</p>
-    </div>
-  `;
+      console.log("📨 Sending interview email for:", app.user.email);
 
-  // ✅ MUST await for debugging
-  await sendEmail({
-    to: app.user.email,
-    subject: `Interview Scheduled – ${jobTitle}`,
-    html,
-  });
+      const html = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6">
+          <h2>Interview Scheduled</h2>
+          <p>Dear ${candidateName || "Candidate"},</p>
+          <p>
+            Your interview for <strong>${jobTitle}</strong> at
+            <strong>${companyName}</strong> has been scheduled.
+          </p>
+          <p>
+            <strong>Date:</strong> ${interviewDate}<br/>
+            <strong>Time:</strong> ${interviewTime}<br/>
+            <strong>Mode:</strong> ${mode}<br/>
+            <strong>Location / Link:</strong> ${locationOrLink}
+          </p>
+          ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ""}
+          <p>— FindMyCareer Team</p>
+        </div>
+      `;
 
-  await Notification.create({
-    user: app.user._id,
-    title: "Interview Scheduled",
-    label: `Interview for ${jobTitle} on ${interviewDate}`,
-    type: "meeting",
-  });
-}
+      // 🚨 MUST AWAIT FOR DEBUGGING
+      await sendEmail({
+        to: app.user.email,
+        subject: `Interview Scheduled – ${jobTitle}`,
+        html,
+      });
+
+      await Notification.create({
+        user: app.user._id,
+        title: "Interview Scheduled",
+        label: `Interview for ${jobTitle} on ${interviewDate}`,
+        type: "meeting",
+      });
+    }
 
     /* ================= RESPONSE ================= */
     return res.status(201).json({
       success: true,
       message: "Interviews scheduled successfully",
-      count: interviewsToCreate.length
+      count: interviewsToCreate.length,
     });
-
   } catch (error) {
-    console.error("CREATE_INTERVIEW_ERROR:", error);
+    console.error("❌ CREATE_INTERVIEW_ERROR:", error.message);
+
     return res.status(500).json({
       success: false,
       message: "Failed to schedule interview",
-      error: error.message
+      error: error.message,
     });
   }
 };

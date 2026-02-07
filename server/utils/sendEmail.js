@@ -1,24 +1,128 @@
-import { Resend } from "resend";
+import Interview from "../models/Interview.js";
+import Application from "../models/Application.js";
+import Notification from "../models/notificationModel.js";
+import sendEmail from "../utils/sendEmail.js";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+/**
+ * POST /api/interviews
+ * Create interviews, update application status,
+ * send emails, and create notifications.
+ */
+export const createInterviews = async (req, res) => {
+  try {
+    /* ================= AUTH ================= */
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const recruiterId = req.user.id;
 
-const sendEmail = async ({ to, subject, html }) => {
-  console.log("📨 RESEND: Sending email to test inbox");
+    /* ================= BODY ================= */
+    const {
+      applicationIds,
+      companyName,
+      jobTitle,
+      interviewDate,
+      interviewTime,
+      mode,
+      locationOrLink,
+      notes
+    } = req.body;
 
-  const { data, error } = await resend.emails.send({
-    from: "FindMyCareer <onboarding@resend.dev>",
-    to: ["test@uaildeukar.resend.app"], // force test inbox
-    subject,
+    /* ================= VALIDATION ================= */
+    if (!Array.isArray(applicationIds) || applicationIds.length === 0) {
+      return res.status(400).json({ message: "No applications selected" });
+    }
+
+    if (!interviewDate || !interviewTime || !mode || !locationOrLink) {
+      return res.status(400).json({
+        message: "Missing required interview details"
+      });
+    }
+
+    /* ================= FETCH APPLICATIONS ================= */
+    const applications = await Application.find({
+      _id: { $in: applicationIds }
+    }).populate("user", "email firstName lastName");
+
+    if (!applications.length) {
+      return res.status(404).json({ message: "Applications not found" });
+    }
+
+    /* ================= CREATE INTERVIEWS ================= */
+    const interviewsToCreate = applications.map((app) => ({
+      applicationId: app._id,
+      userId: app.user._id,
+      jobTitle,
+      companyName,
+      interviewDate,
+      interviewTime,
+      mode,
+      locationOrLink,
+      notes,
+      createdBy: recruiterId
+    }));
+
+    await Interview.insertMany(interviewsToCreate);
+
+    /* ================= UPDATE APPLICATION STATUS ================= */
+    await Application.updateMany(
+      { _id: { $in: applicationIds } },
+      { $set: { status: "Interview Scheduled" } }
+    );
+
+    /* ================= EMAILS + NOTIFICATIONS ================= */
+for (const app of applications) {
+  const candidateName =
+    `${app.user.firstName || ""} ${app.user.lastName || ""}`.trim();
+
+  // ⛔ DO NOT use placeholder html
+  const html = `
+    <div style="font-family: Arial, sans-serif">
+      <h2>Interview Scheduled</h2>
+      <p>Dear ${candidateName || "Candidate"},</p>
+      <p>
+        Your interview for <strong>${jobTitle}</strong> at
+        <strong>${companyName}</strong> has been scheduled.
+      </p>
+      <p>
+        <strong>Date:</strong> ${interviewDate}<br/>
+        <strong>Time:</strong> ${interviewTime}<br/>
+        <strong>Mode:</strong> ${mode}<br/>
+        <strong>Location / Link:</strong> ${locationOrLink}
+      </p>
+      ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ""}
+      <p>– FindMyCareer Team</p>
+    </div>
+  `;
+
+  // ✅ MUST await for debugging
+  await sendEmail({
+    to: app.user.email,
+    subject: `Interview Scheduled – ${jobTitle}`,
     html,
   });
 
-  if (error) {
-    console.error("❌ RESEND FAILED:", error);
-    throw new Error(error.message);
+  await Notification.create({
+    user: app.user._id,
+    title: "Interview Scheduled",
+    label: `Interview for ${jobTitle} on ${interviewDate}`,
+    type: "meeting",
+  });
+}
+
+    /* ================= RESPONSE ================= */
+    return res.status(201).json({
+      success: true,
+      message: "Interviews scheduled successfully",
+      count: interviewsToCreate.length
+    });
+
+  } catch (error) {
+    console.error("CREATE_INTERVIEW_ERROR:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to schedule interview",
+      error: error.message
+    });
   }
-
-  console.log("✅ RESEND SENT | ID:", data.id);
-  return data.id;
 };
-
-export default sendEmail;
