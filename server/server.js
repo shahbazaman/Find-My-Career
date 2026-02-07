@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 
-dotenv.config();
+// dotenv.config();
 connectDB();
 
 const app = express();
@@ -68,7 +68,8 @@ import jobAutoClose from "./utils/jobAutoClose.js";
 import queryRoutes from "./routes/queryRoutes.js";
 import adminUserRoutes from "./routes/adminUserRoutes.js";
 import interviewRoutes from "./routes/interviewRoutes.js";
-
+import testEmailRoute from "./routes/testEmail.js";
+app.use("/api", testEmailRoute);
 app.use("/api/admin", adminUserRoutes);
 app.use("/api/queries", queryRoutes);
 app.use("/api/companies", companyProfileRoute);
