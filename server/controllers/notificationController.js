@@ -113,3 +113,29 @@ export const markAsRead = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+/* ===============================
+   PATCH: Mark ALL as read for a user
+   =============================== */
+export const markAllAsRead = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid userId" });
+    }
+
+    // Update all unread notifications for this user
+    const result = await Notification.updateMany(
+      { userId, isRead: false },
+      { $set: { isRead: true } }
+    );
+
+    return res.status(200).json({
+      message: "All notifications marked as read",
+      modifiedCount: result.modifiedCount
+    });
+  } catch (error) {
+    console.error("Mark all read error:", error);
+    return res.status(500).json({ message: error.message });
+  }
+};

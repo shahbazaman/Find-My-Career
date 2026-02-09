@@ -6,7 +6,7 @@ import {
   BsExclamationTriangleFill, 
   BsInfoCircleFill, 
   BsTrash3,
-  BsThreeDotsVertical 
+  BsEnvelopeOpen // Added for the filter icon
 } from "react-icons/bs";
 import "../css/Notification.css";
 import axios from "axios";
@@ -14,6 +14,7 @@ import { getUserId } from "../utils/auth";
 
 export default function Notification() {
   const [items, setItems] = useState([]);
+  const [filter, setFilter] = useState("all"); // 'all' or 'unread'
   const userId = getUserId();
 
   useEffect(() => {
@@ -28,10 +29,29 @@ export default function Notification() {
       .catch(err => console.error("Fetch error:", err));
   };
 
+  // Logic to mark all as read in the UI and Backend
+const markAllAsRead = async () => {
+  try {
+    // Hits the new route: /notifications/user/:userId/read-all
+    await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/notifications/user/${userId}/read-all`);
+    
+    // Update local state so UI reflects the change immediately
+    setItems(prevItems => 
+      prevItems.map(item => ({ ...item, isRead: true }))
+    );
+  } catch (err) {
+    console.error("Mark all as read error:", err);
+  }
+};
+
   const deleteNotification = (id) => {
-    // Optional: Add backend delete call here
     setItems(items.filter(item => item._id !== id));
   };
+
+  // Filter logic
+  const displayedItems = filter === "unread" 
+    ? items.filter(item => !item.isRead) 
+    : items;
 
   const getStatusConfig = (title = "") => {
     const t = title.toLowerCase();
@@ -49,17 +69,26 @@ export default function Notification() {
           <div className="header-left">
             <div className="bell-icon-container">
               <BsBellFill />
-              {items.length > 0 && <span className="notif-dot" />}
+              {items.some(i => !i.isRead) && <span className="notif-dot" />}
             </div>
             <h1>Notifications</h1>
           </div>
-          <button className="mark-read-btn" onClick={() => setItems([])}>Clear All</button>
+          <div className="header-actions">
+             {/* Filter Toggle Button */}
+            <button 
+              className={`filter-btn ${filter === 'unread' ? 'active' : ''}`}
+              onClick={() => setFilter(filter === 'all' ? 'unread' : 'all')}
+            >
+              {filter === 'all' ? "Show Unread" : "Show All"}
+            </button>
+            <button className="mark-read-btn" onClick={markAllAsRead}>Mark all as read</button>
+          </div>
         </header>
 
         <div className="notif-list">
           <AnimatePresence mode="popLayout">
-            {items.length > 0 ? (
-              items.map((item) => {
+            {displayedItems.length > 0 ? (
+              displayedItems.map((item) => {
                 const config = getStatusConfig(item.title);
                 return (
                   <motion.div
@@ -68,7 +97,7 @@ export default function Notification() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: -20 }}
-                    className="notif-card"
+                    className={`notif-card ${item.isRead ? 'read' : 'unread'}`}
                   >
                     <div className="notif-indicator" style={{ backgroundColor: config.color }} />
                     <div className="notif-icon-box" style={{ color: config.color, backgroundColor: config.bg }}>
@@ -76,7 +105,7 @@ export default function Notification() {
                     </div>
                     <div className="notif-content">
                       <div className="notif-title-row">
-                        <h4>{item.title}</h4>
+                        <h4>{item.title} {!item.isRead && <span className="unread-badge">•</span>}</h4>
                         <span className="notif-time">{item.time || "2m ago"}</span>
                       </div>
                       <p>{item.message || item.label}</p>
@@ -90,7 +119,7 @@ export default function Notification() {
             ) : (
               <div className="empty-state">
                 <BsBellFill className="empty-icon" />
-                <p>All caught up! No new notifications.</p>
+                <p>{filter === 'unread' ? "No unread notifications!" : "All caught up!"}</p>
               </div>
             )}
           </AnimatePresence>

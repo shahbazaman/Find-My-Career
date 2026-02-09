@@ -2,7 +2,7 @@ import express from "express";
 import {
   createNotification,
   getNotifications,
-  getUserNotifications,
+  getUserNotifications,markAllAsRead,
   markAsRead
 } from "../controllers/notificationController.js";
 
@@ -16,7 +16,8 @@ router.get("/", getNotifications);
 
 /* GET notifications by user */
 router.get("/user/:userId", getUserNotifications);
-
+/* NEW: MARK ALL notifications as read for a user */
+router.patch("/user/:userId/read-all", markAllAsRead);
 /* MARK notification as read */
 router.patch("/:id/read", markAsRead);
 
