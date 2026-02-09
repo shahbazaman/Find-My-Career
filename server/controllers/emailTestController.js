@@ -31,3 +31,21 @@ export const sendTestEmail = async (req, res) => {
     });
   }
 };
+export const sendTestEmail = async (req, res) => {
+  console.log("🟡 /api/email/test HIT");
+  console.log("🟡 req.user:", req.user);
+  console.log("🟡 req.body:", req.body);
+
+  try {
+    const { message } = req.body;
+
+    if (!message) {
+      return res.status(400).json({ message: "Message is required" });
+    }
+
+    // email logic...
+  } catch (err) {
+    console.error("🔴 EMAIL TEST ERROR:", err);
+    res.status(500).json({ message: "Email send failed" });
+  }
+};
