@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import Company from "../models/companyModel.js";
 import admin from "../utils/firebaseAdmin.js";
-// import sendEmail from "../utils/sendEmail.js";
 
 /* ================= REGISTER ================= */
 export const registerUser = async (req, res) => {
@@ -147,7 +146,6 @@ export const googleLogin = async (req, res) => {
     return res.status(401).json({ message: "Google authentication failed" });
   }
 };
-
 /* ================= REQUEST PASSWORD RESET (LOCAL USERS ONLY) ================= */
 export const requestPasswordReset = async (req, res) => {
   try {
@@ -174,34 +172,11 @@ export const requestPasswordReset = async (req, res) => {
     user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
     await user.save();
 
-    const clientUrl = process.env.CLIENT_URL.replace(/\/$/, "");
-    const resetLink = `${clientUrl}/reset-password/${resetToken}`;
-
-    const emailSent = await sendEmail({
-      to: user.email,
-      subject: "Reset Your Password - FindMyCareer",
-      html: `
-        <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee;">
-          <h2>Password Reset Request</h2>
-          <p>This link is valid for 15 minutes.</p>
-          <a href="${resetLink}" style="background:#6366f1;color:#fff;padding:10px 20px;text-decoration:none;border-radius:5px;">Reset Password</a>
-          <p style="margin-top:20px;font-size:12px;color:#666;">If you didn't request this, ignore this email.</p>
-          <p style="word-break: break-all;">${resetLink}</p>
-        </div>
-      `
+    // 🚫 Email sending temporarily disabled
+    return res.json({
+      message: "Password reset email feature is temporarily disabled"
     });
 
-    if (!emailSent) {
-      user.resetPasswordToken = undefined;
-      user.resetPasswordExpire = undefined;
-      await user.save();
-
-      return res.status(500).json({
-        message: "Failed to send password reset email. Please try again."
-      });
-    }
-
-    return res.json({ message: "Password reset email sent" });
   } catch (error) {
     console.error("PASSWORD_RESET_ERROR:", error);
     return res.status(500).json({
@@ -209,6 +184,7 @@ export const requestPasswordReset = async (req, res) => {
     });
   }
 };
+
 
 /* ================= RESET PASSWORD ================= */
 export const resetPassword = async (req, res) => {
