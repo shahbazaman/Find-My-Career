@@ -162,24 +162,56 @@
   margin-bottom: 15px;
   opacity: 0.3;
 }
+/* Container for the buttons */
 .header-actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  align-items: center;
 }
 
-.filter-btn {
-  background: #f3f4f6;
-  border: 1px solid #d1d5db;
-  padding: 6px 12px;
-  border-radius: 6px;
+/* Base button styles to ensure they look good everywhere */
+.filter-btn, .mark-read-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  white-space: nowrap; /* Prevents text from breaking into two lines */
 }
 
-.filter-btn.active {
-  background: #3b82f6;
-  color: white;
-  border-color: #2563eb;
+/* Mobile Responsive Logic */
+@media (max-width: 600px) {
+  .notif-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-direction: row; /* Keep them side-by-side but flexible */
+    justify-content: space-between;
+  }
+
+  .filter-btn, .mark-read-btn {
+    flex: 1; /* Makes both buttons equal width on mobile */
+    font-size: 0.8rem; /* Slightly smaller text for tight screens */
+    padding: 10px 5px;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .header-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .filter-btn, .mark-read-btn {
+    width: 100%;
+  }
 }
 
 .notif-card.unread {
