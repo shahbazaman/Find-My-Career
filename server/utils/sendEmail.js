@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+// import { Resend } from "resend";
 
 /* ===================== INIT ===================== */
 if (!process.env.RESEND_API_KEY) {

@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import Company from "../models/companyModel.js";
 import admin from "../utils/firebaseAdmin.js";
-import sendEmail from "../utils/sendEmail.js";
+// import sendEmail from "../utils/sendEmail.js";
 
 /* ================= REGISTER ================= */
 export const registerUser = async (req, res) => {
