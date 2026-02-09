@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-import { FaFileUpload, FaHistory, FaFileAlt, FaCheckCircle, FaRobot, FaCloudUploadAlt, FaTimes } from "react-icons/fa";
+import { FaFileUpload, FaHistory, FaFileAlt, FaCheckCircle, FaRobot, FaCloudUploadAlt, FaTimes,FaTrash } from "react-icons/fa";
 import { FaEye } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 export default function ApplicationSettings() {
@@ -94,6 +94,27 @@ const userId = userData ? JSON.parse(userData).id : null;
       });
     }, 150);
   };
+const DeleteResume = async () => {
+  if (!window.confirm("Are you sure you want to delete your current resume?")) {
+    return;
+  }
+  const token = localStorage.getItem("token");
+  try {
+    await axios.patch(
+      `${import.meta.env.VITE_API_BASE_URL}/profile/${userId}`,
+      { resumeUrl: "" },
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+    setResumeUrl("");
+    setCurrentResume("No resume uploaded");
+    alert("Resume deleted successfully.");
+  } catch (err) {
+    console.error("Delete resume error:", err);
+    alert("Failed to delete resume. Please try again.");
+  }
+}; 
 
   return (
     <div className="application-container mt-5">
@@ -163,10 +184,31 @@ const userId = userData ? JSON.parse(userData).id : null;
 >
   <FaEye /> {resumeUrl ? "View Resume" : "Fetching..."}
 </button>
-
-    <div className="resume-badge">
-      <FaCheckCircle /> Active
-    </div>
+<div>
+  <button
+    type="button"
+    className="resume-badge-action"
+    style={{
+      cursor: resumeUrl ? "pointer" : "not-allowed",
+      backgroundColor: resumeUrl ? "#ef4444" : "#cbd5e1", // Red if exists, gray if empty
+      marginLeft: "auto",
+      opacity: 1,
+      border: 'none',
+      color: 'white',
+      padding: '0.5rem 1rem',
+      borderRadius: '9999px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      zIndex: 99,
+      transition: 'all 0.2s'
+    }}
+    onClick={() => resumeUrl && DeleteResume()} // Only run if a resume exists
+    disabled={!resumeUrl}
+  >
+    <FaTrash /> {resumeUrl ? "Delete" : "No File"}
+  </button>
+</div>
   </div>
 </div>
           {/* Stats Section */}
@@ -202,23 +244,6 @@ const userId = userData ? JSON.parse(userData).id : null;
             <div className="modal-body">
               {resumeUrl ? (
                 <>
-                  {/* {resumeUrl.toLowerCase().endsWith(".pdf") ? (
-                    <iframe
-                      src={`https://docs.google.com/gview?url=${encodeURIComponent(resumeUrl)}&embedded=true`}
-                      width="100%"
-                      height="500px"
-                      style={{ border: "none", borderRadius: "8px" }}
-                      title="Resume Preview"
-                    />
-                  ) : (
-                    <div className="doc-preview">
-                      <FaFileAlt size={48} color="#3b82f6" />
-                      <p style={{ marginTop: "1rem", color: "#64748b" }}>
-                        Preview not available for this file type.
-                      </p>
-                    </div>
-                  )} */}
-                  {/* Inside your Modal Preview Section */}
 {resumeUrl.toLowerCase().endsWith(".pdf") ? (
   <iframe
     src={resumeUrl} // Try loading directly first

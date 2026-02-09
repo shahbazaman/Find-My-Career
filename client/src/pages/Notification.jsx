@@ -29,7 +29,6 @@ export default function Notification() {
       .catch(err => console.error("Fetch error:", err));
   };
 
-  // Logic to mark all as read in the UI and Backend
 const markAllAsRead = async () => {
   try {
     // Hits the new route: /notifications/user/:userId/read-all
