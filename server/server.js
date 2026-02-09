@@ -68,7 +68,9 @@ import jobAutoClose from "./utils/jobAutoClose.js";
 import queryRoutes from "./routes/queryRoutes.js";
 import adminUserRoutes from "./routes/adminUserRoutes.js";
 import interviewRoutes from "./routes/interviewRoutes.js";
+import emailTestRoutes from "./routes/emailTestRoutes.js";
 
+app.use("/api", emailTestRoutes);
 app.use("/api/admin", adminUserRoutes);
 app.use("/api/queries", queryRoutes);
 app.use("/api/companies", companyProfileRoute);
