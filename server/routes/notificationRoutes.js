@@ -17,7 +17,8 @@ router.get("/", getNotifications);
 /* GET notifications by user */
 router.get("/user/:userId", getUserNotifications);
 /* NEW: MARK ALL notifications as read for a user */
-router.patch("/user/:userId/read-all", markAllAsRead);
+// Changed from .patch to .post
+router.post("/user/:userId/mark-all-read", markAllAsRead);
 /* MARK notification as read */
 router.patch("/:id/read", markAsRead);
 

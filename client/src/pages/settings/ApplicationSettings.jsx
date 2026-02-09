@@ -74,12 +74,9 @@ const userId = userData ? JSON.parse(userData).id : null;
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     setIsUploading(true);
     setUploadProgress(0);
     setUploadSuccess(false);
-
-    // Simulate upload progress
     const interval = setInterval(() => {
       setUploadProgress(prev => {
         if (prev >= 100) {
@@ -95,26 +92,23 @@ const userId = userData ? JSON.parse(userData).id : null;
     }, 150);
   };
 const DeleteResume = async () => {
-  if (!window.confirm("Are you sure you want to delete your current resume?")) {
-    return;
-  }
-  const token = localStorage.getItem("token");
+  if (!window.confirm("Are you sure you want to remove your resume?")) return;
+
   try {
-    await axios.patch(
-      `${import.meta.env.VITE_API_BASE_URL}/profile/${userId}`,
-      { resumeUrl: "" },
-      {
-        headers: { Authorization: `Bearer ${token}` }
-      }
+    await axios.post(
+      `${import.meta.env.VITE_API_BASE_URL}/profile/${userId}/clear-resume`,
+      {}, 
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
+
     setResumeUrl("");
     setCurrentResume("No resume uploaded");
-    alert("Resume deleted successfully.");
+    toast.success("Resume removed successfully!");
   } catch (err) {
-    console.error("Delete resume error:", err);
-    alert("Failed to delete resume. Please try again.");
+    console.error(err);
+    toast.error("Failed to remove resume.");
   }
-}; 
+};
 
   return (
     <div className="application-container mt-5">
