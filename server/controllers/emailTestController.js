@@ -1,33 +1,11 @@
-import nodemailer from "nodemailer";
+import sgMail from "@sendgrid/mail";
 
-console.log("🔥 EMAIL TEST CONTROLLER LOADED");
+console.log("🔥 SENDGRID EMAIL CONTROLLER LOADED");
 
-/* ================= SMTP TRANSPORT (HARDENED) ================= */
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // TLS (REQUIRED)
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD
-  },
+/* ================= CONFIG ================= */
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-  // ⛔ IMPORTANT: prevents infinite waiting
-  connectionTimeout: 10_000, // 10s
-  greetingTimeout: 10_000,
-  socketTimeout: 10_000
-});
-
-/* ================= VERIFY (LOG ONLY) ================= */
-transporter.verify((err, success) => {
-  if (err) {
-    console.error("❌ SMTP VERIFY FAILED:", err.message);
-  } else {
-    console.log("✅ SMTP SERVER READY");
-  }
-});
-
-/* ================= SEND TEST EMAIL ================= */
+/* ================= CONTROLLER ================= */
 export const sendTestEmail = async (req, res) => {
   console.log("🟡 /api/email/test HIT");
   console.log("🟡 Body:", req.body);
@@ -42,32 +20,29 @@ export const sendTestEmail = async (req, res) => {
       });
     }
 
-    // 🔍 Critical debug (NO secrets leaked)
-    console.log("🔐 SMTP CONFIG CHECK", {
-      user: process.env.GMAIL_USER,
-      passLength: process.env.GMAIL_APP_PASSWORD?.length
-    });
-
-    const info = await transporter.sendMail({
-      from: `"FindMyCareer" <${process.env.GMAIL_USER}>`,
+    const msg = {
       to: "shabushahbaz123@gmail.com",
-      subject: "Dummy Email Test",
+      from: process.env.SENDGRID_FROM_EMAIL,
+      subject: "Dummy Email Test - FindMyCareer",
       text: message,
-      html: `<p>${message}</p>`
-    });
+      html: `<strong>${message}</strong>`
+    };
 
-    console.log("🟢 EMAIL SENT SUCCESSFULLY:", info.messageId);
+    await sgMail.send(msg);
+
+    console.log("🟢 SENDGRID EMAIL SENT");
 
     return res.status(200).json({
       success: true,
       message: "Dummy email sent successfully"
     });
-  } catch (err) {
-    console.error("🔴 EMAIL SEND ERROR:", err.message);
+
+  } catch (error) {
+    console.error("🔴 SENDGRID ERROR:", error.response?.body || error.message);
 
     return res.status(500).json({
       success: false,
-      message: "Failed to send dummy email"
+      message: "Email sending failed"
     });
   }
 };
