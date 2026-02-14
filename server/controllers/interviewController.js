@@ -4,7 +4,11 @@ import sgMail from "@sendgrid/mail";
 console.log("🔥 SENDGRID INTERVIEW CONTROLLER ACTIVE");
 
 /* ================= SENDGRID CONFIG ================= */
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+if (!process.env.SENDGRID_API_KEY) {
+  console.error("❌ SENDGRID_API_KEY is missing in environment variables");
+} else {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
 
 /* ================= SEND EMAIL FUNCTION ================= */
 const sendInterviewEmail = async ({
@@ -18,9 +22,16 @@ const sendInterviewEmail = async ({
   locationOrLink,
   notes
 }) => {
+  if (!process.env.SENDGRID_VERIFIED_EMAIL) {
+    throw new Error("SENDGRID_VERIFIED_EMAIL is not set in environment variables");
+  }
+
   const msg = {
     to,
-    from: process.env.SENDGRID_VERIFIED_SENDER, // must be verified in SendGrid
+    from: {
+      email: process.env.SENDGRID_VERIFIED_EMAIL, // MUST be verified in SendGrid
+      name: "FindMyCareer"
+    },
     subject: `Interview Invitation – ${jobTitle}`,
     html: `
       <p>Dear <b>${name}</b>,</p>
@@ -76,7 +87,7 @@ export const createInterview = async (req, res) => {
     }
 
     let successCount = 0;
-    let failedEmails = [];
+    const failedEmails = [];
 
     /* ===== STRICT AWAIT LOOP ===== */
     for (let i = 0; i < applicants.length; i++) {
@@ -84,10 +95,10 @@ export const createInterview = async (req, res) => {
       const applicationId = applicationIds[i];
 
       try {
-        /* 1️⃣ Save interview */
+        /* 1️⃣ Save interview (schema safe) */
         await Interview.create({
           applicationId,
-          userId: applicant.userId || null,
+          userId: applicant.userId,
           createdBy: req.user.id,
           jobTitle,
           companyName,
@@ -115,7 +126,11 @@ export const createInterview = async (req, res) => {
         successCount++;
 
       } catch (err) {
-        console.error("❌ Failed for:", applicant.email, err.response?.body || err.message);
+        console.error(
+          "❌ Failed for:",
+          applicant.email,
+          err.response?.body || err.message
+        );
         failedEmails.push(applicant.email);
       }
     }
