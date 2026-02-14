@@ -1110,18 +1110,38 @@ const paginatedApplicants = useMemo(() => {
             <button
   className="btn btn-primary"
   disabled={!selectedIds.length}
-  onClick={() =>
+//   onClick={() =>
+//   navigate("/schedule-interview", {
+//     state: {
+//       applicants: applicants.filter(a =>
+//         selectedIds.includes(a._id)
+//       ),
+//       jobId: applicants.find(a =>
+//         selectedIds.includes(a._id)
+//       )?.jobId
+//     }
+//   })
+// }
+onClick={() => {
+  const selectedApplicants = applicants.filter(a =>
+    selectedIds.includes(a._id)
+  );
+
   navigate("/schedule-interview", {
     state: {
-      applicants: applicants.filter(a =>
-        selectedIds.includes(a._id)
-      ),
-      jobId: applicants.find(a =>
-        selectedIds.includes(a._id)
-      )?.jobId
+      applicants: selectedApplicants.map(a => ({
+        applicationId: a._id,   // for Interview model
+        userId: a.userId,       // required
+        email: a.email,
+        name: a.name,
+        jobTitle: a.jobTitle,
+        jobId: a.jobId
+      })),
+      jobId: selectedApplicants[0]?.jobId
     }
-  })
-}
+  });
+}}
+
 >
   <FiCalendar />
   Schedule Interview ({selectedIds.length})

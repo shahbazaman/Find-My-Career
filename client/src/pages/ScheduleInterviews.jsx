@@ -56,20 +56,36 @@ const handleSubmit = async (e) => {
     selectedApplicants[0]?.jobId ||
     selectedApplicants[0]?.job?._id;
 
-  const payload = {
-    applicationIds: selectedApplicants.map(a => a._id),
-    applicants: selectedApplicants.map(a => ({
-      name: a.name,
-      email: a.email
-    })),
-    companyName,
-    jobTitle,
-    interviewDate: form.date,
-    interviewTime: form.time,
-    mode: form.mode,
-    locationOrLink: form.locationOrLink,
-    notes: form.notes
-  };
+  // const payload = {
+  //   applicationIds: selectedApplicants.map(a => a._id),
+  //   applicants: selectedApplicants.map(a => ({
+  //     name: a.name,
+  //     email: a.email
+  //   })),
+  //   companyName,
+  //   jobTitle,
+  //   interviewDate: form.date,
+  //   interviewTime: form.time,
+  //   mode: form.mode,
+  //   locationOrLink: form.locationOrLink,
+  //   notes: form.notes
+  // };
+const payload = {
+  applicationIds: selectedApplicants.map(a => a.applicationId),
+  applicants: selectedApplicants.map(a => ({
+    userId: a.userId,
+    name: a.name,
+    email: a.email
+  })),
+
+  companyName,
+  jobTitle,
+  interviewDate: form.date,
+  interviewTime: form.time,
+  mode: form.mode,
+  locationOrLink: form.locationOrLink,
+  notes: form.notes
+};
 
   console.log("🟡 [FRONTEND] Payload being sent:", payload);
 
