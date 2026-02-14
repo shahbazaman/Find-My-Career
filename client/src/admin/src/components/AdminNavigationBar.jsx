@@ -1,4 +1,4 @@
-import logo from "../../../client/src/assets/logo1.png";
+import logo from "../../../assets/logo.png";
 import React, { useEffect, useState } from "react";
 import {BsSearch, BsBell, BsPerson, BsGear,BsMoon,BsSun,BsEnvelope,BsChevronDown} from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
