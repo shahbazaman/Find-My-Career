@@ -216,47 +216,43 @@ export const getMyApplications = async (req, res) => {
   }
 };
 
-
 export const getApplicantsForRecruiter = async (req, res) => {
   try {
-    // 1. Find all jobs owned by recruiter
     const jobs = await Job.find({ recruiter: req.user._id }).select("_id");
 
     if (!jobs.length) {
       return res.json([]);
     }
-
     const jobIds = jobs.map(j => j._id);
-
-    // 2. Find applications for those jobs
     const applications = await Application.find({
       job: { $in: jobIds }
     })
       .populate("job", "jobTitle companyName")
       .populate("user", "firstName lastName email");
 
-    // 3. Attach profile
-    const result = await Promise.all(
-      applications.map(async (app) => {
-        const profile = await Profile.findOne({ userId: app.user._id });
-
-        return {
-          _id: app._id,
-          status: app.status,
-          job: app.job,
-          user: app.user,
-          profile
-        };
-      })
-    );
-
+    const result = [];
+    for (const app of applications) {
+      if (!app.user) {
+        console.log("⚠️ Skipping application with null user:", app._id);
+        continue;
+      }
+      const profile = await Profile.findOne({ userId: app.user._id })
+        .select("experience resumeUrl");
+      result.push({
+        _id: app._id,
+        status: app.status,
+        job: app.job || null,
+        user: app.user,
+        profile: profile || null
+      });
+    }
     res.json(result);
+
   } catch (error) {
     console.error("GET RECRUITER APPLICANTS ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
-
 /* =========================================================
    GET MY APPLICATION STATS (JOB SEEKER)
 ========================================================= */

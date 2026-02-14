@@ -73,10 +73,10 @@ const handleSubmit = async (e) => {
 const payload = {
   applicationIds: selectedApplicants.map(a => a.applicationId),
   applicants: selectedApplicants.map(a => ({
-    userId: a.userId,
-    name: a.name,
-    email: a.email
-  })),
+  name: a.name,
+  email: a.email,
+  userId: a.userId
+})),
 
   companyName,
   jobTitle,
