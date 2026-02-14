@@ -1,13 +1,12 @@
 import { Routes, Route } from "react-router-dom";
-
-import AdminHome from "./AdminHome";
-import AdminHome2 from "./AdminHome2";
-import AdminDashboard from "./components/AdminDashboard";
-import AdminLogin from "./components/AdminLogin";
-import AdminProtectedRoute from "./AdminProtectedRoute";
-import AddUserForm from "./components/AddUserForm";
-import ViewUser from "./components/ViewUser";
-import EditUser from "./components/EditUser";
+import AdminHome from "./src/AdminHome";
+import AdminHome2 from "./src/AdminHome2";
+import AdminDashboard from "./src/components/AdminDashboard";
+import AdminLogin from "./src/components/AdminLogin";
+import AdminProtectedRoute from "./src/AdminProtectedRoute";
+import AddUserForm from "./src/components/AddUserForm";
+import ViewUser from "./src/components/ViewUser";
+import EditUser from "./src/components/EditUser";
 
 const AdminRoutes = () => {
   return (
