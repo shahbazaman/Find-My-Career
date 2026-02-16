@@ -59,11 +59,15 @@ const handleLogin = async (e) => {
 
     const { token, user } = res.data;
 
-    // ✅ correct usage
-    setAuth(token, user);
+setAuth(token, user);
 
-    toast.success("Login successful");
-    navigate("/");
+toast.success("Login successful");
+
+if (user.role === "admin") {
+  navigate("/admin/home");
+} else {
+  navigate("/");
+}
   } catch (err) {
     toast.error(err?.response?.data?.message || "Login failed");
   } finally {

@@ -31,6 +31,7 @@ const AddUserForm = () => {
     provider: "local"
   });
 
+
   /* ===================== HANDLE CHANGE ===================== */
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -64,24 +65,15 @@ const AddUserForm = () => {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  const adminKey = import.meta.env.VITE_ADMIN_SECRET;
-
-  if (!adminKey) {
-    toast.error("Admin key missing");
-    return;
-  }
-
-  console.log("Submitting payload:", formData);
-
   try {
     const request = axios.post(
       `${import.meta.env.VITE_API_BASE_URL}/users/create`,
       formData,
       {
         headers: {
-          "x-admin-key": adminKey,
-          "Content-Type": "application/json"
-        }
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       }
     );
 
@@ -94,13 +86,12 @@ const handleSubmit = async (e) => {
             data.response?.data?.message ||
             "User creation failed"
           );
-        }
-      }
+        },
+      },
     });
 
     await request;
 
-    // reset form ONLY after success
     setFormData({
       firstName: "",
       lastName: "",
@@ -109,18 +100,15 @@ const handleSubmit = async (e) => {
       role: "job seekers",
       approvalStatus: "approved",
       logo: "",
-      provider: "local"
+      provider: "local",
     });
 
-    // navigate after success
-    navigate("/");
+    navigate("/admin/home");
 
   } catch (error) {
-    // error already handled by toast.promise
     console.error("Create user error:", error);
   }
 };
-
 
   return (
     <div className="form-container">

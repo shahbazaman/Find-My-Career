@@ -1,125 +1,234 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-// You can keep this import, or delete it if you use the styles below
-import "../css/Login.css"; 
+  import React, { useState } from "react";
+  import { ToastContainer, toast } from "react-toastify";
+  import "react-toastify/dist/ReactToastify.css";
+  import { 
+    FiMail, 
+    FiLock, 
+    FiEye, 
+    FiEyeOff, 
+    FiShield,
+    FiArrowRight,
+    FiCheck
+  } from "react-icons/fi";
+  import "./AdminLogin.css";
+  import { useNavigate } from "react-router-dom";
 
-export default function AdminLogin() {
-  const [key, setKey] = useState("");
-  const navigate = useNavigate();
+  const AdminLogin = () => {
+    const [formData, setFormData] = useState({
+      email: "",
+      password: "",
+    });
+    const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [focusedField, setFocusedField] = useState(null);
+    const navigate = useNavigate();
+    const handleChange = (e) => {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value,
+      });
+    };
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      
+      // Validation
+      if (!formData.email || !formData.password) {
+        toast.error("Please fill in all fields", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        return;
+      }
 
-    if (key === import.meta.env.VITE_ADMIN_SECRET) {
-      localStorage.setItem("admin-auth", "true");
-      toast.success("Admin login successful");
-      navigate("/home");
-    } else {
-      toast.error("Invalid admin key");
-    }
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        toast.error("Please enter a valid email address", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        return;
+      }
+
+      setIsLoading(true);
+
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/admin/login`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          }
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+          // Success notification
+          toast.success(`Welcome back, ${data.user.firstName || 'Admin'}!`, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            icon: <FiCheck />,
+          });
+
+          // Store token
+          localStorage.setItem("adminToken", data.token);
+          localStorage.setItem("adminUser", JSON.stringify(data.user));
+
+          // Redirect after a short delay
+          setTimeout(() => {
+            navigate("/admin/home");
+          }, 2000);
+        } else {
+          // Error notification
+          toast.error(data.message || "Login failed. Please try again.", {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
+        }
+      } catch (error) {
+        toast.error("Server error. Please try again later.", {
+          position: "top-right",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    return (
+      <div className="admin-login-container">
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
+        
+        <div className="login-background">
+          <div className="gradient-orb orb-1"></div>
+          <div className="gradient-orb orb-2"></div>
+          <div className="gradient-orb orb-3"></div>
+          <div className="grid-pattern"></div>
+        </div>
+
+        <div className="login-card">
+          <div className="login-header">
+            <div className="shield-icon">
+              <FiShield />
+            </div>
+            <h1 className="login-title">Admin Portal</h1>
+            <p className="login-subtitle">Secure access for authorized personnel</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="login-form">
+            <div className={`input-group ${focusedField === 'email' ? 'focused' : ''}`}>
+              <label htmlFor="email" className="input-label">
+                Email Address
+              </label>
+              <div className="input-wrapper">
+                <div className="input-icon">
+                  <FiMail />
+                </div>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedField('email')}
+                  onBlur={() => setFocusedField(null)}
+                  placeholder="admin@example.com"
+                  className="input-field"
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
+
+            <div className={`input-group ${focusedField === 'password' ? 'focused' : ''}`}>
+              <label htmlFor="password" className="input-label">
+                Password
+              </label>
+              <div className="input-wrapper">
+                <div className="input-icon">
+                  <FiLock />
+                </div>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedField('password')}
+                  onBlur={() => setFocusedField(null)}
+                  placeholder="Enter your password"
+                  className="input-field"
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={isLoading}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className={`submit-button ${isLoading ? 'loading' : ''}`}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <span className="spinner"></span>
+                  <span>Authenticating...</span>
+                </>
+              ) : (
+                <>
+                  <span>Sign In</span>
+                  <FiArrowRight className="arrow-icon" />
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="login-footer">
+            <p className="footer-text">
+              Protected by enterprise-grade security
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   };
 
-  return (
-    <div className="auth-container">
-      {/* Embedded CSS for Responsiveness */}
-      <style>{`
-        .auth-container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
-          width: 100%;
-          background: #f4f6f8; /* Light gray background */
-          padding: 20px; /* Prevents card from touching edges on small mobiles */
-          box-sizing: border-box;
-        }
-
-        .auth-card {
-          width: 100%;
-          max-width: 400px; /* Limits width on desktop */
-          background: white;
-          padding: 2rem;
-          border-radius: 12px;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-        }
-
-        .auth-title {
-          font-size: 1.8rem;
-          color: #333;
-          margin-bottom: 0.5rem;
-          text-align: center;
-        }
-
-        .auth-form {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-        }
-
-        .auth-input {
-          width: 100%;
-          padding: 12px 15px;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          font-size: 16px; /* Prevents zoom on iPhone */
-          box-sizing: border-box;
-          outline: none;
-          transition: border-color 0.3s;
-        }
-
-        .auth-input:focus {
-          border-color: #007bff;
-        }
-
-        .auth-submit-btn {
-          width: 100%;
-          padding: 12px;
-          background-color: #007bff;
-          color: white;
-          border: none;
-          border-radius: 8px;
-          font-size: 16px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: background-color 0.3s;
-        }
-
-        .auth-submit-btn:hover {
-          background-color: #0056b3;
-        }
-
-        /* Mobile specific adjustments (if needed beyond fluid width) */
-        @media (max-width: 480px) {
-          .auth-card {
-            padding: 1.5rem;
-          }
-          .auth-title {
-            font-size: 1.5rem;
-          }
-        }
-      `}</style>
-
-      <ToastContainer position="top-center" />
-      <div className="auth-card">
-        <h2 className="auth-title text-center">Admin Login</h2>
-
-        <form className="auth-form" onSubmit={handleLogin}>
-          <input
-            type="password"
-            placeholder="Enter Admin Secret Key"
-            className="auth-input"
-            value={key}
-            onChange={(e) => setKey(e.target.value)}
-            required
-          />
-          <button className="auth-submit-btn">Login</button>
-        </form>
-      </div>
-    </div>
-  );
-}
+  export default AdminLogin;

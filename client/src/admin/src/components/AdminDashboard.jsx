@@ -126,7 +126,7 @@ const AdminDashboard = () => {
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/admin/recruiters/all`,
-        { headers: { "x-admin-key": import.meta.env.VITE_ADMIN_SECRET } },
+        { headers: {Authorization: `Bearer ${localStorage.getItem("adminToken")}`,}},
       );
       setAllRecruiters(res.data);
     } catch (err) {
@@ -140,7 +140,8 @@ const AdminDashboard = () => {
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/admin/jobseekers`,
-        { headers: { "x-admin-key": import.meta.env.VITE_ADMIN_SECRET } },
+        { headers: {
+  Authorization: `Bearer ${localStorage.getItem("adminToken")}`,} },
       );
       const raw = res.data.jobSeekers || res.data.data || res.data || [];
       const list = Array.isArray(raw) ? raw : [];
@@ -153,19 +154,25 @@ const AdminDashboard = () => {
     }
   };
   const fetchRecruiters = async () => {
-    setLoadingRecruiters(true);
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/admin/recruiters/pending`,
-        { headers: { "x-admin-key": import.meta.env.VITE_ADMIN_SECRET } },
-      );
-      setRecruiters(res.data);
-    } catch (err) {
-      toast.error("Failed to load recruiters");
-    } finally {
-      setLoadingRecruiters(false);
-    }
-  };
+  setLoadingRecruiters(true);
+  try {
+    const res = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}/admin/recruiters/pending`,
+      {
+        // jjjheadersjjj: {
+        //   Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        // },
+      }
+    );
+
+    setRecruiters(res.data);
+  } catch (err) {
+    toast.error("Failed to load recruiters");
+  } finally {
+    setLoadingRecruiters(false);
+  }
+};
+
   useEffect(() => {
     fetchRecruiters();
   }, []);
@@ -204,7 +211,8 @@ const AdminDashboard = () => {
       await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/admin/recruiters/approve/${id}`,
         {},
-        { headers: { "x-admin-key": import.meta.env.VITE_ADMIN_SECRET } },
+        { headers: {
+  Authorization: `Bearer ${localStorage.getItem("adminToken")}`,} },
       );
       toast.success("Recruiter approved");
       fetchRecruiters();
@@ -218,7 +226,8 @@ const AdminDashboard = () => {
       await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/admin/recruiters/reject/${id}`,
         {},
-        { headers: { "x-admin-key": import.meta.env.VITE_ADMIN_SECRET } },
+        { headers: {
+  Authorization: `Bearer ${localStorage.getItem("adminToken")}`,} },
       );
       toast.success("Recruiter rejected");
       fetchRecruiters();
@@ -399,9 +408,8 @@ const AdminDashboard = () => {
     try {
       await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/admin/users/${userId}`, {
         headers: {
-          "x-admin-key": import.meta.env.VITE_ADMIN_SECRET,
-        },
-      });
+  Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+}, });
       toast.success("User deleted successfully");
       if (type === "job-seeker") {
         setAllJobSeekers((prev) => prev.filter((u) => u._id !== userId));
@@ -523,7 +531,15 @@ const AdminDashboard = () => {
         </div>
 
         <div className="sidebar-logout-wrap">
-          <div className="sidebar-logout">
+          <div
+            className="sidebar-logout"
+            onClick={() => {
+              localStorage.removeItem("adminToken");
+              localStorage.removeItem("adminUser");
+              navigate("/admin/login");
+            }}
+            style={{ cursor: "pointer" }}
+           >
             <BsBoxArrowRight size={20} />
             {isSidebarOpen && (
               <span className="sidebar-logout-text">Logout</span>
@@ -2490,10 +2506,10 @@ const AdminDashboard = () => {
                         <p>Configure alert preferences</p>
                       </div>
                     </div>
-                    <butoon className="btn-outline">
+                    <button className="btn-outline">
                       <input type="checkbox" defaultChecked />
                       <span className="slider round"></span>
-                    </butoon>
+                    </button>
                   </div>
                 </div>
                 <div className="stat-card stat-card-visible">

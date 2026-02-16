@@ -22,13 +22,13 @@ const EditUser = () => {
 
   useEffect(() => {
     axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}/admin/users/${id}`,
-      {
-        headers: {
-          "x-admin-key": import.meta.env.VITE_ADMIN_SECRET
-        }
-      }
-    )
+  `${import.meta.env.VITE_API_BASE_URL}/admin/users/${id}`,
+  {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("adminToken")}`
+    }
+  }
+)
     .then(res => setFormData(res.data))
     .catch(() => toast.error("Failed to fetch user data"));
   }, [id]);
@@ -43,14 +43,14 @@ const EditUser = () => {
 
     try {
       await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/admin/users/${id}`,
-        formData,
-        {
-          headers: {
-            "x-admin-key": import.meta.env.VITE_ADMIN_SECRET
-          }
-        }
-      );
+  `${import.meta.env.VITE_API_BASE_URL}/admin/users/${id}`,
+  formData,
+  {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("adminToken")}`
+    }
+  }
+);
       toast.success("User updated successfully!");
       setTimeout(() => navigate(-1), 1500);
     } catch (err) {

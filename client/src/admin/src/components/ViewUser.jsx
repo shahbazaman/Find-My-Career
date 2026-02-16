@@ -27,8 +27,8 @@ const ViewUser = () => {
           `${import.meta.env.VITE_API_BASE_URL}/admin/users/${id}`,
           {
             headers: {
-              "x-admin-key": import.meta.env.VITE_ADMIN_SECRET
-            }
+  Authorization: `Bearer ${localStorage.getItem("adminToken")}`
+}
           }
         );
         setUser(res.data);

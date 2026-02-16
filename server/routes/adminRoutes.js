@@ -1,8 +1,11 @@
 import express from "express";
 import User from "../models/User.js";
 import adminProtect from "../middleware/adminProtect.js";
+import { adminLogin } from "../controllers/AdminController.js";
 
 const router = express.Router();
+// 🔐 Admin Login
+router.post("/login", adminLogin);
 
 /* ✅ Get all pending recruiters (ADMIN ONLY) */
 router.get("/recruiters/pending", adminProtect, async (req, res) => {
