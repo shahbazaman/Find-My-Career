@@ -12,21 +12,21 @@ import {
   FaPenNib,
   FaPaperPlane
 } from "react-icons/fa";
-import axios from "axios";
-import { toast } from "react-toastify";
+// import axios from "axios";
+// import { toast } from "react-toastify";
 import "./css/Page2.css";
 
 export default function Page2() {
   /* ================= ROLES DATA ================= */
   const allRoles = [
-    { title: "Data Scientist", count: "2,213 Jobs", icon: <FaDatabase />, color: "#4e73df" },
-    { title: "Business Analyst", count: "2,194 Jobs", icon: <FaChartLine />, color: "#1cc88a" },
-    { title: "Sales Executive", count: "2,020 Jobs", icon: <FaUserTie />, color: "#f6c23e" },
-    { title: "Java Developer", count: "1,621 Jobs", icon: <FaJava />, color: "#e74a3b" },
-    { title: "Frontend Dev", count: "1,102 Jobs", icon: <FaCode />, color: "#36b9cc" },
-    { title: "AI Engineer", count: "950 Jobs", icon: <FaRobot />, color: "#6610f2" },
-    { title: "Customer Success", count: "840 Jobs", icon: <FaHeadset />, color: "#fd7e14" },
-    { title: "UI/UX Designer", count: "720 Jobs", icon: <FaPenNib />, color: "#e83e8c" }
+    { title: "Data Scientist", count: "210 Jobs", icon: <FaDatabase />, color: "#4e73df" },
+    { title: "Business Analyst", count: "254 Jobs", icon: <FaChartLine />, color: "#1cc88a" },
+    { title: "Sales Executive", count: "580 Jobs", icon: <FaUserTie />, color: "#f6c23e" },
+    { title: "Java Developer", count: "197 Jobs", icon: <FaJava />, color: "#e74a3b" },
+    { title: "Frontend Dev", count: "420 Jobs", icon: <FaCode />, color: "#36b9cc" },
+    { title: "AI Engineer", count: "104 Jobs", icon: <FaRobot />, color: "#6610f2" },
+    { title: "Customer Service", count: "840 Jobs", icon: <FaHeadset />, color: "#fd7e14" },
+    { title: "UI/UX Designer", count: "420 Jobs", icon: <FaPenNib />, color: "#e83e8c" }
   ];
 
   /* ================= PAGINATION ================= */
@@ -47,38 +47,36 @@ export default function Page2() {
   };
 
   /* ================= SEND DUMMY EMAIL ================= */
-  const handleSendDummyEmail = async () => {
-    console.log("🟡 [FRONTEND] Send Dummy Email clicked");
-    console.log("🟡 Message:", emailText);
+  // const handleSendDummyEmail = async () => {
 
-    if (!emailText.trim()) {
-      return toast.error("Message cannot be empty");
-    }
+  //   if (!emailText.trim()) {
+  //     return toast.error("Message cannot be empty");
+  //   }
 
-    setSending(true);
+  //   setSending(true);
 
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/email/test`,
-        { message: emailText },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
-        }
-      );
+  //   try {
+  //     const res = await axios.post(
+  //       `${import.meta.env.VITE_API_BASE_URL}/email/test`,
+  //       { message: emailText },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`
+  //         }
+  //       }
+  //     );
 
-      console.log("🟢 Email API response:", res.data);
-      toast.success("Dummy email sent successfully!");
-      setEmailText("");
-      setShowEmailBox(false);
-    } catch (error) {
-      console.error("🔴 Dummy email failed:", error);
-      toast.error("Failed to send dummy email");
-    } finally {
-      setSending(false);
-    }
-  };
+  //     console.log("🟢 Email API response:", res.data);
+  //     toast.success("Dummy email sent successfully!");
+  //     setEmailText("");
+  //     setShowEmailBox(false);
+  //   } catch (error) {
+  //     console.error("🔴 Dummy email failed:", error);
+  //     toast.error("Failed to send dummy email");
+  //   } finally {
+  //     setSending(false);
+  //   }
+  // };
 
   return (
     <section className="job-opportunities-section">
@@ -105,18 +103,18 @@ export default function Page2() {
               </Button>
 
               {/* ✅ NEW BUTTON */}
-              <Button
+              {/* <Button
                 variant="outline-success"
                 className="rounded-pill"
                 onClick={() => setShowEmailBox(!showEmailBox)}
               >
                 <FaPaperPlane className="me-2" />
                 Send Dummy Email
-              </Button>
+              </Button> */}
             </div>
 
             {/* ===== DUMMY EMAIL BOX ===== */}
-            {showEmailBox && (
+            {/* {showEmailBox && (
               <Card className="mt-4 shadow-sm">
                 <Card.Body>
                   <Form.Group className="mb-3">
@@ -140,7 +138,7 @@ export default function Page2() {
                   </Button>
                 </Card.Body>
               </Card>
-            )}
+            )} */}
           </Col>
 
           {/* ===== RIGHT CARDS ===== */}

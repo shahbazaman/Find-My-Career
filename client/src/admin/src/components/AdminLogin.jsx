@@ -148,9 +148,6 @@
 
           <form onSubmit={handleSubmit} className="login-form">
             <div className={`input-group ${focusedField === 'email' ? 'focused' : ''}`}>
-              <label htmlFor="email" className="input-label">
-                Email Address
-              </label>
               <div className="input-wrapper">
                 <div className="input-icon">
                   <FiMail />
@@ -163,7 +160,7 @@
                   onChange={handleChange}
                   onFocus={() => setFocusedField('email')}
                   onBlur={() => setFocusedField(null)}
-                  placeholder="admin@example.com"
+                  placeholder="Enter your email address"
                   className="input-field"
                   disabled={isLoading}
                 />
@@ -171,9 +168,6 @@
             </div>
 
             <div className={`input-group ${focusedField === 'password' ? 'focused' : ''}`}>
-              <label htmlFor="password" className="input-label">
-                Password
-              </label>
               <div className="input-wrapper">
                 <div className="input-icon">
                   <FiLock />

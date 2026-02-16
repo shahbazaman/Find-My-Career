@@ -6,16 +6,26 @@ import Job from "../models/jobModel.js";
  */
 export const createJob = async (req, res) => {
   try {
+    if (
+      req.user.role !== "recruiters" &&
+      req.user.role !== "admin"
+    ) {
+      return res.status(403).json({
+        message: "Only recruiters or admin can post jobs"
+      });
+    }
     const job = await Job.create({
       ...req.body,
       recruiter: req.user.id
     });
 
     res.status(201).json(job);
+
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
+
 
 /**
  * GET ALL JOBS (PUBLIC – JOB SEEKERS)
