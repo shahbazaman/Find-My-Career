@@ -625,7 +625,7 @@ const toggleApply = async (jobId) => {
       flexWrap: "wrap", 
       justifyContent: "space-between",
       alignItems: "center",
-      gap: "12px" // Adds spacing if they wrap
+      gap: "12px" 
     }}
   >
     {/* Star Badge Wrapper */}

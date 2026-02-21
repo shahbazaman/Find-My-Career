@@ -5,11 +5,9 @@ import crypto from "crypto";
 import Company from "../models/companyModel.js";
 import admin from "../utils/firebaseAdmin.js";
 
-/* ================= REGISTER ================= */
 export const registerUser = async (req, res) => {
   try {
     const { firstName, lastName, email, password, role, logo } = req.body;
-
     if (await User.findOne({ email })) {
       return res.status(400).json({ message: "User already exists" });
     }
@@ -24,7 +22,8 @@ export const registerUser = async (req, res) => {
       role,
       logo,
       provider: "local",
-      hasLocalPassword: true
+      hasLocalPassword: true,
+      approvalStatus: role === "recruiters" ? "pending" : "approved"
     });
 
     if (role === "recruiters") {
@@ -42,7 +41,6 @@ export const registerUser = async (req, res) => {
   }
 };
 
-/* ================= LOGIN ================= */
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -92,7 +90,6 @@ export const loginUser = async (req, res) => {
   }
 };
 
-/* ================= GOOGLE LOGIN ================= */
 export const googleLogin = async (req, res) => {
   try {
     const { idToken } = req.body;
@@ -147,7 +144,7 @@ export const googleLogin = async (req, res) => {
     return res.status(401).json({ message: "Google authentication failed" });
   }
 };
-/* ================= REQUEST PASSWORD RESET (LOCAL USERS ONLY) ================= */
+
 export const requestPasswordReset = async (req, res) => {
   try {
     const { email } = req.body;
@@ -173,7 +170,6 @@ export const requestPasswordReset = async (req, res) => {
     user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
     await user.save();
 
-    // 🚫 Email sending temporarily disabled
     return res.json({
       message: "Password reset email feature is temporarily disabled"
     });
@@ -186,8 +182,6 @@ export const requestPasswordReset = async (req, res) => {
   }
 };
 
-
-/* ================= RESET PASSWORD ================= */
 export const resetPassword = async (req, res) => {
   try {
     const hashedToken = crypto
@@ -217,7 +211,6 @@ export const resetPassword = async (req, res) => {
   }
 };
 
-/* ================= SET PASSWORD (GOOGLE USERS) ================= */
 export const setPassword = async (req, res) => {
   try {
     const { password } = req.body;

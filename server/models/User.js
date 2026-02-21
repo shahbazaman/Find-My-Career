@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema(
       trim: true
     },
 
-    // Password is required ONLY for local (email) users
+    
     password: {
       type: String
     },
@@ -40,25 +40,25 @@ const userSchema = new mongoose.Schema(
       type: String
     },
 
-    // 🔐 Auth provider
+    
     provider: {
       type: String,
       enum: ["local", "google"],
       default: "local"
     },
 
-    // 🔑 Firebase UID for Google users
+    
     googleId: {
       type: String
     },
 
-    // ✅ Controls whether email login & reset password are allowed
+    
     hasLocalPassword: {
       type: Boolean,
       default: false
     },
 
-    // 🔁 Password reset (ONLY for users with local password)
+    
     resetPasswordToken: String,
     resetPasswordExpire: Date
   },
