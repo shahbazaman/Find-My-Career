@@ -29,9 +29,10 @@ export const registerUser = async (req, res) => {
 
     if (role === "recruiters") {
       await Company.create({
-        recruiter: user._id,
+        owner: user._id, 
         name: `${firstName} ${lastName}`,
-        about: "Company profile not updated yet"
+        description: "Company profile not updated yet",
+        logo: logo
       });
     }
 
