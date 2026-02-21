@@ -79,10 +79,6 @@ export const adminLogin = async (req, res) => {
   }
 };
 
-/**
- * Verify Admin Token Middleware
- * Use this to protect admin routes
- */
 export const verifyAdminToken = async (req, res, next) => {
   try {
     // Get token from header

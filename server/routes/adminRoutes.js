@@ -1,21 +1,19 @@
 import express from "express";
 import User from "../models/User.js";
 import adminProtect from "../middleware/adminProtect.js";
-import { adminLogin } from "../controllers/AdminController.js";
-
+import { adminLogin,verifyAdminToken } from "../controllers/AdminController.js";
 const router = express.Router();
 // 🔐 Admin Login
-router.post("/login", adminLogin);
+router.post("/login", adminLogin); // adjust path if needed
 
-/* ✅ Get all pending recruiters (ADMIN ONLY) */
-router.get("/recruiters/pending", adminProtect, async (req, res) => {
+router.get("/recruiters/pending", verifyAdminToken, async (req, res) => {
   try {
     const users = await User.find({
       role: "recruiters",
       approvalStatus: "pending"
     });
 
-    res.json(users);
+    res.status(200).json(users);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

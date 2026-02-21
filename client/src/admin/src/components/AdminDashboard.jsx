@@ -153,20 +153,21 @@ const AdminDashboard = () => {
       setLoadingJobSeekers(false);
     }
   };
-  const fetchRecruiters = async () => {
+const fetchRecruiters = async () => {
   setLoadingRecruiters(true);
   try {
     const res = await axios.get(
       `${import.meta.env.VITE_API_BASE_URL}/admin/recruiters/pending`,
       {
-        // jjjheadersjjj: {
-        //   Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-        // },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
       }
     );
 
     setRecruiters(res.data);
   } catch (err) {
+    console.error(err.response?.data || err.message);
     toast.error("Failed to load recruiters");
   } finally {
     setLoadingRecruiters(false);
