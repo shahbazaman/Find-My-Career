@@ -38,7 +38,7 @@ import EditJob from "./pages/EditJob";
 import ContactUs from "./pages/ContactUs";
 import ScheduleInterview from "./pages/ScheduleInterviews";
 import MernMcq from "./pages/JobPrepMcq/Mern";
-import ReactMcq from "./pages/JobPrepMcq/React";
+import ReactMcq from "./pages/JobPrepMcq/ReactJs";
 import DbmsMcq from "./pages/JobPrepMcq/Dbms";
 import OopsMcq from "./pages/JobPrepMcq/Oops";
 import DSAMcq from "./pages/JobPrepMcq/DSA";
