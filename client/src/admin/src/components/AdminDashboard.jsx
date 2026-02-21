@@ -679,50 +679,101 @@ const AdminDashboard = () => {
                   </div>
                 )}{" "}
               </div>
+              {replyingTo && (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      background: "rgba(0,0,0,0.4)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 9999,
+    }}
+  >
+    <div
+      style={{
+        background: "white",
+        width: "500px",
+        maxWidth: "90%",
+        padding: "24px",
+        borderRadius: "12px",
+        boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
+      }}
+    >
+      <h3 style={{ marginBottom: "16px" }}>
+        Reply to {replyingTo.name}
+      </h3>
+
+      <textarea
+        rows={5}
+        style={{
+          width: "100%",
+          marginBottom: "16px",
+          padding: "10px",
+          borderRadius: "8px",
+          border: "1px solid #ddd",
+        }}
+        value={replyText}
+        onChange={(e) => setReplyText(e.target.value)}
+      />
+
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+        <button
+          onClick={() => setReplyingTo(null)}
+          style={{
+            padding: "8px 16px",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            background: "white",
+            cursor: "pointer",
+          }}
+        >
+          Cancel
+        </button>
+
+        <button
+          className="btn-primary"
+          onClick={async () => {
+            try {
+              await axios.post(
+                `${import.meta.env.VITE_API_BASE_URL}/queries/admin/reply/${replyingTo._id}`,
+                { reply: replyText },
+                {
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+                  },
+                }
+              );
+
+              setQueries((prev) =>
+                prev.map((q) =>
+                  q._id === replyingTo._id
+                    ? { ...q, isRead: true }
+                    : q
+                )
+              );
+
+              setReplyingTo(null);
+              setReplyText("");
+              toast.success("Reply sent successfully");
+            } catch (err) {
+              toast.error("Failed to send reply");
+            }
+          }}
+        >
+          Send Reply
+        </button>
+      </div>
+    </div>
+  </div>
+)}
             </>
           )}
-          {replyingTo && (
-            <div
-              className="stat-card stat-card-visible"
-              style={{ marginTop: "20px" }}
-            >
-              <h3>Reply to {replyingTo.name}</h3>
-              <textarea
-                rows={4}
-                style={{ width: "100%", marginBottom: "10px" }}
-                value={replyText}
-                onChange={(e) => setReplyText(e.target.value)}
-              />
-              <button
-                className="btn-primary"
-                onClick={async () => {
-                  try {
-                    await axios.post(
-  `${import.meta.env.VITE_API_BASE_URL}/queries/admin/reply/${replyingTo._id}`,
-  { reply: replyText },
-  {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-    },
-  }
-);
-                    setQueries((prev) =>
-                      prev.map((q) =>
-                        q._id === replyingTo._id ? { ...q, isRead: true } : q,
-                      ),
-                    );
-                    setReplyingTo(null);
-                    setReplyText("");
-                  } catch (err) {
-                    console.error("Reply error:", err);
-                  }
-                }}
-              >
-                {" "}
-                Send Reply
-              </button>
-            </div>
-          )}
+   
           {activeMenu === "jobs-list" && (
             <div
               style={{
