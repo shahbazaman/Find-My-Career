@@ -51,7 +51,20 @@ import ReactNotes from "./pages/JobPrepNotes/ReactNotes";
 import AptitudeNotes from "./pages/JobPrepNotes/AptitudeNotes";
 import OopsNotes from "./pages/JobPrepNotes/OopsNotes";
 import ScheduleInterview from "./pages/ScheduleInterviews";
-
+import MernMcq from "./pages/JobPrepMcq/Mern";
+import ReactMcq from "./pages/JobPrepMcq/React";
+import DbmsMcq from "./pages/JobPrepMcq/Dbms";
+import OopsMcq from "./pages/JobPrepMcq/Oops";
+import DSAMcq from "./pages/JobPrepMcq/DSA";
+import AptitudeMcq from "./pages/JobPrepMcq/Aptitude";
+import EnglishMcq from "./pages/JobPrepMcq/English";
+import AptitudeNotes from "./pages/JobPrepNotes/AptitudeNotes";
+import OopsNotes from "./pages/JobPrepNotes/OopsNotes";
+import EnglishNotes from "./pages/JobPrepNotes/EnglishNotes";
+import DbmsNotes from "./pages/JobPrepNotes/DbmsNotes";
+import ReactNotes from "./pages/JobPrepNotes/ReactNotes";
+import MernNotes from "./pages/JobPrepNotes/MernNotes";
+import DSANotes from "./pages/JobPrepNotes/DsaNotes"
 import "./css/App.css";
 
 /* Hide NavigationBar on /admin routes */
@@ -79,6 +92,26 @@ const Layout = () => {
         <Route path="/page6" element={<Page6/>}/>
         <Route path="/contactUs" element={<ContactUs/>}/>
         <Route path="/schedule-interview" element={<ScheduleInterview />} />
+        <Route path="/dsaNotes" element={<DSANotes />} />
+<Route path="/dsa" element={<DSAMcq />} />
+
+<Route path="/aptitudeNotes" element={<AptitudeNotes />} />
+<Route path="/aptitude" element={<AptitudeMcq />} />
+
+<Route path="/oopsNotes" element={<OopsNotes />} />
+<Route path="/oops" element={<OopsMcq />} />
+
+<Route path="/englishNotes" element={<EnglishNotes />} />
+<Route path="/english" element={<EnglishMcq />} />
+
+<Route path="/dbmsNotes" element={<DbmsNotes />} />
+<Route path="/dbms" element={<DbmsMcq />} />
+
+<Route path="/reactNotes" element={<ReactNotes />} />
+<Route path="/react" element={<ReactMcq />} />
+
+<Route path="/mernNotes" element={<MernNotes />} />
+<Route path="/mern" element={<MernMcq />} />
 
         {/* ================= JOB SEEKER ROUTES ================= */}
         <Route path="/profile" element={<Profile />} />
