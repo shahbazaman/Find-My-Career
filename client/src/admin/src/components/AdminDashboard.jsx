@@ -617,7 +617,7 @@ const AdminDashboard = () => {
                               <button
                                 className="btn-primary"
                                 onClick={() => setReplyingTo(q)}
-                              >Reply
+                              >Repaly
                               </button>
                             </td>
                           </tr>
@@ -698,9 +698,14 @@ const AdminDashboard = () => {
                 onClick={async () => {
                   try {
                     await axios.post(
-                      `${import.meta.env.VITE_API_BASE_URL}/queries/admin/reply/${replyingTo._id}`,
-                      { reply: replyText },
-                    );
+  `${import.meta.env.VITE_API_BASE_URL}/queries/admin/reply/${replyingTo._id}`,
+  { reply: replyText },
+  {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+    },
+  }
+);
                     setQueries((prev) =>
                       prev.map((q) =>
                         q._id === replyingTo._id ? { ...q, isRead: true } : q,
