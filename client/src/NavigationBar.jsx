@@ -7,8 +7,9 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { FaUser } from "react-icons/fa";
 import Swal from "sweetalert2";
-import { getUser, logout } from "./utils/auth";
+import { getUser, logout, getUserId } from "./utils/auth";
 import { IoIosNotifications } from "react-icons/io";
+import api from "./utils/api";
 
 const NavigationBar = () => {
   const navigate = useNavigate();
@@ -16,13 +17,31 @@ const NavigationBar = () => {
 
   const [user, setUser] = useState(getUser());
   const [anchorEl, setAnchorEl] = useState(null);
-  const [imgError, setImgError] = useState(false); // ✅ NEW
+  const [imgError, setImgError] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0); // ✅ NEW
 
   // 🔁 Re-read user on route change (login / logout fix)
   useEffect(() => {
     setUser(getUser());
-    setImgError(false); // reset image error on user change
+    setImgError(false);
   }, [location.pathname]);
+
+  // ✅ Fetch unread notification count
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      const userId = getUserId();
+      if (!userId) return;
+      try {
+        const res = await api.get(`/notifications/user/${userId}`);
+        const unread = res.data.filter((n) => !n.isRead).length;
+        setUnreadCount(unread);
+      } catch (err) {
+        // silently fail — badge just won't show
+      }
+    };
+
+    fetchUnreadCount();
+  }, [location.pathname]); // re-fetch on every route change
 
   const role = user?.role;
 
@@ -77,7 +96,7 @@ const NavigationBar = () => {
           objectFit: "cover",
           border: "2px solid #eee",
         }}
-        onError={() => setImgError(true)} // ✅ SAFE FALLBACK
+        onError={() => setImgError(true)}
       />
     ) : (
       <FaUser
@@ -88,6 +107,36 @@ const NavigationBar = () => {
         }}
       />
     );
+
+  // ✅ Reusable notification icon with badge
+  const NotificationIcon = () => (
+    <div style={{ position: "relative", display: "inline-flex" }}>
+      <IoIosNotifications style={{ fontSize: "26px", color: "#333" }} />
+      {unreadCount > 0 && (
+        <span
+          style={{
+            position: "absolute",
+            top: "-4px",
+            right: "-6px",
+            background: "#f40076",
+            color: "#fff",
+            borderRadius: "50%",
+            fontSize: "10px",
+            fontWeight: "bold",
+            minWidth: "17px",
+            height: "17px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            lineHeight: 1,
+            padding: "0 3px",
+          }}
+        >
+          {unreadCount > 99 ? "99+" : unreadCount}
+        </span>
+      )}
+    </div>
+  );
 
   return (
     <div className="navigation-wrapper">
@@ -110,11 +159,8 @@ const NavigationBar = () => {
         {/* 📱 MOBILE ICONS */}
         <div className="d-flex align-items-center d-lg-none ms-auto">
           {user && (
-            <Nav.Link as={Link} to="/notification" className="p-0">
-              <IoIosNotifications
-                className="me-3"
-                style={{ fontSize: "26px", color: "#333" }}
-              />
+            <Nav.Link as={Link} to="/notification" className="p-0 me-3">
+              <NotificationIcon />
             </Nav.Link>
           )}
           <div onClick={handleMenuOpen} style={{ cursor: "pointer" }}>
@@ -147,11 +193,8 @@ const NavigationBar = () => {
           <div className="d-none d-lg-flex align-items-center">
             {user && (
               <>
-                <Nav.Link as={Link} to="/notification">
-                  <IoIosNotifications
-                    className="me-4"
-                    style={{ fontSize: "28px", color: "#333" }}
-                  />
+                <Nav.Link as={Link} to="/notification" className="me-4 p-0">
+                  <NotificationIcon />
                 </Nav.Link>
 
                 <Button

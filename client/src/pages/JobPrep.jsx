@@ -49,7 +49,7 @@ export default function CompleteLearningDashboard() {
     { title: "Technical Aptitude", hours: 12, progress: 100, status: "Completed", icon: <HiOutlineLightningBolt />, notesUrl: () => navigate("/aptitudeNotes"), questionsUrl: () => navigate("/aptitude"), category: "Interviews" },
     { title: "Object Oriented Programming", hours: 4, progress: 0, status: "Not Started", icon: <FiTrendingUp />, notesUrl: () => navigate("/oopsNotes"), questionsUrl: () => navigate("/oops"), category: "Theory" },
     { title: "Communication Skills", hours: 2, progress: 20, status: "In progress", icon: <FiBookOpen />, notesUrl: () => navigate("/englishNotes"), questionsUrl: () => navigate("/english"), category: "Soft Skills" },
-    { title: "Database Management (SQL)", hours: 4, progress: 0, status: "Not Started", icon: <FiDatabase />, notesUrl: () => navigate("/dbmsNotes"), questionsUrl: () => navigate("/dbms"), category: "Theory" },
+    { title: "JavaScript", hours: 4, progress: 0, status: "Not Started", icon: <FiDatabase />, notesUrl: () => navigate("/dbmsNotes"), questionsUrl: () => navigate("/dbms"), category: "Coding" },
     { title: "React.js Mastery", hours: 10, progress: 0, status: "Not Started", icon: <FiLayout />,notesUrl: () => navigate("/reactNotes"), questionsUrl: () => navigate("/react"), category: "Coding" },
     { title: "MERN Programming", hours: 12, progress: 0, status: "Not Started", icon: <FiCode />, notesUrl: () => navigate("/mernNotes"), questionsUrl: () => navigate("/mern"), category: "Coding" }
    ];
