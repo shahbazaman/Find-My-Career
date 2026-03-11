@@ -1,7 +1,8 @@
 import express from "express";
 import {
   upsertCompanyProfile,
-  getMyCompanyProfile
+  getMyCompanyProfile,
+  getCompanyProfileByUserId
 } from "../controllers/companyProfileController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
@@ -19,6 +20,12 @@ router.get(
   "/me/profile",
   authMiddleware,
   getMyCompanyProfile
+);
+
+/* GET COMPANY PROFILE BY USER ID — PUBLIC (no auth needed) */
+router.get(
+  "/user/:userId",
+  getCompanyProfileByUserId
 );
 
 export default router;

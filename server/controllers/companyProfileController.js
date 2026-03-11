@@ -55,3 +55,21 @@ export const getMyCompanyProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+/* ================= GET COMPANY PROFILE BY USER ID (PUBLIC) ================= */
+export const getCompanyProfileByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const profile = await CompanyProfile.findOne({ userId });
+
+    if (!profile) {
+      return res.status(404).json({ message: "Company profile not found" });
+    }
+
+    res.json(profile);
+  } catch (error) {
+    console.error("GET COMPANY PROFILE BY USERID ERROR:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

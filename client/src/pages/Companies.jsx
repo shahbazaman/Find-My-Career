@@ -1,29 +1,86 @@
-import React, { useState } from "react";
-import { Card, Container, Row, Col, Form } from "react-bootstrap";
-import { FaBuilding } from "react-icons/fa";
-import '../css/Companies.css'
+import React, { useState, useEffect } from "react";
+import {
+  Card, Container, Row, Col, Form,
+  Modal, Badge, Spinner
+} from "react-bootstrap";
+import {
+  FaBuilding, FaEnvelope, FaMapMarkerAlt, FaIndustry,
+  FaGlobe, FaUsers, FaCalendarAlt, FaUser
+} from "react-icons/fa";
+import "../css/Companies.css";
 import axios from "axios";
-import { useEffect } from "react";
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Companies() {
   const [search, setSearch] = useState("");
   const [companies, setCompanies] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [modalData, setModalData] = useState(null);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const filteredCompanies = companies.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase())
   );
-useEffect(() => {
-  const fetchCompanies = async () => {
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/companies`);
+        setCompanies(res.data);
+      } catch (err) {
+        console.error("Failed to load companies", err);
+      }
+    };
+    fetchCompanies();
+  }, []);
+
+  const handleCardClick = async (company) => {
+    setSelectedCompany(company);
+    setModalData(null);
+    setShowModal(true);
+    setModalLoading(true);
+
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/companies`);
-      setCompanies(res.data);
+      // Fetch recruiter name from User model using owner id
+      const [userRes, profileRes] = await Promise.allSettled([
+        axios.get(`${BASE_URL}/users/${company.owner}`),
+        axios.get(`${BASE_URL}/company-profiles/user/${company.owner}`)
+      ]);
+
+      const user =
+        userRes.status === "fulfilled" ? userRes.value.data : null;
+      const profile =
+        profileRes.status === "fulfilled" ? profileRes.value.data : null;
+
+      setModalData({ user, profile });
     } catch (err) {
-      console.error("Failed to load companies", err);
+      console.error("Failed to load company details", err);
+      setModalData({});
+    } finally {
+      setModalLoading(false);
     }
   };
 
-  fetchCompanies();
-}, []);
+  const handleClose = () => {
+    setShowModal(false);
+    setSelectedCompany(null);
+    setModalData(null);
+  };
+
+  const InfoRow = ({ icon, label, value }) => {
+    if (!value) return null;
+    return (
+      <div style={styles.infoRow}>
+        <span style={styles.infoIcon}>{icon}</span>
+        <div>
+          <div style={styles.infoLabel}>{label}</div>
+          <div style={styles.infoValue}>{value}</div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <Container className="mt-4">
@@ -41,10 +98,18 @@ useEffect(() => {
       <Row>
         {filteredCompanies.map((company, index) => (
           <Col key={index} md={4} sm={6} xs={12} className="mb-4">
-            <Card className="company-card shadow-sm">
+            <Card
+              className="company-card shadow-sm"
+              style={{ cursor: "pointer" }}
+              onClick={() => handleCardClick(company)}
+            >
               <div className="logo-box">
                 {company.logo ? (
-                  <img src={company.logo} alt={company.name} className="company-logo" />
+                  <img
+                    src={company.logo}
+                    alt={company.name}
+                    className="company-logo"
+                  />
                 ) : (
                   <FaBuilding size={50} />
                 )}
@@ -53,11 +118,258 @@ useEffect(() => {
                 <Card.Title className="text-center fw-semibold">
                   {company.name}
                 </Card.Title>
+                {company.industry && (
+                  <p className="text-center text-muted small mb-0">
+                    {company.industry}
+                  </p>
+                )}
               </Card.Body>
             </Card>
           </Col>
         ))}
       </Row>
+
+      {/* ===================== COMPANY MODAL ===================== */}
+      <Modal
+        show={showModal}
+        onHide={handleClose}
+        centered
+        size="lg"
+        contentClassName="border-0"
+      >
+        <Modal.Header
+          closeButton
+          style={styles.modalHeader}
+        >
+          <Modal.Title style={{ fontWeight: 700, color: "#111" }}>
+            Company Details
+          </Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body style={styles.modalBody}>
+          {!selectedCompany || modalLoading ? (
+            <div style={styles.loadingBox}>
+              <Spinner animation="border" style={{ color: "#f40076" }} />
+            </div>
+          ) : (
+            <>
+              {/* ── TOP SECTION: logo + name ── */}
+              <div style={styles.topSection}>
+                <div style={styles.logoWrapper}>
+                  {selectedCompany.logo ? (
+                    <img
+                      src={selectedCompany.logo}
+                      alt={selectedCompany.name}
+                      style={styles.modalLogo}
+                    />
+                  ) : (
+                    <div style={styles.logoFallback}>
+                      <FaBuilding size={40} color="#aaa" />
+                    </div>
+                  )}
+                </div>
+
+                <div style={styles.nameBlock}>
+                  <h4 style={styles.companyName}>{selectedCompany.name}</h4>
+
+                  {/* Recruiter name */}
+                  {modalData?.user && (
+                    <p style={styles.recruiterName}>
+                      <FaUser
+                        size={12}
+                        style={{ marginRight: 5, color: "#888" }}
+                      />
+                      {modalData.user.firstName} {modalData.user.lastName}
+                    </p>
+                  )}
+
+                  {/* isHiring badge */}
+                  {selectedCompany.isHiring !== undefined && (
+                    <Badge
+                      style={{
+                        background: selectedCompany.isHiring
+                          ? "linear-gradient(90deg,#22c55e,#16a34a)"
+                          : "#e5e7eb",
+                        color: selectedCompany.isHiring ? "#fff" : "#555",
+                        fontSize: "12px",
+                        padding: "5px 12px",
+                        borderRadius: "20px",
+                        fontWeight: 600
+                      }}
+                    >
+                      {selectedCompany.isHiring ? "🟢 Actively Hiring" : "Not Hiring"}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+
+              <hr style={{ margin: "18px 0", borderColor: "#f0f0f0" }} />
+
+              {/* ── INFO GRID ── */}
+              <div style={styles.infoGrid}>
+                <InfoRow
+                  icon={<FaIndustry size={15} color="#f40076" />}
+                  label="Industry"
+                  value={selectedCompany.industry || modalData?.profile?.industry}
+                />
+                <InfoRow
+                  icon={<FaMapMarkerAlt size={15} color="#f40076" />}
+                  label="Headquarters"
+                  value={selectedCompany.headquarters || modalData?.profile?.location}
+                />
+                <InfoRow
+                  icon={<FaEnvelope size={15} color="#f40076" />}
+                  label="Email"
+                  value={modalData?.profile?.email}
+                />
+                <InfoRow
+                  icon={<FaUsers size={15} color="#f40076" />}
+                  label="Company Size"
+                  value={selectedCompany.companySize}
+                />
+                <InfoRow
+                  icon={<FaCalendarAlt size={15} color="#f40076" />}
+                  label="Founded"
+                  value={
+                    selectedCompany.foundedYear
+                      ? String(selectedCompany.foundedYear)
+                      : null
+                  }
+                />
+                {selectedCompany.website && (
+                  <div style={styles.infoRow}>
+                    <span style={styles.infoIcon}>
+                      <FaGlobe size={15} color="#f40076" />
+                    </span>
+                    <div>
+                      <div style={styles.infoLabel}>Website</div>
+                      <a
+                        href={selectedCompany.website}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ color: "#f40076", fontSize: "14px", fontWeight: 500 }}
+                      >
+                        {selectedCompany.website}
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* ── DESCRIPTION ── */}
+              {(selectedCompany.description || modalData?.profile?.description) && (
+                <>
+                  <hr style={{ margin: "18px 0", borderColor: "#f0f0f0" }} />
+                  <div>
+                    <p style={styles.descLabel}>About</p>
+                    <p style={styles.descText}>
+                      {selectedCompany.description || modalData?.profile?.description}
+                    </p>
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 }
+
+const styles = {
+  modalHeader: {
+    borderBottom: "1px solid #f0f0f0",
+    padding: "20px 24px 16px"
+  },
+  modalBody: {
+    padding: "24px",
+    maxHeight: "75vh",
+    overflowY: "auto"
+  },
+  loadingBox: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "180px"
+  },
+  topSection: {
+    display: "flex",
+    alignItems: "center",
+    gap: "20px"
+  },
+  logoWrapper: {
+    flexShrink: 0
+  },
+  modalLogo: {
+    width: "80px",
+    height: "80px",
+    borderRadius: "14px",
+    objectFit: "cover",
+    border: "1px solid #eee"
+  },
+  logoFallback: {
+    width: "80px",
+    height: "80px",
+    borderRadius: "14px",
+    background: "#f4f4f4",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  nameBlock: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "6px"
+  },
+  companyName: {
+    fontWeight: 700,
+    fontSize: "1.3rem",
+    margin: 0,
+    color: "#111"
+  },
+  recruiterName: {
+    margin: 0,
+    fontSize: "13px",
+    color: "#666"
+  },
+  infoGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: "16px"
+  },
+  infoRow: {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: "10px"
+  },
+  infoIcon: {
+    marginTop: "2px",
+    flexShrink: 0
+  },
+  infoLabel: {
+    fontSize: "11px",
+    color: "#999",
+    textTransform: "uppercase",
+    letterSpacing: "0.5px",
+    marginBottom: "2px"
+  },
+  infoValue: {
+    fontSize: "14px",
+    fontWeight: 500,
+    color: "#222"
+  },
+  descLabel: {
+    fontSize: "11px",
+    color: "#999",
+    textTransform: "uppercase",
+    letterSpacing: "0.5px",
+    marginBottom: "8px",
+    fontWeight: 600
+  },
+  descText: {
+    fontSize: "14px",
+    color: "#444",
+    lineHeight: "1.7",
+    margin: 0
+  }
+};
