@@ -21,7 +21,7 @@ export default function Companies() {
   const [showModal, setShowModal] = useState(false);
 
   const filteredCompanies = companies.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase())
+    c.name?.toLowerCase().includes(search.toLowerCase())
   );
 
   useEffect(() => {
@@ -40,13 +40,19 @@ export default function Companies() {
     setSelectedCompany(company);
     setModalData(null);
     setShowModal(true);
-    setModalLoading(true);
 
+    // Guard: if no valid owner id, skip extra API calls
+    const ownerId = company.owner;
+    if (!ownerId || ownerId === "null" || ownerId === "undefined") {
+      setModalData({ user: null, profile: null });
+      return;
+    }
+
+    setModalLoading(true);
     try {
-      // Fetch recruiter name from User model using owner id
       const [userRes, profileRes] = await Promise.allSettled([
-        axios.get(`${BASE_URL}/users/${company.owner}`),
-        axios.get(`${BASE_URL}/company-profiles/user/${company.owner}`)
+        axios.get(`${BASE_URL}/users/${ownerId}`),
+        axios.get(`${BASE_URL}/company-profiles/user/${ownerId}`)
       ]);
 
       const user =
@@ -57,7 +63,7 @@ export default function Companies() {
       setModalData({ user, profile });
     } catch (err) {
       console.error("Failed to load company details", err);
-      setModalData({});
+      setModalData({ user: null, profile: null });
     } finally {
       setModalLoading(false);
     }
@@ -67,7 +73,12 @@ export default function Companies() {
     setShowModal(false);
     setSelectedCompany(null);
     setModalData(null);
+    setModalLoading(false);
   };
+
+  // Returns first truthy value from the list
+  const pick = (...values) =>
+    values.find((v) => v !== null && v !== undefined && String(v).trim() !== "");
 
   const InfoRow = ({ icon, label, value }) => {
     if (!value) return null;
@@ -86,7 +97,6 @@ export default function Companies() {
     <Container className="mt-4">
       <h2 className="text-center mb-4 fw-bold">Top Companies</h2>
 
-      {/* Search Bar */}
       <Form.Control
         type="text"
         placeholder="Search company..."
@@ -137,10 +147,7 @@ export default function Companies() {
         size="lg"
         contentClassName="border-0"
       >
-        <Modal.Header
-          closeButton
-          style={styles.modalHeader}
-        >
+        <Modal.Header closeButton style={styles.modalHeader}>
           <Modal.Title style={{ fontWeight: 700, color: "#111" }}>
             Company Details
           </Modal.Title>
@@ -153,12 +160,12 @@ export default function Companies() {
             </div>
           ) : (
             <>
-              {/* ── TOP SECTION: logo + name ── */}
+              {/* ── TOP SECTION: logo + name + badge ── */}
               <div style={styles.topSection}>
                 <div style={styles.logoWrapper}>
-                  {selectedCompany.logo ? (
+                  {pick(selectedCompany.logo, modalData?.profile?.logo) ? (
                     <img
-                      src={selectedCompany.logo}
+                      src={pick(selectedCompany.logo, modalData?.profile?.logo)}
                       alt={selectedCompany.name}
                       style={styles.modalLogo}
                     />
@@ -170,36 +177,32 @@ export default function Companies() {
                 </div>
 
                 <div style={styles.nameBlock}>
-                  <h4 style={styles.companyName}>{selectedCompany.name}</h4>
+                  <h4 style={styles.companyName}>
+                    {pick(selectedCompany.name, modalData?.profile?.companyName)}
+                  </h4>
 
-                  {/* Recruiter name */}
-                  {modalData?.user && (
+                  {modalData?.user?.firstName && (
                     <p style={styles.recruiterName}>
-                      <FaUser
-                        size={12}
-                        style={{ marginRight: 5, color: "#888" }}
-                      />
+                      <FaUser size={12} style={{ marginRight: 5, color: "#888" }} />
                       {modalData.user.firstName} {modalData.user.lastName}
                     </p>
                   )}
 
-                  {/* isHiring badge */}
-                  {selectedCompany.isHiring !== undefined && (
-                    <Badge
-                      style={{
-                        background: selectedCompany.isHiring
-                          ? "linear-gradient(90deg,#22c55e,#16a34a)"
-                          : "#e5e7eb",
-                        color: selectedCompany.isHiring ? "#fff" : "#555",
-                        fontSize: "12px",
-                        padding: "5px 12px",
-                        borderRadius: "20px",
-                        fontWeight: 600
-                      }}
-                    >
-                      {selectedCompany.isHiring ? "🟢 Actively Hiring" : "Not Hiring"}
-                    </Badge>
-                  )}
+                  <Badge
+                    style={{
+                      background: selectedCompany.isHiring
+                        ? "linear-gradient(90deg,#22c55e,#16a34a)"
+                        : "#e5e7eb",
+                      color: selectedCompany.isHiring ? "#fff" : "#555",
+                      fontSize: "12px",
+                      padding: "5px 12px",
+                      borderRadius: "20px",
+                      fontWeight: 600,
+                      width: "fit-content"
+                    }}
+                  >
+                    {selectedCompany.isHiring ? "🟢 Actively Hiring" : "⚪ Not Hiring"}
+                  </Badge>
                 </div>
               </div>
 
@@ -210,17 +213,26 @@ export default function Companies() {
                 <InfoRow
                   icon={<FaIndustry size={15} color="#f40076" />}
                   label="Industry"
-                  value={selectedCompany.industry || modalData?.profile?.industry}
+                  value={pick(
+                    selectedCompany.industry,
+                    modalData?.profile?.industry
+                  )}
                 />
                 <InfoRow
                   icon={<FaMapMarkerAlt size={15} color="#f40076" />}
                   label="Headquarters"
-                  value={selectedCompany.headquarters || modalData?.profile?.location}
+                  value={pick(
+                    selectedCompany.headquarters,
+                    modalData?.profile?.location
+                  )}
                 />
                 <InfoRow
                   icon={<FaEnvelope size={15} color="#f40076" />}
                   label="Email"
-                  value={modalData?.profile?.email}
+                  value={pick(
+                    modalData?.profile?.email,
+                    modalData?.user?.email
+                  )}
                 />
                 <InfoRow
                   icon={<FaUsers size={15} color="#f40076" />}
@@ -236,7 +248,7 @@ export default function Companies() {
                       : null
                   }
                 />
-                {selectedCompany.website && (
+                {pick(selectedCompany.website) && (
                   <div style={styles.infoRow}>
                     <span style={styles.infoIcon}>
                       <FaGlobe size={15} color="#f40076" />
@@ -247,7 +259,12 @@ export default function Companies() {
                         href={selectedCompany.website}
                         target="_blank"
                         rel="noreferrer"
-                        style={{ color: "#f40076", fontSize: "14px", fontWeight: 500 }}
+                        style={{
+                          color: "#f40076",
+                          fontSize: "14px",
+                          fontWeight: 500,
+                          wordBreak: "break-all"
+                        }}
                       >
                         {selectedCompany.website}
                       </a>
@@ -257,16 +274,46 @@ export default function Companies() {
               </div>
 
               {/* ── DESCRIPTION ── */}
-              {(selectedCompany.description || modalData?.profile?.description) && (
+              {pick(
+                selectedCompany.description,
+                modalData?.profile?.description
+              ) && (
                 <>
                   <hr style={{ margin: "18px 0", borderColor: "#f0f0f0" }} />
                   <div>
                     <p style={styles.descLabel}>About</p>
                     <p style={styles.descText}>
-                      {selectedCompany.description || modalData?.profile?.description}
+                      {pick(
+                        selectedCompany.description,
+                        modalData?.profile?.description
+                      )}
                     </p>
                   </div>
                 </>
+              )}
+
+              {/* ── FALLBACK MESSAGE if no details filled ── */}
+              {!pick(
+                selectedCompany.industry,
+                selectedCompany.headquarters,
+                selectedCompany.companySize,
+                selectedCompany.foundedYear,
+                selectedCompany.website,
+                selectedCompany.description,
+                modalData?.profile?.email,
+                modalData?.profile?.location,
+                modalData?.profile?.description
+              ) && (
+                <p
+                  style={{
+                    color: "#aaa",
+                    fontSize: "14px",
+                    textAlign: "center",
+                    marginTop: "10px"
+                  }}
+                >
+                  No additional details available for this company yet.
+                </p>
               )}
             </>
           )}
@@ -295,7 +342,8 @@ const styles = {
   topSection: {
     display: "flex",
     alignItems: "center",
-    gap: "20px"
+    gap: "20px",
+    flexWrap: "wrap"
   },
   logoWrapper: {
     flexShrink: 0
@@ -319,7 +367,7 @@ const styles = {
   nameBlock: {
     display: "flex",
     flexDirection: "column",
-    gap: "6px"
+    gap: "8px"
   },
   companyName: {
     fontWeight: 700,
@@ -335,7 +383,7 @@ const styles = {
   infoGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    gap: "16px"
+    gap: "18px"
   },
   infoRow: {
     display: "flex",
