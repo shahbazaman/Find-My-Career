@@ -14,688 +14,720 @@ const Dbms = () => {
   const [currentLevel, setCurrentLevel] = useState(1);
   const [showSummary, setShowSummary] = useState(false);
 
-const questions = [
-  {
-    id: 1,
-    question: "What does DBMS stand for?",
-    options: [
-      "Database Management System",
-      "Data Backup Management System",
-      "Database Modeling System",
-      "Data Migration Software"
-    ],
-    correctAnswer: "Database Management System"
-  },
-  {
-    id: 2,
-    question: "What is a database?",
-    options: [
-      "A collection of programs",
-      "A collection of tables",
-      "An organized collection of data",
-      "A programming language"
-    ],
-    correctAnswer: "An organized collection of data"
-  },
-  {
-    id: 3,
-    question: "Which of the following is NOT a DBMS?",
-    options: ["MySQL", "Oracle", "MongoDB", "C++"],
-    correctAnswer: "C++"
-  },
-  {
-    id: 4,
-    question: "Which model stores data in tables?",
-    options: ["Hierarchical", "Network", "Relational", "Object-oriented"],
-    correctAnswer: "Relational"
-  },
-  {
-    id: 5,
-    question: "What is a table in DBMS?",
-    options: [
-      "Collection of rows and columns",
-      "Collection of files",
-      "Collection of queries",
-      "Collection of keys"
-    ],
-    correctAnswer: "Collection of rows and columns"
-  },
+  const questions = [
+    // ── LEVEL 1 (Q1–20): Basics ──
+    {
+      id: 1,
+      question: "What does JavaScript primarily run in?",
+      options: ["Server", "Browser", "Database", "Operating System"],
+      correctAnswer: "Browser"
+    },
+    {
+      id: 2,
+      question: "Which keyword declares a variable in modern JavaScript?",
+      options: ["var", "let", "const", "All of the above"],
+      correctAnswer: "All of the above"
+    },
+    {
+      id: 3,
+      question: "Which of the following is NOT a JavaScript data type?",
+      options: ["String", "Boolean", "Integer", "Undefined"],
+      correctAnswer: "Integer"
+    },
+    {
+      id: 4,
+      question: "What is the output of typeof null?",
+      options: ["null", "undefined", "object", "string"],
+      correctAnswer: "object"
+    },
+    {
+      id: 5,
+      question: "Which symbol is used for single-line comments in JavaScript?",
+      options: ["#", "//", "/* */", "--"],
+      correctAnswer: "//"
+    },
+    {
+      id: 6,
+      question: "Which method prints output to the browser console?",
+      options: ["console.log()", "print()", "document.write()", "alert()"],
+      correctAnswer: "console.log()"
+    },
+    {
+      id: 7,
+      question: "What is the correct way to write an array in JavaScript?",
+      options: [
+        "var arr = (1,2,3)",
+        "var arr = {1,2,3}",
+        "var arr = [1,2,3]",
+        "var arr = <1,2,3>"
+      ],
+      correctAnswer: "var arr = [1,2,3]"
+    },
+    {
+      id: 8,
+      question: "Which operator checks both value and type equality?",
+      options: ["==", "===", "!=", "="],
+      correctAnswer: "==="
+    },
+    {
+      id: 9,
+      question: "What does NaN stand for?",
+      options: [
+        "Not a Number",
+        "Null and Numeric",
+        "No Any Number",
+        "Negative and Numeric"
+      ],
+      correctAnswer: "Not a Number"
+    },
+    {
+      id: 10,
+      question: "How do you write a function in JavaScript?",
+      options: [
+        "function myFunc() {}",
+        "def myFunc() {}",
+        "func myFunc() {}",
+        "void myFunc() {}"
+      ],
+      correctAnswer: "function myFunc() {}"
+    },
+    {
+      id: 11,
+      question: "Which keyword is used to return a value from a function?",
+      options: ["send", "output", "return", "yield"],
+      correctAnswer: "return"
+    },
+    {
+      id: 12,
+      question: "What does the 'typeof' operator return for a string?",
+      options: ["string", "str", "text", "char"],
+      correctAnswer: "string"
+    },
+    {
+      id: 13,
+      question: "What is the default value of an uninitialized variable?",
+      options: ["null", "0", "undefined", "false"],
+      correctAnswer: "undefined"
+    },
+    {
+      id: 14,
+      question: "Which HTML tag is used to include JavaScript?",
+      options: ["<js>", "<javascript>", "<script>", "<code>"],
+      correctAnswer: "<script>"
+    },
+    {
+      id: 15,
+      question: "What does 'use strict' do in JavaScript?",
+      options: [
+        "Enables strict mode",
+        "Disables JavaScript",
+        "Locks variables",
+        "Stops execution"
+      ],
+      correctAnswer: "Enables strict mode"
+    },
+    {
+      id: 16,
+      question: "How do you access the first element of an array arr?",
+      options: ["arr[0]", "arr[1]", "arr.first()", "arr.get(0)"],
+      correctAnswer: "arr[0]"
+    },
+    {
+      id: 17,
+      question: "Which method adds an element to the end of an array?",
+      options: ["push()", "pop()", "shift()", "unshift()"],
+      correctAnswer: "push()"
+    },
+    {
+      id: 18,
+      question: "Which method removes the last element of an array?",
+      options: ["push()", "pop()", "shift()", "splice()"],
+      correctAnswer: "pop()"
+    },
+    {
+      id: 19,
+      question: "What is the length property of an array used for?",
+      options: [
+        "Number of elements",
+        "Size in bytes",
+        "Largest value",
+        "Index of last item"
+      ],
+      correctAnswer: "Number of elements"
+    },
+    {
+      id: 20,
+      question: "Which loop is used when the number of iterations is known?",
+      options: ["for", "while", "do...while", "foreach"],
+      correctAnswer: "for"
+    },
 
-  {
-    id: 6,
-    question: "What is a row in a table called?",
-    options: ["Field", "Record", "Column", "Schema"],
-    correctAnswer: "Record"
-  },
-  {
-    id: 7,
-    question: "What is a column in a table called?",
-    options: ["Record", "Tuple", "Field", "Index"],
-    correctAnswer: "Field"
-  },
-  {
-    id: 8,
-    question: "What uniquely identifies a record in a table?",
-    options: ["Foreign key", "Primary key", "Candidate key", "Composite key"],
-    correctAnswer: "Primary key"
-  },
-  {
-    id: 9,
-    question: "Can a primary key have NULL values?",
-    options: ["Yes", "No", "Sometimes", "Depends"],
-    correctAnswer: "No"
-  },
-  {
-    id: 10,
-    question: "Which key references a primary key of another table?",
-    options: ["Primary key", "Candidate key", "Foreign key", "Alternate key"],
-    correctAnswer: "Foreign key"
-  },
+    // ── LEVEL 2 (Q21–40): Functions & Objects ──
+    {
+      id: 21,
+      question: "What is a closure in JavaScript?",
+      options: [
+        "A function with access to its outer scope",
+        "A closed loop",
+        "A sealed object",
+        "A try-catch block"
+      ],
+      correctAnswer: "A function with access to its outer scope"
+    },
+    {
+      id: 22,
+      question: "What does the 'this' keyword refer to?",
+      options: [
+        "The current object",
+        "The global window",
+        "The parent class",
+        "Depends on context"
+      ],
+      correctAnswer: "Depends on context"
+    },
+    {
+      id: 23,
+      question: "Which method calls a function with a specific 'this' value?",
+      options: ["bind()", "call()", "apply()", "All of the above"],
+      correctAnswer: "All of the above"
+    },
+    {
+      id: 24,
+      question: "What is an arrow function?",
+      options: [
+        "Short syntax for functions",
+        "A looping function",
+        "A class method",
+        "A recursive function"
+      ],
+      correctAnswer: "Short syntax for functions"
+    },
+    {
+      id: 25,
+      question: "Arrow functions do NOT have their own?",
+      options: ["arguments", "this", "return", "Both arguments and this"],
+      correctAnswer: "Both arguments and this"
+    },
+    {
+      id: 26,
+      question: "How do you create an object in JavaScript?",
+      options: [
+        "var obj = {}",
+        "var obj = []",
+        "var obj = ()",
+        "var obj = new()"
+      ],
+      correctAnswer: "var obj = {}"
+    },
+    {
+      id: 27,
+      question: "How do you access the property 'name' of object obj?",
+      options: ["obj.name", "obj[name]", "obj->name", "obj::name"],
+      correctAnswer: "obj.name"
+    },
+    {
+      id: 28,
+      question: "Which statement is used to iterate over object properties?",
+      options: [
+        "for...in",
+        "for...of",
+        "forEach",
+        "while"
+      ],
+      correctAnswer: "for...in"
+    },
+    {
+      id: 29,
+      question: "Which statement iterates over iterable values?",
+      options: ["for...in", "for...of", "for...each", "while"],
+      correctAnswer: "for...of"
+    },
+    {
+      id: 30,
+      question: "What is a prototype in JavaScript?",
+      options: [
+        "An object from which others inherit",
+        "A data type",
+        "A loop",
+        "A function type"
+      ],
+      correctAnswer: "An object from which others inherit"
+    },
+    {
+      id: 31,
+      question: "What does JSON stand for?",
+      options: [
+        "JavaScript Object Notation",
+        "Java Standard Object Name",
+        "JavaScript Online Notation",
+        "JavaScript Object Naming"
+      ],
+      correctAnswer: "JavaScript Object Notation"
+    },
+    {
+      id: 32,
+      question: "Which method converts JSON string to JavaScript object?",
+      options: [
+        "JSON.parse()",
+        "JSON.stringify()",
+        "JSON.convert()",
+        "JSON.decode()"
+      ],
+      correctAnswer: "JSON.parse()"
+    },
+    {
+      id: 33,
+      question: "Which method converts JavaScript object to JSON string?",
+      options: [
+        "JSON.parse()",
+        "JSON.stringify()",
+        "JSON.encode()",
+        "JSON.convert()"
+      ],
+      correctAnswer: "JSON.stringify()"
+    },
+    {
+      id: 34,
+      question: "What is destructuring in JavaScript?",
+      options: [
+        "Unpacking values from arrays/objects",
+        "Deleting variables",
+        "Breaking loops",
+        "Splitting strings"
+      ],
+      correctAnswer: "Unpacking values from arrays/objects"
+    },
+    {
+      id: 35,
+      question: "What is the spread operator?",
+      options: ["...", "**", ">>", "<<"],
+      correctAnswer: "..."
+    },
+    {
+      id: 36,
+      question: "What does the rest parameter do?",
+      options: [
+        "Collects remaining arguments",
+        "Stops function",
+        "Returns undefined",
+        "Creates new array"
+      ],
+      correctAnswer: "Collects remaining arguments"
+    },
+    {
+      id: 37,
+      question: "What is a default parameter?",
+      options: [
+        "A fallback value when argument is undefined",
+        "A required parameter",
+        "A constant value",
+        "A global variable"
+      ],
+      correctAnswer: "A fallback value when argument is undefined"
+    },
+    {
+      id: 38,
+      question: "Which keyword creates a class in JavaScript?",
+      options: ["class", "object", "struct", "type"],
+      correctAnswer: "class"
+    },
+    {
+      id: 39,
+      question: "Which method is the constructor of a class?",
+      options: ["constructor()", "init()", "create()", "build()"],
+      correctAnswer: "constructor()"
+    },
+    {
+      id: 40,
+      question: "Which keyword extends a class?",
+      options: ["extends", "inherits", "super", "import"],
+      correctAnswer: "extends"
+    },
 
-  {
-    id: 11,
-    question: "What is SQL?",
-    options: [
-      "Structured Query Language",
-      "Simple Query Language",
-      "Sequential Query Language",
-      "Standard Query Language"
-    ],
-    correctAnswer: "Structured Query Language"
-  },
-  {
-    id: 12,
-    question: "SQL is used to?",
-    options: [
-      "Design UI",
-      "Manage databases",
-      "Write backend code",
-      "Create servers"
-    ],
-    correctAnswer: "Manage databases"
-  },
-  {
-    id: 13,
-    question: "Which SQL statement is used to fetch data?",
-    options: ["GET", "FETCH", "SELECT", "RETRIEVE"],
-    correctAnswer: "SELECT"
-  },
-  {
-    id: 14,
-    question: "Which SQL clause is used to filter records?",
-    options: ["WHERE", "FROM", "SELECT", "ORDER BY"],
-    correctAnswer: "WHERE"
-  },
-  {
-    id: 15,
-    question: "Which keyword sorts result set?",
-    options: ["SORT BY", "ORDER BY", "GROUP BY", "FILTER"],
-    correctAnswer: "ORDER BY"
-  },
+    // ── LEVEL 3 (Q41–60): Async & DOM ──
+    {
+      id: 41,
+      question: "What is the DOM?",
+      options: [
+        "Document Object Model",
+        "Data Object Module",
+        "Dynamic Object Map",
+        "Document Output Model"
+      ],
+      correctAnswer: "Document Object Model"
+    },
+    {
+      id: 42,
+      question: "Which method selects an element by ID?",
+      options: [
+        "getElementById()",
+        "getElement()",
+        "selectById()",
+        "findById()"
+      ],
+      correctAnswer: "getElementById()"
+    },
+    {
+      id: 43,
+      question: "Which method selects elements by CSS selector?",
+      options: [
+        "querySelector()",
+        "getSelector()",
+        "findElement()",
+        "selectCSS()"
+      ],
+      correctAnswer: "querySelector()"
+    },
+    {
+      id: 44,
+      question: "Which method adds an event listener to an element?",
+      options: [
+        "addEventListener()",
+        "attachEvent()",
+        "addEvent()",
+        "onEvent()"
+      ],
+      correctAnswer: "addEventListener()"
+    },
+    {
+      id: 45,
+      question: "What does event.preventDefault() do?",
+      options: [
+        "Prevents default browser action",
+        "Stops event bubbling",
+        "Removes event listener",
+        "Clears event queue"
+      ],
+      correctAnswer: "Prevents default browser action"
+    },
+    {
+      id: 46,
+      question: "What is event bubbling?",
+      options: [
+        "Event propagates from child to parent",
+        "Event propagates from parent to child",
+        "Event is cancelled",
+        "Event is duplicated"
+      ],
+      correctAnswer: "Event propagates from child to parent"
+    },
+    {
+      id: 47,
+      question: "What is a Promise in JavaScript?",
+      options: [
+        "Object representing future async value",
+        "A callback function",
+        "A loop construct",
+        "A data type"
+      ],
+      correctAnswer: "Object representing future async value"
+    },
+    {
+      id: 48,
+      question: "Which Promise state means operation succeeded?",
+      options: ["fulfilled", "resolved", "completed", "done"],
+      correctAnswer: "fulfilled"
+    },
+    {
+      id: 49,
+      question: "Which Promise state means operation failed?",
+      options: ["rejected", "failed", "error", "broken"],
+      correctAnswer: "rejected"
+    },
+    {
+      id: 50,
+      question: "What keyword makes a function return a Promise automatically?",
+      options: ["async", "await", "promise", "defer"],
+      correctAnswer: "async"
+    },
+    {
+      id: 51,
+      question: "What does 'await' do inside an async function?",
+      options: [
+        "Pauses until Promise resolves",
+        "Cancels the Promise",
+        "Creates a new thread",
+        "Runs code in parallel"
+      ],
+      correctAnswer: "Pauses until Promise resolves"
+    },
+    {
+      id: 52,
+      question: "What does fetch() return?",
+      options: ["A Promise", "A string", "An object", "An array"],
+      correctAnswer: "A Promise"
+    },
+    {
+      id: 53,
+      question: "Which method handles a resolved Promise?",
+      options: [".then()", ".catch()", ".finally()", ".resolve()"],
+      correctAnswer: ".then()"
+    },
+    {
+      id: 54,
+      question: "Which method handles a rejected Promise?",
+      options: [".then()", ".catch()", ".finally()", ".reject()"],
+      correctAnswer: ".catch()"
+    },
+    {
+      id: 55,
+      question: "What does setTimeout() do?",
+      options: [
+        "Executes code after a delay",
+        "Stops execution",
+        "Repeats code forever",
+        "Clears intervals"
+      ],
+      correctAnswer: "Executes code after a delay"
+    },
+    {
+      id: 56,
+      question: "What does setInterval() do?",
+      options: [
+        "Repeatedly executes code at intervals",
+        "Delays once",
+        "Clears timeout",
+        "Pauses execution"
+      ],
+      correctAnswer: "Repeatedly executes code at intervals"
+    },
+    {
+      id: 57,
+      question: "Which method stops a setInterval?",
+      options: [
+        "clearInterval()",
+        "stopInterval()",
+        "cancelInterval()",
+        "removeInterval()"
+      ],
+      correctAnswer: "clearInterval()"
+    },
+    {
+      id: 58,
+      question: "Which method stops a setTimeout?",
+      options: [
+        "clearTimeout()",
+        "stopTimeout()",
+        "cancelTimeout()",
+        "removeTimeout()"
+      ],
+      correctAnswer: "clearTimeout()"
+    },
+    {
+      id: 59,
+      question: "localStorage stores data as?",
+      options: ["String", "Object", "Array", "Number"],
+      correctAnswer: "String"
+    },
+    {
+      id: 60,
+      question: "What is the difference between localStorage and sessionStorage?",
+      options: [
+        "localStorage persists; sessionStorage clears on tab close",
+        "Both are identical",
+        "sessionStorage persists longer",
+        "localStorage clears on refresh"
+      ],
+      correctAnswer: "localStorage persists; sessionStorage clears on tab close"
+    },
 
-  {
-    id: 16,
-    question: "Which SQL statement is used to insert data?",
-    options: ["ADD", "INSERT INTO", "UPDATE", "PUT"],
-    correctAnswer: "INSERT INTO"
-  },
-  {
-    id: 17,
-    question: "Which SQL statement updates existing data?",
-    options: ["MODIFY", "INSERT", "UPDATE", "CHANGE"],
-    correctAnswer: "UPDATE"
-  },
-  {
-    id: 18,
-    question: "Which SQL statement deletes records?",
-    options: ["REMOVE", "DROP", "DELETE", "TRUNCATE"],
-    correctAnswer: "DELETE"
-  },
-  {
-    id: 19,
-    question: "Which command removes all records but keeps table?",
-    options: ["DELETE", "DROP", "TRUNCATE", "REMOVE"],
-    correctAnswer: "TRUNCATE"
-  },
-  {
-    id: 20,
-    question: "Which command removes table completely?",
-    options: ["DELETE", "TRUNCATE", "DROP", "REMOVE"],
-    correctAnswer: "DROP"
-  },
-
-  {
-    id: 21,
-    question: "What is normalization?",
-    options: [
-      "Removing redundancy",
-      "Adding data",
-      "Sorting tables",
-      "Creating indexes"
-    ],
-    correctAnswer: "Removing redundancy"
-  },
-  {
-    id: 22,
-    question: "Which is the first normal form?",
-    options: ["1NF", "2NF", "3NF", "BCNF"],
-    correctAnswer: "1NF"
-  },
-  {
-    id: 23,
-    question: "1NF ensures?",
-    options: [
-      "No partial dependency",
-      "No transitive dependency",
-      "Atomic values",
-      "No redundancy"
-    ],
-    correctAnswer: "Atomic values"
-  },
-  {
-    id: 24,
-    question: "2NF removes?",
-    options: [
-      "Transitive dependency",
-      "Partial dependency",
-      "Duplicate data",
-      "Null values"
-    ],
-    correctAnswer: "Partial dependency"
-  },
-  {
-    id: 25,
-    question: "3NF removes?",
-    options: [
-      "Partial dependency",
-      "Transitive dependency",
-      "Atomicity",
-      "Primary key"
-    ],
-    correctAnswer: "Transitive dependency"
-  },
-
-  {
-    id: 26,
-    question: "What is a candidate key?",
-    options: [
-      "Primary key only",
-      "Any unique key",
-      "Foreign key",
-      "Composite key"
-    ],
-    correctAnswer: "Any unique key"
-  },
-  {
-    id: 27,
-    question: "Which key is selected as primary key?",
-    options: ["Foreign key", "Candidate key", "Alternate key", "Composite key"],
-    correctAnswer: "Candidate key"
-  },
-  {
-    id: 28,
-    question: "What is an alternate key?",
-    options: [
-      "Primary key",
-      "Foreign key",
-      "Candidate key not chosen as primary",
-      "Composite key"
-    ],
-    correctAnswer: "Candidate key not chosen as primary"
-  },
-  {
-    id: 29,
-    question: "What is a composite key?",
-    options: [
-      "Single column key",
-      "Multiple column key",
-      "Foreign key",
-      "Unique key"
-    ],
-    correctAnswer: "Multiple column key"
-  },
-  {
-    id: 30,
-    question: "What is a schema?",
-    options: [
-      "Database structure",
-      "Table data",
-      "SQL query",
-      "Index"
-    ],
-    correctAnswer: "Database structure"
-  },
-
-  {
-    id: 31,
-    question: "Which SQL clause groups rows?",
-    options: ["GROUP BY", "ORDER BY", "WHERE", "HAVING"],
-    correctAnswer: "GROUP BY"
-  },
-  {
-    id: 32,
-    question: "HAVING clause is used with?",
-    options: ["WHERE", "GROUP BY", "ORDER BY", "SELECT"],
-    correctAnswer: "GROUP BY"
-  },
-  {
-    id: 33,
-    question: "WHERE clause filters?",
-    options: ["Groups", "Rows", "Tables", "Columns"],
-    correctAnswer: "Rows"
-  },
-  {
-    id: 34,
-    question: "HAVING clause filters?",
-    options: ["Rows", "Columns", "Groups", "Tables"],
-    correctAnswer: "Groups"
-  },
-  {
-    id: 35,
-    question: "Which function counts rows?",
-    options: ["SUM()", "COUNT()", "AVG()", "MAX()"],
-    correctAnswer: "COUNT()"
-  },
-
-  {
-    id: 36,
-    question: "Which function returns average value?",
-    options: ["SUM()", "COUNT()", "AVG()", "MIN()"],
-    correctAnswer: "AVG()"
-  },
-  {
-    id: 37,
-    question: "Which function returns highest value?",
-    options: ["MIN()", "MAX()", "SUM()", "COUNT()"],
-    correctAnswer: "MAX()"
-  },
-  {
-    id: 38,
-    question: "Which function returns lowest value?",
-    options: ["MIN()", "MAX()", "COUNT()", "AVG()"],
-    correctAnswer: "MIN()"
-  },
-  {
-    id: 39,
-    question: "What is an index?",
-    options: [
-      "Speeds up data retrieval",
-      "Stores data",
-      "Deletes data",
-      "Updates data"
-    ],
-    correctAnswer: "Speeds up data retrieval"
-  },
-  {
-    id: 40,
-    question: "Index improves?",
-    options: ["Insertion", "Deletion", "Search performance", "Storage"],
-    correctAnswer: "Search performance"
-  },
-
-  {
-    id: 41,
-    question: "What is a view?",
-    options: [
-      "Virtual table",
-      "Physical table",
-      "Index",
-      "Schema"
-    ],
-    correctAnswer: "Virtual table"
-  },
-  {
-    id: 42,
-    question: "View stores data?",
-    options: ["Yes", "No", "Sometimes", "Depends"],
-    correctAnswer: "No"
-  },
-  {
-    id: 43,
-    question: "What is a join?",
-    options: [
-      "Combine tables",
-      "Split table",
-      "Delete table",
-      "Create table"
-    ],
-    correctAnswer: "Combine tables"
-  },
-  {
-    id: 44,
-    question: "Which join returns matching records?",
-    options: ["LEFT JOIN", "RIGHT JOIN", "INNER JOIN", "FULL JOIN"],
-    correctAnswer: "INNER JOIN"
-  },
-  {
-    id: 45,
-    question: "LEFT JOIN returns?",
-    options: [
-      "Only right table rows",
-      "Matching rows only",
-      "All left + matching right",
-      "All rows"
-    ],
-    correctAnswer: "All left + matching right"
-  },
-
-  {
-    id: 46,
-    question: "RIGHT JOIN returns?",
-    options: [
-      "All left rows",
-      "All right + matching left",
-      "Matching rows",
-      "No rows"
-    ],
-    correctAnswer: "All right + matching left"
-  },
-  {
-    id: 47,
-    question: "FULL JOIN returns?",
-    options: [
-      "Only matching rows",
-      "All rows from both tables",
-      "Left only",
-      "Right only"
-    ],
-    correctAnswer: "All rows from both tables"
-  },
-  {
-    id: 48,
-    question: "Which join has no condition?",
-    options: ["INNER JOIN", "EQUI JOIN", "CROSS JOIN", "LEFT JOIN"],
-    correctAnswer: "CROSS JOIN"
-  },
-  {
-    id: 49,
-    question: "What is transaction?",
-    options: [
-      "Single logical unit of work",
-      "Multiple queries",
-      "Single table",
-      "Index"
-    ],
-    correctAnswer: "Single logical unit of work"
-  },
-  {
-    id: 50,
-    question: "ACID stands for?",
-    options: [
-      "Atomicity, Consistency, Isolation, Durability",
-      "Accuracy, Consistency, Isolation, Durability",
-      "Atomicity, Control, Isolation, Data",
-      "Access, Control, Integrity, Data"
-    ],
-    correctAnswer: "Atomicity, Consistency, Isolation, Durability"
-  },
-
-  {
-    id: 51,
-    question: "Which property ensures all or nothing?",
-    options: ["Atomicity", "Consistency", "Isolation", "Durability"],
-    correctAnswer: "Atomicity"
-  },
-  {
-    id: 52,
-    question: "Consistency ensures?",
-    options: [
-      "Valid state",
-      "Speed",
-      "Isolation",
-      "Backup"
-    ],
-    correctAnswer: "Valid state"
-  },
-  {
-    id: 53,
-    question: "Isolation ensures?",
-    options: [
-      "Concurrent transactions do not affect",
-      "Data duplication",
-      "High speed",
-      "Backup"
-    ],
-    correctAnswer: "Concurrent transactions do not affect"
-  },
-  {
-    id: 54,
-    question: "Durability ensures?",
-    options: [
-      "Permanent commit",
-      "Rollback",
-      "Concurrency",
-      "Security"
-    ],
-    correctAnswer: "Permanent commit"
-  },
-  {
-    id: 55,
-    question: "What is rollback?",
-    options: [
-      "Undo transaction",
-      "Save data",
-      "Delete table",
-      "Commit data"
-    ],
-    correctAnswer: "Undo transaction"
-  },
-
-  {
-    id: 56,
-    question: "What is commit?",
-    options: [
-      "Undo changes",
-      "Save changes permanently",
-      "Delete changes",
-      "Backup data"
-    ],
-    correctAnswer: "Save changes permanently"
-  },
-  {
-    id: 57,
-    question: "Which SQL command controls transactions?",
-    options: ["DCL", "DDL", "DML", "TCL"],
-    correctAnswer: "TCL"
-  },
-  {
-    id: 58,
-    question: "COMMIT belongs to?",
-    options: ["DDL", "DML", "DCL", "TCL"],
-    correctAnswer: "TCL"
-  },
-  {
-    id: 59,
-    question: "ROLLBACK belongs to?",
-    options: ["DDL", "DML", "DCL", "TCL"],
-    correctAnswer: "TCL"
-  },
-  {
-    id: 60,
-    question: "Which command saves transaction?",
-    options: ["SAVEPOINT", "COMMIT", "ROLLBACK", "TRUNCATE"],
-    correctAnswer: "COMMIT"
-  },
-
-  {
-    id: 61,
-    question: "What is DDL?",
-    options: [
-      "Data Definition Language",
-      "Data Delete Language",
-      "Data Display Language",
-      "Data Debug Language"
-    ],
-    correctAnswer: "Data Definition Language"
-  },
-  {
-    id: 62,
-    question: "CREATE belongs to?",
-    options: ["DDL", "DML", "DCL", "TCL"],
-    correctAnswer: "DDL"
-  },
-  {
-    id: 63,
-    question: "ALTER belongs to?",
-    options: ["DDL", "DML", "DCL", "TCL"],
-    correctAnswer: "DDL"
-  },
-  {
-    id: 64,
-    question: "What is DML?",
-    options: [
-      "Data Manipulation Language",
-      "Data Model Language",
-      "Data Management Language",
-      "Data Modify Logic"
-    ],
-    correctAnswer: "Data Manipulation Language"
-  },
-  {
-    id: 65,
-    question: "INSERT belongs to?",
-    options: ["DDL", "DML", "DCL", "TCL"],
-    correctAnswer: "DML"
-  },
-
-  {
-    id: 66,
-    question: "UPDATE belongs to?",
-    options: ["DDL", "DML", "DCL", "TCL"],
-    correctAnswer: "DML"
-  },
-  {
-    id: 67,
-    question: "DELETE belongs to?",
-    options: ["DDL", "DML", "DCL", "TCL"],
-    correctAnswer: "DML"
-  },
-  {
-    id: 68,
-    question: "What is DCL?",
-    options: [
-      "Data Control Language",
-      "Data Command Language",
-      "Data Column Language",
-      "Data Code Language"
-    ],
-    correctAnswer: "Data Control Language"
-  },
-  {
-    id: 69,
-    question: "GRANT command is used for?",
-    options: [
-      "Give permission",
-      "Revoke permission",
-      "Insert data",
-      "Delete data"
-    ],
-    correctAnswer: "Give permission"
-  },
-  {
-    id: 70,
-    question: "REVOKE command is used for?",
-    options: [
-      "Give permission",
-      "Remove permission",
-      "Insert data",
-      "Update data"
-    ],
-    correctAnswer: "Remove permission"
-  },
-
-  {
-    id: 71,
-    question: "What is NULL?",
-    options: [
-      "Zero value",
-      "Empty string",
-      "Unknown value",
-      "False value"
-    ],
-    correctAnswer: "Unknown value"
-  },
-  {
-    id: 72,
-    question: "NULL is same as 0?",
-    options: ["Yes", "No", "Sometimes", "Depends"],
-    correctAnswer: "No"
-  },
-  {
-    id: 73,
-    question: "Which operator checks NULL?",
-    options: ["=", "IS NULL", "LIKE", "BETWEEN"],
-    correctAnswer: "IS NULL"
-  },
-  {
-    id: 74,
-    question: "Which operator checks range?",
-    options: ["IN", "LIKE", "BETWEEN", "EXISTS"],
-    correctAnswer: "BETWEEN"
-  },
-  {
-    id: 75,
-    question: "LIKE operator is used for?",
-    options: [
-      "Exact match",
-      "Pattern matching",
-      "Range check",
-      "Null check"
-    ],
-    correctAnswer: "Pattern matching"
-  },
-
-  {
-    id: 76,
-    question: "Wildcard % represents?",
-    options: [
-      "Single character",
-      "Multiple characters",
-      "No character",
-      "Number"
-    ],
-    correctAnswer: "Multiple characters"
-  },
-  {
-    id: 77,
-    question: "Wildcard _ represents?",
-    options: [
-      "Multiple characters",
-      "Single character",
-      "Number",
-      "Space"
-    ],
-    correctAnswer: "Single character"
-  },
-  {
-    id: 78,
-    question: "What is subquery?",
-    options: [
-      "Query inside another query",
-      "Main query",
-      "Join query",
-      "View query"
-    ],
-    correctAnswer: "Query inside another query"
-  },
-  {
-    id: 79,
-    question: "Which subquery returns single value?",
-    options: [
-      "Scalar subquery",
-      "Correlated subquery",
-      "Nested subquery",
-      "Multi-row subquery"
-    ],
-    correctAnswer: "Scalar subquery"
-  },
-  {
-    id: 80,
-    question: "Which DBMS is used for relational data?",
-    options: ["MySQL", "MongoDB", "Redis", "Cassandra"],
-    correctAnswer: "MySQL"
-  }
-];
+    // ── LEVEL 4 (Q61–80): Advanced ──
+    {
+      id: 61,
+      question: "What is hoisting in JavaScript?",
+      options: [
+        "Variables/functions moved to top of scope",
+        "Moving DOM elements",
+        "Sorting arrays",
+        "Importing modules"
+      ],
+      correctAnswer: "Variables/functions moved to top of scope"
+    },
+    {
+      id: 62,
+      question: "Are 'let' and 'const' declarations hoisted?",
+      options: [
+        "Yes, but not initialized (TDZ)",
+        "No, not hoisted",
+        "Yes, fully initialized",
+        "Only const is hoisted"
+      ],
+      correctAnswer: "Yes, but not initialized (TDZ)"
+    },
+    {
+      id: 63,
+      question: "What is the Temporal Dead Zone (TDZ)?",
+      options: [
+        "Period before let/const initialization",
+        "A garbage collection phase",
+        "An async waiting period",
+        "A scope boundary"
+      ],
+      correctAnswer: "Period before let/const initialization"
+    },
+    {
+      id: 64,
+      question: "Which array method returns a new filtered array?",
+      options: ["filter()", "map()", "find()", "reduce()"],
+      correctAnswer: "filter()"
+    },
+    {
+      id: 65,
+      question: "Which array method transforms each element?",
+      options: ["filter()", "map()", "find()", "forEach()"],
+      correctAnswer: "map()"
+    },
+    {
+      id: 66,
+      question: "Which array method reduces array to a single value?",
+      options: ["map()", "filter()", "reduce()", "some()"],
+      correctAnswer: "reduce()"
+    },
+    {
+      id: 67,
+      question: "Which array method finds the first matching element?",
+      options: ["find()", "filter()", "indexOf()", "search()"],
+      correctAnswer: "find()"
+    },
+    {
+      id: 68,
+      question: "What is a generator function?",
+      options: [
+        "Function that can be paused and resumed",
+        "Function that generates random numbers",
+        "Constructor function",
+        "Recursive function"
+      ],
+      correctAnswer: "Function that can be paused and resumed"
+    },
+    {
+      id: 69,
+      question: "Which keyword defines a generator function?",
+      options: ["function*", "async function", "generator", "yield function"],
+      correctAnswer: "function*"
+    },
+    {
+      id: 70,
+      question: "What does the 'yield' keyword do?",
+      options: [
+        "Pauses generator and returns value",
+        "Exits function permanently",
+        "Skips iteration",
+        "Returns undefined"
+      ],
+      correctAnswer: "Pauses generator and returns value"
+    },
+    {
+      id: 71,
+      question: "What is a WeakMap?",
+      options: [
+        "Map with weakly held object keys",
+        "A smaller Map",
+        "A deprecated Map",
+        "A read-only Map"
+      ],
+      correctAnswer: "Map with weakly held object keys"
+    },
+    {
+      id: 72,
+      question: "What is a Symbol in JavaScript?",
+      options: [
+        "Unique and immutable primitive",
+        "A string alias",
+        "A numeric constant",
+        "A special object"
+      ],
+      correctAnswer: "Unique and immutable primitive"
+    },
+    {
+      id: 73,
+      question: "What is a Proxy in JavaScript?",
+      options: [
+        "Intercepts object operations",
+        "A network proxy",
+        "A Promise wrapper",
+        "A class decorator"
+      ],
+      correctAnswer: "Intercepts object operations"
+    },
+    {
+      id: 74,
+      question: "What does Object.freeze() do?",
+      options: [
+        "Prevents modifications to object",
+        "Copies the object",
+        "Deletes the object",
+        "Locks the prototype"
+      ],
+      correctAnswer: "Prevents modifications to object"
+    },
+    {
+      id: 75,
+      question: "What is memoization?",
+      options: [
+        "Caching function results",
+        "Memory allocation",
+        "Object cloning",
+        "Code minification"
+      ],
+      correctAnswer: "Caching function results"
+    },
+    {
+      id: 76,
+      question: "What is currying?",
+      options: [
+        "Transforming multi-arg function into sequence of functions",
+        "A string method",
+        "A sorting technique",
+        "A loop optimization"
+      ],
+      correctAnswer: "Transforming multi-arg function into sequence of functions"
+    },
+    {
+      id: 77,
+      question: "What is the event loop in JavaScript?",
+      options: [
+        "Mechanism handling async callbacks",
+        "A DOM event system",
+        "A loop statement",
+        "A timer function"
+      ],
+      correctAnswer: "Mechanism handling async callbacks"
+    },
+    {
+      id: 78,
+      question: "What is the call stack?",
+      options: [
+        "Stack tracking function execution",
+        "List of API calls",
+        "Callback queue",
+        "Prototype chain"
+      ],
+      correctAnswer: "Stack tracking function execution"
+    },
+    {
+      id: 79,
+      question: "ES6 introduced which module syntax?",
+      options: [
+        "import / export",
+        "require / module.exports",
+        "include / define",
+        "load / export"
+      ],
+      correctAnswer: "import / export"
+    },
+    {
+      id: 80,
+      question: "What does the nullish coalescing operator (??) do?",
+      options: [
+        "Returns right side if left is null/undefined",
+        "Checks strict equality",
+        "Short-circuits on false",
+        "Converts to boolean"
+      ],
+      correctAnswer: "Returns right side if left is null/undefined"
+    }
+  ];
 
   const currentLevelQuestions = useMemo(() => {
     const start = (currentLevel - 1) * QUESTIONS_PER_LEVEL;
@@ -710,14 +742,10 @@ const questions = [
   const levelScore = useMemo(() => {
     let correct = 0;
     let wrong = 0;
-
     currentLevelQuestions.forEach((q) => {
       if (!selectedAnswers[q.id]) return;
-      selectedAnswers[q.id] === q.correctAnswer
-        ? correct++
-        : wrong++;
+      selectedAnswers[q.id] === q.correctAnswer ? correct++ : wrong++;
     });
-
     return {
       correct,
       wrong,
@@ -726,8 +754,7 @@ const questions = [
     };
   }, [selectedAnswers, currentLevelQuestions]);
 
-  const isLevelCompleted =
-    levelScore.attempted === QUESTIONS_PER_LEVEL;
+  const isLevelCompleted = levelScore.attempted === QUESTIONS_PER_LEVEL;
 
   const getOptionClass = (q, opt) => {
     const selected = selectedAnswers[q.id];
@@ -740,7 +767,7 @@ const questions = [
   return (
     <div className="quiz-wrapper">
       <div className="quiz-header">
-        <h2>📘 Data Base & SQL MCQ – Level {currentLevel}</h2>
+        <h2>⚡ JavaScript MCQ – Level {currentLevel}</h2>
         <p>
           Level {currentLevel} of {TOTAL_LEVELS} • {QUESTIONS_PER_LEVEL} Questions
         </p>
@@ -748,8 +775,9 @@ const questions = [
 
       {currentLevelQuestions.map((q) => (
         <div key={q.id} className="question-card">
-          <h4>{q.id}. {q.question}</h4>
-
+          <h4>
+            {q.id}. {q.question}
+          </h4>
           <div className="options-grid">
             {q.options.map((opt, i) => (
               <label
@@ -770,47 +798,42 @@ const questions = [
           </div>
         </div>
       ))}
-<div className="submit-wrapper sticky-submit">
-  <button
-    className="submit-btn"
-    onClick={() => setShowSummary(true)}
-  >
-    Submit Answers
-  </button>
-</div>
 
-      {/* ===================== MODAL ===================== */}
+      <div className="submit-wrapper sticky-submit">
+        <button className="submit-btn" onClick={() => setShowSummary(true)}>
+          Submit Answers
+        </button>
+      </div>
+
       {showSummary && (
         <div className="modal-overlay">
           <div className="modal-card">
             <FaCheckCircle className="modal-icon" />
             <h3>Level {currentLevel} Completed</h3>
-
             <p className="modal-score">
-  Attempted: <b>{levelScore.attempted}</b> / {QUESTIONS_PER_LEVEL}
-  <br />
-  Correct: <b>{levelScore.correct}</b>
-</p>
-
+              Attempted: <b>{levelScore.attempted}</b> / {QUESTIONS_PER_LEVEL}
+              <br />
+              Correct: <b>{levelScore.correct}</b>
+            </p>
             <div className="modal-actions">
               <button
                 className="modal-btn home"
-                onClick={() => window.location.href = "/jobPrep"}
+                onClick={() => (window.location.href = "/jobPrep")}
               >
                 <FaHome /> Home
               </button>
-
-              <button
-                className="modal-btn next"
-                onClick={() => {
-                  setShowSummary(false);
-                  setCurrentLevel((prev) => prev + 1);
-                }}
-              >
-                Next Level <FaArrowRight />
-              </button>
+              {currentLevel < TOTAL_LEVELS && (
+                <button
+                  className="modal-btn next"
+                  onClick={() => {
+                    setShowSummary(false);
+                    setCurrentLevel((prev) => prev + 1);
+                  }}
+                >
+                  Next Level <FaArrowRight />
+                </button>
+              )}
             </div>
-
             <button
               className="modal-close"
               onClick={() => setShowSummary(false)}
@@ -836,7 +859,7 @@ body {
 
 /* ===================== HEADER ===================== */
 .quiz-header {
-  background: linear-gradient(135deg, #0d6efd, #6610f2);
+  background: linear-gradient(135deg, #f59e0b, #f97316);
   color: white;
   padding: 28px;
   border-radius: 18px;
@@ -889,7 +912,7 @@ body {
 }
 
 .mcq-option:hover {
-  border-color: #0d6efd;
+  border-color: #f59e0b;
   transform: translateY(-2px);
 }
 
@@ -903,6 +926,7 @@ body {
   border-radius: 50%;
   border: 3px solid #9ca3af;
   position: relative;
+  flex-shrink: 0;
 }
 
 .radio-ui::after {
@@ -958,7 +982,6 @@ body {
   font-weight: 600;
 }
 
-/* ===================== SUBMIT BUTTON ===================== */
 /* ===================== STICKY SUBMIT ===================== */
 .sticky-submit {
   position: sticky;
@@ -979,7 +1002,6 @@ body {
   justify-content: center;
 }
 
-/* Button */
 .submit-btn {
   padding: 14px 34px;
   border-radius: 30px;
@@ -996,22 +1018,6 @@ body {
 .submit-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 26px rgba(34,197,94,0.45);
-}
-
-/* Mobile */
-@media (max-width: 480px) {
-  .submit-btn {
-    width: 92%;
-    max-width: 360px;
-  }
-}
-
-/* ===================== MOBILE TWEAK ===================== */
-@media (max-width: 480px) {
-  .submit-btn {
-    width: 92%;
-    max-width: 360px;
-  }
 }
 
 /* ===================== MODAL OVERLAY ===================== */
@@ -1087,12 +1093,12 @@ body {
 }
 
 .modal-btn.next {
-  background: #4f46e5;
+  background: #f59e0b;
   color: white;
 }
 
 .modal-btn.next:hover {
-  background: #4338ca;
+  background: #d97706;
 }
 
 /* ===================== CLOSE BUTTON ===================== */
@@ -1113,43 +1119,23 @@ body {
 
 /* ===================== ANIMATION ===================== */
 @keyframes popup {
-  from {
-    opacity: 0;
-    transform: scale(0.85);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 /* ===================== RESPONSIVE ===================== */
 @media (max-width: 768px) {
-  .quiz-header {
-    padding: 22px;
-  }
-
-  .question-card {
-    padding: 18px;
-  }
+  .quiz-header { padding: 22px; }
+  .question-card { padding: 18px; }
 }
 
 @media (max-width: 480px) {
-  .modal-card {
-    padding: 22px 18px;
-  }
-
-  .modal-actions {
-    flex-direction: column;
-  }
-
-  .modal-btn {
-    width: 100%;
-    justify-content: center;
-  }
+  .submit-btn { width: 92%; max-width: 360px; }
+  .modal-card { padding: 22px 18px; }
+  .modal-actions { flex-direction: column; }
+  .modal-btn { width: 100%; justify-content: center; }
 }
 `}</style>
-
     </div>
   );
 };
