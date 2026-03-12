@@ -13,7 +13,7 @@ import {
   FiCheckCircle,
   FiXCircle,
   FiAlertCircle,
-  FiFileText
+  FiFileText,FiExternalLink
 } from "react-icons/fi";
 import { BiSolidSelectMultiple } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
@@ -954,6 +954,7 @@ const paginatedApplicants = useMemo(() => {
                     <th>Name</th>
                     <th>Job Title</th>
                     <th>Experience</th>
+                    <th>Resume</th>
                     <th>Status</th>
                     <th>Action</th>
                   </tr>
@@ -975,6 +976,36 @@ const paginatedApplicants = useMemo(() => {
                       </td>
                       <td>{a.jobTitle}</td>
                       <td>{calculateExperience(a.experience)}</td>
+                      <td>
+                        {a.resumeUrl ? (
+                          <a href={a.resumeUrl} target="_blank" rel="noopener noreferrer">
+                            <button
+                              className="btn btn-secondary"
+                              style={{ padding: "0.4rem 0.9rem", fontSize: "0.82rem" }}
+                            >
+                              <FiExternalLink /> View
+                            </button>
+                          </a>
+                        ) : (
+                          <button
+                            className="btn"
+                            style={{
+                              padding: "0.4rem 0.9rem",
+                              fontSize: "0.82rem",
+                              background: "#f7fafc",
+                              color: "#a0aec0",
+                              border: "2px solid #e2e8f0",
+                              cursor: "pointer"
+                            }}
+                            onClick={() => toast.info("Resume not uploaded by applicant", {
+                              position: "top-right",
+                              autoClose: 3000,
+                            })}
+                          >
+                            No Resume
+                          </button>
+                        )}
+                      </td>
                       <td>
                         <span className={`status-badge ${getStatusClass(a.status)}`}>
                           {getStatusIcon(a.status)}
@@ -1027,6 +1058,23 @@ const paginatedApplicants = useMemo(() => {
                   <div className="card-row">
                     <FiClock />
                     <span>{calculateExperience(a.experience)} experience</span>
+                  </div>
+                  <div className="card-row">
+                    {a.resumeUrl ? (
+                      <a href={a.resumeUrl} target="_blank" rel="noopener noreferrer">
+                        <button className="btn btn-secondary" style={{ padding: "0.4rem 0.9rem", fontSize: "0.82rem" }}>
+                          <FiExternalLink /> View Resume
+                        </button>
+                      </a>
+                    ) : (
+                      <button
+                        className="btn"
+                        style={{ padding: "0.4rem 0.9rem", fontSize: "0.82rem", background: "#f7fafc", color: "#a0aec0", border: "2px solid #e2e8f0" }}
+                        onClick={() => toast.info("Resume not uploaded by applicant", { position: "top-right", autoClose: 3000 })}
+                      >
+                        No Resume
+                      </button>
+                    )}
                   </div>
                   <div className="card-row">
                     <span className={`status-badge ${getStatusClass(a.status)}`}>
