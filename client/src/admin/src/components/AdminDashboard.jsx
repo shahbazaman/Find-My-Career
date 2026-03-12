@@ -90,6 +90,20 @@ const AdminDashboard = () => {
     (jobSeekerPage - 1) * JOB_SEEKERS_PER_PAGE,
     jobSeekerPage * JOB_SEEKERS_PER_PAGE,
   );
+  // ── ADD THESE after: const navigate = useNavigate();
+const [viewJob, setViewJob] = useState(null);
+const [editJob, setEditJob] = useState(null);
+const [editForm, setEditForm] = useState({});
+const [savingJob, setSavingJob] = useState(false);
+
+const inputStyle = {
+  width: "100%", padding: "9px 12px", borderRadius: "8px",
+  border: "1px solid #dee2e6", fontSize: "14px", outline: "none", marginTop: "4px",
+};
+const labelStyle = {
+  fontSize: "12px", fontWeight: "600", color: "#6c757d",
+  textTransform: "uppercase", letterSpacing: "0.4px",
+};
   useEffect(() => {
     setQueryPage(1);
   }, [queries.length]);
@@ -429,7 +443,59 @@ const fetchRecruiters = async () => {
       setIsSidebarOpen(false);
     }
   };
+// ── ADD THESE before the return() ──
 
+const handleViewJob = (job) => setViewJob(job);
+
+const handleEditJob = (job) => {
+  setEditJob(job);
+  setEditForm({
+    jobTitle: job.jobTitle || "",
+    companyName: job.companyName || "",
+    location: job.location || "",
+    jobType: job.jobType || "",
+    workMode: job.workMode || "",
+    salaryMin: job.salaryMin || "",
+    salaryMax: job.salaryMax || "",
+    experienceMin: job.experienceMin || "",
+    experienceMax: job.experienceMax || "",
+    description: job.description || "",
+    requirements: job.requirements || "",
+    status: job.status || "open",
+  });
+};
+
+const handleSaveJob = async () => {
+  setSavingJob(true);
+  try {
+    const res = await axios.put(
+      `${import.meta.env.VITE_API_BASE_URL}/jobs/admin/${editJob._id}`,
+      editForm,
+      { headers: { Authorization: `Bearer ${localStorage.getItem("adminToken")}` } }
+    );
+    setJobsData((prev) => prev.map((j) => (j._id === editJob._id ? res.data : j)));
+    toast.success("Job updated successfully");
+    setEditJob(null);
+  } catch (err) {
+    toast.error(err.response?.data?.message || "Update failed");
+  } finally {
+    setSavingJob(false);
+  }
+};
+
+const handleDeleteJob = async (jobId) => {
+  if (!window.confirm("Are you sure you want to delete this job?")) return;
+  try {
+    await axios.delete(
+      `${import.meta.env.VITE_API_BASE_URL}/jobs/admin/${jobId}`,
+      { headers: { Authorization: `Bearer ${localStorage.getItem("adminToken")}` } }
+    );
+    setJobsData((prev) => prev.filter((j) => j._id !== jobId));
+    toast.success("Job deleted successfully");
+  } catch (err) {
+    toast.error(err.response?.data?.message || "Delete failed");
+  }
+};
   return (
     <div
       className={`admin-root ${darkMode ? "dark-mode" : ""}`}
@@ -1097,6 +1163,7 @@ const fetchRecruiters = async () => {
                                 }}
                               >
                                 <button
+                                onClick={() => handleViewJob(job)} 
                                   style={{
                                     background: "white",
                                     border: "2px solid #e9ecef",
@@ -1128,6 +1195,7 @@ const fetchRecruiters = async () => {
                                   <BsEye style={{ fontSize: "16px" }} />
                                 </button>
                                 <button
+                                  onClick={() => handleEditJob(job)}
                                   style={{
                                     background: "white",
                                     border: "2px solid #e9ecef",
@@ -1159,6 +1227,7 @@ const fetchRecruiters = async () => {
                                   <BsPencil style={{ fontSize: "16px" }} />
                                 </button>
                                 <button
+                                  onClick={() => handleDeleteJob(job._id)}
                                   style={{
                                     background: "white",
                                     border: "2px solid #e9ecef",
@@ -1242,6 +1311,121 @@ const fetchRecruiters = async () => {
                   </div>
                 )}
               </div>
+              {/* ── VIEW JOB MODAL ── */}
+{viewJob && (
+  <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: "16px" }}>
+    <div style={{ background: "white", borderRadius: "16px", width: "100%", maxWidth: "620px", maxHeight: "85vh", overflowY: "auto", padding: "32px", position: "relative" }}>
+      <button onClick={() => setViewJob(null)} style={{ position: "absolute", top: "16px", right: "16px", background: "none", border: "none", fontSize: "20px", cursor: "pointer", color: "#aaa" }}>✕</button>
+      <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px" }}>
+        {viewJob.companyLogo && <img src={viewJob.companyLogo} alt="logo" style={{ width: "56px", height: "56px", borderRadius: "12px", objectFit: "cover", border: "1px solid #eee" }} />}
+        <div>
+          <h2 style={{ margin: 0, fontWeight: "800", fontSize: "1.4rem", color: "#1a1a1a" }}>{viewJob.jobTitle}</h2>
+          <p style={{ margin: "4px 0 0", color: "#6c757d", fontSize: "14px" }}>{viewJob.companyName}</p>
+        </div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
+        {[
+          ["📍 Location", viewJob.location],
+          ["💼 Job Type", viewJob.jobType],
+          ["🖥 Work Mode", viewJob.workMode],
+          ["📊 Status", viewJob.status],
+          ["💰 Salary", viewJob.salaryMin ? `$${viewJob.salaryMin.toLocaleString()}${viewJob.salaryMax ? ` – $${viewJob.salaryMax.toLocaleString()}` : ""}` : "—"],
+          ["🎓 Experience", viewJob.experienceMin !== undefined ? `${viewJob.experienceMin}${viewJob.experienceMax ? `–${viewJob.experienceMax}` : "+"} yrs` : "—"],
+          ["📅 Deadline", viewJob.deadline ? new Date(viewJob.deadline).toLocaleDateString() : "No deadline"],
+          ["🕒 Posted", new Date(viewJob.createdAt).toLocaleDateString()],
+        ].map(([label, value]) => (
+          <div key={label} style={{ background: "#f8f9fa", borderRadius: "10px", padding: "12px 14px" }}>
+            <div style={{ fontSize: "11px", color: "#999", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "4px" }}>{label}</div>
+            <div style={{ fontSize: "14px", fontWeight: "600", color: "#222", textTransform: "capitalize" }}>{value}</div>
+          </div>
+        ))}
+      </div>
+      {viewJob.description && (
+        <div style={{ marginBottom: "16px" }}>
+          <p style={{ fontSize: "11px", color: "#999", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "6px", fontWeight: "600" }}>Description</p>
+          <p style={{ fontSize: "14px", color: "#444", lineHeight: "1.7", margin: 0 }}>{viewJob.description}</p>
+        </div>
+      )}
+      {viewJob.requirements && (
+        <div style={{ marginBottom: "16px" }}>
+          <p style={{ fontSize: "11px", color: "#999", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "6px", fontWeight: "600" }}>Requirements</p>
+          <p style={{ fontSize: "14px", color: "#444", lineHeight: "1.7", margin: 0 }}>{viewJob.requirements}</p>
+        </div>
+      )}
+      {viewJob.benefits?.length > 0 && (
+        <div>
+          <p style={{ fontSize: "11px", color: "#999", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px", fontWeight: "600" }}>Benefits</p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+            {viewJob.benefits.map((b, i) => (
+              <span key={i} style={{ background: "#e8f5e9", color: "#2e7d32", padding: "4px 12px", borderRadius: "20px", fontSize: "13px", fontWeight: "500" }}>{b}</span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+)}
+
+{/* ── EDIT JOB MODAL ── */}
+{editJob && (
+  <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: "16px" }}>
+    <div style={{ background: "white", borderRadius: "16px", width: "100%", maxWidth: "640px", maxHeight: "88vh", overflowY: "auto", padding: "32px", position: "relative" }}>
+      <button onClick={() => setEditJob(null)} style={{ position: "absolute", top: "16px", right: "16px", background: "none", border: "none", fontSize: "20px", cursor: "pointer", color: "#aaa" }}>✕</button>
+      <h2 style={{ margin: "0 0 24px", fontWeight: "800", fontSize: "1.4rem", color: "#1a1a1a" }}>Edit Job</h2>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+        {[
+          { key: "jobTitle", label: "Job Title" },
+          { key: "companyName", label: "Company Name" },
+          { key: "location", label: "Location" },
+          { key: "salaryMin", label: "Salary Min", type: "number" },
+          { key: "salaryMax", label: "Salary Max", type: "number" },
+          { key: "experienceMin", label: "Exp Min (yrs)", type: "number" },
+          { key: "experienceMax", label: "Exp Max (yrs)", type: "number" },
+        ].map(({ key, label, type }) => (
+          <div key={key}>
+            <label style={labelStyle}>{label}</label>
+            <input type={type || "text"} value={editForm[key]} onChange={(e) => setEditForm((p) => ({ ...p, [key]: e.target.value }))} style={inputStyle} />
+          </div>
+        ))}
+        <div>
+          <label style={labelStyle}>Job Type</label>
+          <select value={editForm.jobType} onChange={(e) => setEditForm((p) => ({ ...p, jobType: e.target.value }))} style={inputStyle}>
+            <option value="">Select</option>
+            {["full-time", "part-time", "internship", "contract"].map((v) => <option key={v} value={v}>{v}</option>)}
+          </select>
+        </div>
+        <div>
+          <label style={labelStyle}>Work Mode</label>
+          <select value={editForm.workMode} onChange={(e) => setEditForm((p) => ({ ...p, workMode: e.target.value }))} style={inputStyle}>
+            <option value="">Select</option>
+            {["remote", "onsite", "hybrid"].map((v) => <option key={v} value={v}>{v}</option>)}
+          </select>
+        </div>
+        <div>
+          <label style={labelStyle}>Status</label>
+          <select value={editForm.status} onChange={(e) => setEditForm((p) => ({ ...p, status: e.target.value }))} style={inputStyle}>
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+      </div>
+      <div style={{ marginTop: "16px" }}>
+        <label style={labelStyle}>Description</label>
+        <textarea rows={4} value={editForm.description} onChange={(e) => setEditForm((p) => ({ ...p, description: e.target.value }))} style={{ ...inputStyle, resize: "vertical" }} />
+      </div>
+      <div style={{ marginTop: "12px" }}>
+        <label style={labelStyle}>Requirements</label>
+        <textarea rows={4} value={editForm.requirements} onChange={(e) => setEditForm((p) => ({ ...p, requirements: e.target.value }))} style={{ ...inputStyle, resize: "vertical" }} />
+      </div>
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "24px" }}>
+        <button onClick={() => setEditJob(null)} style={{ padding: "10px 20px", borderRadius: "8px", border: "1px solid #dee2e6", background: "white", cursor: "pointer", fontWeight: "600" }}>Cancel</button>
+        <button onClick={handleSaveJob} disabled={savingJob} style={{ padding: "10px 24px", borderRadius: "8px", border: "none", background: "linear-gradient(135deg, #6366f1, #8b5cf6)", color: "white", cursor: "pointer", fontWeight: "700", opacity: savingJob ? 0.7 : 1 }}>
+          {savingJob ? "Saving..." : "Save Changes"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
             </div>
           )}
           {activeMenu === "add-job" && (

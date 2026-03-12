@@ -26,7 +26,6 @@ export const createJob = async (req, res) => {
   }
 };
 
-
 /**
  * GET ALL JOBS (PUBLIC – JOB SEEKERS)
  */
@@ -44,7 +43,7 @@ export const getJobs = async (req, res) => {
 
     const jobs = await Job.find(keyword)
       .sort({ createdAt: -1 })
-      .select("-recruiter"); // hide owner from public
+      .select("-recruiter");
 
     res.json({
       jobs,
@@ -136,7 +135,6 @@ export const reopenJob = async (req, res) => {
   }
 };
 
-
 /* ================= GET ALL UNIQUE ROLES ================= */
 export const getAllRoles = async (req, res) => {
   try {
@@ -157,3 +155,28 @@ export const getJobRoles = async (req, res) => {
   }
 };
 
+/* ================= ADMIN: DELETE ANY JOB ================= */
+export const adminDeleteJob = async (req, res) => {
+  try {
+    const job = await Job.findByIdAndDelete(req.params.id);
+    if (!job) return res.status(404).json({ message: "Job not found" });
+    res.json({ message: "Job deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/* ================= ADMIN: UPDATE ANY JOB ================= */
+export const adminUpdateJob = async (req, res) => {
+  try {
+    const job = await Job.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!job) return res.status(404).json({ message: "Job not found" });
+    res.json(job);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
