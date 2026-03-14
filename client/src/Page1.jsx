@@ -222,8 +222,8 @@ export default function JobSearchPage() {
           </Row>
         )}
 
-        {/* ── Categories + Companies Card ── */}
-        <Row className="justify-content-center mb-5">
+        {role === "job seekers" && (
+<Row className="justify-content-center mb-5">
           <Col lg={10}>
             <Card style={{
               borderRadius: "30px", border: "none",
@@ -375,7 +375,7 @@ export default function JobSearchPage() {
             </Card>
           </Col>
         </Row>
-
+        )}
         {/* ── View All Jobs CTA ── */}
         {role === "job seekers" && (
           <Row className="justify-content-center mt-5">

@@ -39,6 +39,8 @@ const Applicants = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [showInterviewModal, setShowInterviewModal] = useState(false);
   const [viewingApplicant, setViewingApplicant] = useState(null);
+  const [profileData, setProfileData] = useState(null);
+const [profileLoading, setProfileLoading] = useState(false);
 const ROWS_PER_PAGE = 15;
 const [currentPage, setCurrentPage] = useState(1);
 
@@ -957,6 +959,7 @@ const paginatedApplicants = useMemo(() => {
                     <th>Experience</th>
                     <th>Resume</th>
                     <th>Status</th>
+                    <th>Profile</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -1017,7 +1020,22 @@ const paginatedApplicants = useMemo(() => {
                         <button
                           className="btn btn-secondary"
                           style={{ padding: "0.4rem 0.9rem", fontSize: "0.82rem" }}
-                          onClick={() => setViewingApplicant(a)}
+                          onClick={async () => {
+                          setViewingApplicant(a);
+                          setProfileData(null);
+                          setProfileLoading(true);
+                          try {
+                            const res = await axios.get(
+                              `${import.meta.env.VITE_API_BASE_URL}/profile/${a.userId}`,
+                              { headers: { Authorization: `Bearer ${token}` } }
+                            );
+                            setProfileData(res.data);
+                          } catch {
+                            setProfileData(null);
+                          } finally {
+                            setProfileLoading(false);
+                          }
+                        }}
                         >
                           <FiUser /> View
                         </button>
@@ -1225,7 +1243,7 @@ onClick={() => {
       display: "flex", alignItems: "center", justifyContent: "center",
       zIndex: 9999, padding: "16px",
     }}
-    onClick={() => setViewingApplicant(null)}
+    onClick={() => { setViewingApplicant(null); setProfileData(null); }}
   >
     <div
       style={{
@@ -1240,7 +1258,7 @@ onClick={() => {
     >
       {/* Close */}
       <button
-        onClick={() => setViewingApplicant(null)}
+        onClick={() => { setViewingApplicant(null); setProfileData(null); }}
         style={{
           position: "absolute", top: "16px", right: "16px",
           background: "#f1f5f9", border: "none", borderRadius: "50%",
@@ -1252,106 +1270,173 @@ onClick={() => {
         onMouseLeave={(e) => e.currentTarget.style.background = "#f1f5f9"}
       >✕</button>
 
-      {/* Avatar + Name */}
-      <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px" }}>
-        <div style={{
-          width: "56px", height: "56px", borderRadius: "50%",
-          background: "linear-gradient(135deg, #667eea, #764ba2)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          color: "white", fontSize: "22px", fontWeight: "700", flexShrink: 0,
+{/* Avatar + Name */}
+<div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px" }}>
+  <img
+    src={profileData?.photoUrl || null}
+    alt="avatar"
+    onError={(e) => { e.target.style.display = "none"; e.target.nextSibling.style.display = "flex"; }}
+    style={{
+      width: "60px", height: "60px", borderRadius: "50%",
+      objectFit: "cover", border: "2px solid #e2e8f0",
+      display: profileData?.photoUrl ? "block" : "none", flexShrink: 0,
+    }}
+  />
+  <div style={{
+    width: "60px", height: "60px", borderRadius: "50%", flexShrink: 0,
+    background: "linear-gradient(135deg, #667eea, #764ba2)",
+    display: profileData?.photoUrl ? "none" : "flex",
+    alignItems: "center", justifyContent: "center",
+    color: "white", fontSize: "22px", fontWeight: "700",
+  }}>
+    {viewingApplicant.name?.trim()?.[0]?.toUpperCase() || "?"}
+  </div>
+  <div>
+    <h3 style={{ margin: 0, fontWeight: "700", fontSize: "1.2rem", color: "#1e293b" }}>
+      {profileData?.name || viewingApplicant.name}
+    </h3>
+    <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: "13px" }}>
+      {viewingApplicant.email}
+    </p>
+    {profileData?.skills?.primarySkills && (
+      <p style={{ margin: "4px 0 0", color: "#667eea", fontSize: "12px", fontWeight: "600" }}>
+        {profileData.skills.primarySkills.split(",").slice(0, 3).join(" · ")}
+      </p>
+    )}
+  </div>
+</div>
+
+{profileLoading ? (
+  <div style={{ textAlign: "center", padding: "32px", color: "#94a3b8" }}>
+    <div style={{ width: "36px", height: "36px", border: "3px solid #e2e8f0", borderTop: "3px solid #667eea", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 12px" }} />
+    Loading profile...
+  </div>
+) : (
+  <>
+    {/* Basic Info Grid */}
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "20px" }}>
+      {[
+        ["💼 Applied For",  viewingApplicant.jobTitle],
+        ["📊 Status",       viewingApplicant.status],
+        ["📍 Location",     profileData?.location || "—"],
+        ["📱 Mobile",       profileData?.mobile || "—"],
+        ["⏱ Experience",    calculateExperience(viewingApplicant.experience)],
+        ["📄 Resume",       viewingApplicant.resumeUrl ? "Uploaded" : "Not uploaded"],
+      ].map(([label, value]) => (
+        <div key={label} style={{
+          background: "#f8fafc", borderRadius: "10px",
+          padding: "10px 12px", border: "1px solid #e2e8f0",
         }}>
-          {viewingApplicant.name?.trim()?.[0]?.toUpperCase() || "?"}
+          <div style={{ fontSize: "11px", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "3px" }}>
+            {label}
+          </div>
+          <div style={{ fontSize: "13px", fontWeight: "600", color: "#1e293b" }}>
+            {value || "—"}
+          </div>
         </div>
-        <div>
-          <h3 style={{ margin: 0, fontWeight: "700", fontSize: "1.2rem", color: "#1e293b" }}>
-            {viewingApplicant.name}
-          </h3>
-          <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: "13px" }}>
-            {viewingApplicant.email}
-          </p>
+      ))}
+    </div>
+
+    {/* Skills */}
+    {profileData?.skills?.primarySkills && (
+      <div style={{ marginBottom: "16px" }}>
+        <p style={{ fontSize: "11px", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: "600", marginBottom: "8px" }}>
+          Skills
+        </p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+          {profileData.skills.primarySkills.split(",").map((s, i) => (
+            <span key={i} style={{
+              background: "#ede9fe", color: "#6d28d9",
+              padding: "4px 10px", borderRadius: "20px",
+              fontSize: "12px", fontWeight: "500",
+            }}>
+              {s.trim()}
+            </span>
+          ))}
         </div>
       </div>
+    )}
 
-      {/* Info cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "20px" }}>
-        {[
-          ["💼 Applied For",  viewingApplicant.jobTitle],
-          ["⏱ Experience",    calculateExperience(viewingApplicant.experience)],
-          ["📊 Status",       viewingApplicant.status],
-          ["📄 Resume",       viewingApplicant.resumeUrl ? "Uploaded" : "Not uploaded"],
-        ].map(([label, value]) => (
-          <div key={label} style={{
+    {/* Education */}
+    {profileData?.education?.length > 0 && (
+      <div style={{ marginBottom: "16px" }}>
+        <p style={{ fontSize: "11px", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: "600", marginBottom: "8px" }}>
+          Education
+        </p>
+        {profileData.education.slice(0, 2).map((ed, i) => (
+          <div key={i} style={{
             background: "#f8fafc", borderRadius: "10px",
-            padding: "12px 14px", border: "1px solid #e2e8f0",
+            padding: "10px 12px", marginBottom: "6px",
+            border: "1px solid #e2e8f0",
           }}>
-            <div style={{ fontSize: "11px", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "4px" }}>
-              {label}
-            </div>
-            <div style={{ fontSize: "14px", fontWeight: "600", color: "#1e293b" }}>
-              {value || "—"}
+            <div style={{ fontWeight: "600", fontSize: "13px", color: "#1e293b" }}>{ed.degree || "—"}</div>
+            <div style={{ fontSize: "12px", color: "#64748b", marginTop: "2px" }}>
+              {ed.institute || "—"} {ed.startYear && ed.endYear ? `(${ed.startYear} – ${ed.endYear})` : ""}
             </div>
           </div>
         ))}
       </div>
+    )}
 
-      {/* Experience list */}
-      {viewingApplicant.experience?.length > 0 && (
-        <div style={{ marginBottom: "16px" }}>
-          <p style={{ fontSize: "11px", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: "600", marginBottom: "10px" }}>
-            Experience
-          </p>
-          {viewingApplicant.experience.map((exp, i) => (
-            <div key={i} style={{
-              background: "#f8fafc", borderRadius: "10px",
-              padding: "12px 14px", marginBottom: "8px",
-              border: "1px solid #e2e8f0",
-            }}>
-              <div style={{ fontWeight: "600", fontSize: "14px", color: "#1e293b" }}>
-                {exp.position || "—"} {exp.company ? `@ ${exp.company}` : ""}
-              </div>
-              <div style={{ fontSize: "12px", color: "#64748b", marginTop: "4px" }}>
-                {exp.startDate ? new Date(exp.startDate).getFullYear() : "?"} —{" "}
-                {exp.endDate ? new Date(exp.endDate).getFullYear() : "Present"}
-              </div>
+    {/* Experience */}
+    {viewingApplicant.experience?.length > 0 && (
+      <div style={{ marginBottom: "16px" }}>
+        <p style={{ fontSize: "11px", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: "600", marginBottom: "8px" }}>
+          Experience
+        </p>
+        {viewingApplicant.experience.slice(0, 2).map((exp, i) => (
+          <div key={i} style={{
+            background: "#f8fafc", borderRadius: "10px",
+            padding: "10px 12px", marginBottom: "6px",
+            border: "1px solid #e2e8f0",
+          }}>
+            <div style={{ fontWeight: "600", fontSize: "13px", color: "#1e293b" }}>
+              {exp.position || "—"}{exp.company ? ` @ ${exp.company}` : ""}
             </div>
-          ))}
-        </div>
-      )}
-
-      {/* Resume button */}
-      {viewingApplicant.resumeUrl && (
-        <a href={viewingApplicant.resumeUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
-          <button style={{
-            width: "100%", padding: "12px", borderRadius: "10px",
-            border: "2px solid #667eea", background: "white",
-            color: "#667eea", fontWeight: "600", fontSize: "14px",
-            cursor: "pointer", display: "flex", alignItems: "center",
-            justifyContent: "center", gap: "8px", transition: "all 0.2s",
-          }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "#667eea"; e.currentTarget.style.color = "white"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "white"; e.currentTarget.style.color = "#667eea"; }}
-          >
-            <FiExternalLink /> View Resume
-          </button>
-        </a>
-      )}
-
-      {/* Close footer */}
-      <div style={{ marginTop: "20px", display: "flex", justifyContent: "flex-end" }}>
-        <button
-          onClick={() => setViewingApplicant(null)}
-          style={{
-            padding: "10px 24px", borderRadius: "10px",
-            border: "2px solid #e2e8f0", background: "white",
-            fontWeight: "600", fontSize: "14px",
-            cursor: "pointer", color: "#475569", transition: "all 0.2s",
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "#f8fafc"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "white"; }}
-        >
-          Close
-        </button>
+            <div style={{ fontSize: "12px", color: "#64748b", marginTop: "2px" }}>
+              {exp.startDate ? new Date(exp.startDate).getFullYear() : "?"} — {exp.endDate ? new Date(exp.endDate).getFullYear() : "Present"}
+            </div>
+          </div>
+        ))}
       </div>
+    )}
+
+    {/* Resume button */}
+    {viewingApplicant.resumeUrl && (
+      <a href={viewingApplicant.resumeUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+        <button style={{
+          width: "100%", padding: "11px", borderRadius: "10px",
+          border: "2px solid #667eea", background: "white",
+          color: "#667eea", fontWeight: "600", fontSize: "14px",
+          cursor: "pointer", display: "flex", alignItems: "center",
+          justifyContent: "center", gap: "8px", transition: "all 0.2s",
+        }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "#667eea"; e.currentTarget.style.color = "white"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "white"; e.currentTarget.style.color = "#667eea"; }}
+        >
+          <FiExternalLink /> View Resume
+        </button>
+      </a>
+    )}
+  </>
+)}
+
+{/* Close footer */}
+<div style={{ marginTop: "20px", display: "flex", justifyContent: "flex-end" }}>
+  <button
+    onClick={() => { setViewingApplicant(null); setProfileData(null); }}
+    style={{
+      padding: "10px 24px", borderRadius: "10px",
+      border: "2px solid #e2e8f0", background: "white",
+      fontWeight: "600", fontSize: "14px",
+      cursor: "pointer", color: "#475569", transition: "all 0.2s",
+    }}
+    onMouseEnter={(e) => { e.currentTarget.style.background = "#f8fafc"; }}
+    onMouseLeave={(e) => { e.currentTarget.style.background = "white"; }}
+  >
+    Close
+  </button>
+</div>
     </div>
   </div>
 )}

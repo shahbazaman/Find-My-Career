@@ -10,7 +10,13 @@ import {
 
 /* ================= CONFIG ================= */
 const API_URL = `${import.meta.env.VITE_API_BASE_URL}/companies/me/profile`;
-
+const getStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem("user")) || {};
+  } catch {
+    return {};
+  }
+};
 export default function CompanyProfileForm() {
   const token = localStorage.getItem("token");
 
@@ -38,18 +44,28 @@ export default function CompanyProfileForm() {
           headers: { Authorization: `Bearer ${token}` }
         });
 
+        const storedUser = getStoredUser();
+
         setForm({
-          companyName: res.data.companyName || "",
-          email: res.data.email || "",
+          companyName: res.data.companyName || `${storedUser.firstName || ""} ${storedUser.lastName || ""}`.trim(),
+          email: res.data.email || storedUser.email || "",
           location: res.data.location || "",
           industry: res.data.industry || "",
           description: res.data.description || "",
-          logo: res.data.logo || ""
+          logo: res.data.logo || storedUser.logo || "",
         });
 
-        setLogoPreview(res.data.logo || "");
+        setLogoPreview(res.data.logo || storedUser.logo || "");
       } catch (err) {
-        // profile may not exist yet → safe to ignore
+        // profile doesn't exist yet — pre-fill from registered account data
+        const storedUser = getStoredUser();
+        setForm(prev => ({
+          ...prev,
+          companyName: `${storedUser.firstName || ""} ${storedUser.lastName || ""}`.trim(),
+          email: storedUser.email || "",
+          logo: storedUser.logo || "",
+        }));
+        setLogoPreview(storedUser.logo || "");
       } finally {
         setInitialLoading(false);
       }

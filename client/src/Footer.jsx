@@ -37,7 +37,7 @@ const Footer = () => {
     <FaPhone />
   </a>
 </div>
-<div style={{marginTop:"5px"}}>
+<div style={{marginTop:"15px"}}>
   <p><FaEnvelope /> : admin@findmycareer.com</p>
   <p><FaPhone /> : 9567194946</p>
 </div>
@@ -93,11 +93,9 @@ const Footer = () => {
 
         {/* Bottom */}
         <Row className="align-items-center">
-          <Col md={6}>
             <p className="copyright text-center">
               © 2025 Find My Career. All rights reserved.
             </p>
-          </Col>
         </Row>
       </Container>
     </footer>
