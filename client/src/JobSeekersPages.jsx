@@ -10,7 +10,7 @@ const JobSeekersPages = () => {
         <div id="jobs-section"><Cards/></div>
         <Page2/>
         <div id="prep-section"><Page3/></div>  
-        <div><Page5/></div> {/*com */}              
+        {/* <div><Page5/></div>               */}
         <div id="status-section"><Page6/></div>   
     </div>
   )

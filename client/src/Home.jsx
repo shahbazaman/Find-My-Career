@@ -65,7 +65,7 @@ useEffect(() => {
       {/* ✅ ROLE BASED RENDERING */}
       {isLoggedIn && role === "recruiters" && <RecrutersPages />}
 {isLoggedIn && role === "job seekers" && <JobSeekersPages />}
-
+{/* add cards.jsx for guest mode if needed */}
 
       <Footer />
     </div>

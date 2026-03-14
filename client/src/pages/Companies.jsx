@@ -146,6 +146,7 @@ export default function Companies() {
         centered
         size="lg"
         contentClassName="border-0"
+        dialogClassName="modal-dialog-centered"
       >
         <Modal.Header closeButton style={styles.modalHeader}>
           <Modal.Title style={{ fontWeight: 700, color: "#111" }}>
@@ -329,10 +330,10 @@ const styles = {
     padding: "20px 24px 16px"
   },
   modalBody: {
-    padding: "24px",
-    maxHeight: "75vh",
-    overflowY: "auto"
-  },
+  padding: "24px",
+  maxHeight: "65vh",
+  overflowY: "auto"
+},
   loadingBox: {
     display: "flex",
     justifyContent: "center",

@@ -2,9 +2,9 @@ import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import {
   FaFacebookF,
-  FaTwitter,
   FaInstagram,
-  FaLinkedinIn,
+  FaLinkedinIn,FaEnvelope,
+  FaPhone,
 } from "react-icons/fa";
 import "./css/Footer.css";
 
@@ -15,12 +15,32 @@ const Footer = () => {
         <Row className="gy-4">
           {/* Newsletter */}
           <Col md={4}>
-            <h5 className="footer-title">Subscribe to Find My Career</h5>
+            <h5 className="footer-title">Follow Find My Career</h5>
             <p className="footer-text">
               Get latest job openings, hiring alerts, and career tips directly
               in your inbox.
             </p>
-            <Button className="subscribe-btn">Subscribe now</Button>
+            <div className="social-icons d-flex">
+  <a href="https://www.facebook.com/findmycareercom/" target="_blank" rel="noopener noreferrer" className="social-link">
+    <FaFacebookF />
+  </a>
+  <a href="https://www.instagram.com/findmycareeritb?igsh=YWw2eTNnZDR1a25v" target="_blank" rel="noopener noreferrer" className="social-link">
+    <FaInstagram />
+  </a>
+  <a href="https://linkedin.com/in/shahbazaman" target="_blank" rel="noopener noreferrer" className="social-link">
+    <FaLinkedinIn />
+  </a>
+  <a href="mailto:shahbazaman2003@gmail.com" className="social-link">
+    <FaEnvelope />
+  </a>
+  <a href="tel:9567194946" className="social-link">
+    <FaPhone />
+  </a>
+</div>
+<div>
+  <p><FaEnvelope /> : admin@findmycareer.com</p>
+  <p><FaPhone /> : 9567194946</p>
+</div>
           </Col>
 
           {/* Getting Started */}
@@ -79,14 +99,14 @@ const Footer = () => {
             </p>
           </Col>
 
-          <Col md={6} className="text-md-end">
+          {/* <Col md={6} className="text-md-end">
             <div className="social-icons">
               <FaFacebookF />
               <FaTwitter />
               <FaInstagram />
               <FaLinkedinIn />
             </div>
-          </Col>
+          </Col> */}
         </Row>
       </Container>
     </footer>

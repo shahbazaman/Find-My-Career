@@ -9,7 +9,17 @@
   transform: translateY(-8px);
   box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
 }
+.modal-dialog-centered {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: calc(100% - 1rem) !important;
+  margin: auto !important;
+}
 
+.modal-dialog-centered .modal-content {
+  width: 100%;
+}
 .company-logo {
   width: 80px;
   height: 80px;
