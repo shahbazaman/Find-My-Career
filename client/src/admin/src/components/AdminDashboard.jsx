@@ -39,9 +39,38 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
+const STORAGE_KEY = "adminActiveMenu";
+
+const toastConfirm = (message, onConfirm) => {
+  toast.warn(
+    ({ closeToast }) => (
+      <div>
+        <p style={{ marginBottom: "10px", fontWeight: "600" }}>{message}</p>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button
+            onClick={() => { onConfirm(); closeToast(); }}
+            style={{ background: "#dc3545", color: "white", border: "none", padding: "5px 14px", borderRadius: "6px", cursor: "pointer", fontWeight: "600" }}
+          >Yes</button>
+          <button
+            onClick={closeToast}
+            style={{ background: "#6c757d", color: "white", border: "none", padding: "5px 14px", borderRadius: "6px", cursor: "pointer", fontWeight: "600" }}
+          >No</button>
+        </div>
+      </div>
+    ),
+    { position: "top-center", autoClose: false, closeOnClick: false, draggable: false, toastId: "confirm-toast" }
+  );
+};
 const AdminDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [activeMenu, setActiveMenu] = useState("dashboard");
+  const [activeMenu, setActiveMenu] = useState(
+  () => localStorage.getItem(STORAGE_KEY) || "dashboard"
+);
+
+const handleSetActiveMenu = (menu) => {
+  setActiveMenu(menu);
+  localStorage.setItem(STORAGE_KEY, menu);
+};
   const [isVisible, setIsVisible] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [isJobsOpen, setIsJobsOpen] = useState(true);
@@ -114,6 +143,12 @@ const labelStyle = {
   useEffect(() => {
     setIsVisible(true);
   }, []);
+  
+useEffect(() => {
+  if (activeMenu === "jobs-list" || activeMenu === "add-job") {
+    setIsJobsOpen(true);
+  }
+}, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -133,7 +168,7 @@ const labelStyle = {
     axios
       .get(`${import.meta.env.VITE_API_BASE_URL}/jobs`)
       .then((res) => setJobsData(res.data.jobs || []))
-      .catch(() => toast.error("Failed to load jobs"));
+      .catch(() => toast.error("Failed to load jobs", { position: "top-center" }));
   }, []);
   const fetchAllRecruiters = async () => {
     setLoadingRecruiters(true);
@@ -144,7 +179,7 @@ const labelStyle = {
       );
       setAllRecruiters(res.data);
     } catch (err) {
-      toast.error("Failed to load recruiters");
+      toast.error("Failed to load recruiters", { position: "top-center" });
     } finally {
       setLoadingRecruiters(false);
     }
@@ -162,7 +197,7 @@ const labelStyle = {
       setAllJobSeekers(list);
     } catch (err) {
       console.error(err);
-      toast.error("Failed to load job seekers");
+      toast.error("Failed to load job seekers", { position: "top-center" });
     } finally {
       setLoadingJobSeekers(false);
     }
@@ -182,7 +217,7 @@ const fetchRecruiters = async () => {
     setRecruiters(res.data);
   } catch (err) {
     console.error(err.response?.data || err.message);
-    toast.error("Failed to load recruiters");
+    toast.error("Failed to load recruiters", { position: "top-center" });
   } finally {
     setLoadingRecruiters(false);
   }
@@ -229,11 +264,11 @@ const fetchRecruiters = async () => {
         { headers: {
   Authorization: `Bearer ${localStorage.getItem("adminToken")}`,} },
       );
-      toast.success("Recruiter approved");
+     toast.success("Recruiter approved", { position: "top-center" });
       fetchRecruiters();
       postNotification(id, "Admin approved your login request");
     } catch {
-      toast.error("Approval failed");
+      toast.error("Approval failed", { position: "top-center" });
     }
   };
   const rejectRecruiter = async (id) => {
@@ -244,11 +279,11 @@ const fetchRecruiters = async () => {
         { headers: {
   Authorization: `Bearer ${localStorage.getItem("adminToken")}`,} },
       );
-      toast.success("Recruiter rejected");
+      toast.success("Recruiter rejected", { position: "top-center" });
       fetchRecruiters();
       postNotification(id, "Admin rejected your login request");
     } catch {
-      toast.error("Rejection failed");
+      toast.error("Rejection failed", { position: "top-center" });
     }
   };
   const menuItems = [
@@ -262,6 +297,10 @@ const fetchRecruiters = async () => {
       .toLowerCase()
       .includes(recruiterSearch.toLowerCase()),
   );
+  const sidebarClick = (menu) => {
+  handleSetActiveMenu(menu);
+  if (window.innerWidth <= 767) setIsSidebarOpen(false);
+};
   const handleExportCSV = (data, filename) => {
     const csvContent =
       "data:text/csv;charset=utf-8," +
@@ -418,24 +457,24 @@ const fetchRecruiters = async () => {
   const handleEditUser = (userId) => {
     navigate(`/admin/user/edit/${userId}`);
   };
-  const handleDeleteUser = async (userId, type = "user") => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
+  const handleDeleteUser = (userId, type = "user") => {
+  toastConfirm("Are you sure you want to delete this user?", async () => {
     try {
       await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/admin/users/${userId}`, {
-        headers: {
-  Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-}, });
-      toast.success("User deleted successfully");
+        headers: { Authorization: `Bearer ${localStorage.getItem("adminToken")}` },
+      });
+      toast.success("User deleted successfully", { position: "top-center" });
       if (type === "job-seeker") {
         setAllJobSeekers((prev) => prev.filter((u) => u._id !== userId));
       }
       if (type === "recruiter") {
         setAllRecruiters((prev) => prev.filter((u) => u._id !== userId));
       }
-    } catch (err) {
-      toast.error("Delete failed");
+    } catch {
+      toast.error("Delete failed", { position: "top-center" });
     }
-  };
+  });
+};
 
   // Close sidebar when clicking outside on mobile
   const handleOverlayClick = () => {
@@ -474,27 +513,28 @@ const handleSaveJob = async () => {
       { headers: { Authorization: `Bearer ${localStorage.getItem("adminToken")}` } }
     );
     setJobsData((prev) => prev.map((j) => (j._id === editJob._id ? res.data : j)));
-    toast.success("Job updated successfully");
+    toast.success("Job updated successfully", { position: "top-center" });
     setEditJob(null);
   } catch (err) {
-    toast.error(err.response?.data?.message || "Update failed");
+   toast.error(err.response?.data?.message || "Update failed", { position: "top-center" });
   } finally {
     setSavingJob(false);
   }
 };
 
-const handleDeleteJob = async (jobId) => {
-  if (!window.confirm("Are you sure you want to delete this job?")) return;
-  try {
-    await axios.delete(
-      `${import.meta.env.VITE_API_BASE_URL}/jobs/admin/${jobId}`,
-      { headers: { Authorization: `Bearer ${localStorage.getItem("adminToken")}` } }
-    );
-    setJobsData((prev) => prev.filter((j) => j._id !== jobId));
-    toast.success("Job deleted successfully");
-  } catch (err) {
-    toast.error(err.response?.data?.message || "Delete failed");
-  }
+const handleDeleteJob = (jobId) => {
+  toastConfirm("Are you sure you want to delete this job?", async () => {
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/jobs/admin/${jobId}`,
+        { headers: { Authorization: `Bearer ${localStorage.getItem("adminToken")}` } }
+      );
+      setJobsData((prev) => prev.filter((j) => j._id !== jobId));
+      toast.success("Job deleted successfully", { position: "top-center" });
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Delete failed", { position: "top-center" });
+    }
+  });
 };
   return (
     <div
@@ -527,10 +567,7 @@ const handleDeleteJob = async (jobId) => {
           {menuItems.map((item) => (
             <div
               key={item.id}
-              onClick={() => {
-                setActiveMenu(item.id);
-                if (window.innerWidth <= 767) setIsSidebarOpen(false);
-              }}
+              onClick={() => sidebarClick(item.id)}
               className={`sidebar-menu-item ${activeMenu === item.id ? "active" : ""}`}
             >
               {item.icon}
@@ -564,19 +601,13 @@ const handleDeleteJob = async (jobId) => {
             <div className="sidebar-submenu">
               <div
                 className={`sidebar-menu-item ${activeMenu === "jobs-list" ? "active" : ""}`}
-                onClick={() => {
-                  setActiveMenu("jobs-list");
-                  if (window.innerWidth <= 767) setIsSidebarOpen(false);
-                }}
+                onClick={() => sidebarClick("jobs-list")}
               >
                 📄 <span className="sidebar-menu-label">Job Listing</span>
               </div>
               <div
                 className={`sidebar-menu-item ${activeMenu === "add-job" ? "active" : ""}`}
-                onClick={() => {
-                  setActiveMenu("add-job");
-                  if (window.innerWidth <= 767) setIsSidebarOpen(false);
-                }}
+                onClick={() => sidebarClick("add-job")}
               >
                 ➕ <span className="sidebar-menu-label">Add Job</span>
               </div>
@@ -584,10 +615,7 @@ const handleDeleteJob = async (jobId) => {
           )}
 
           <div
-            onClick={() => {
-              setActiveMenu("settings");
-              if (window.innerWidth <= 767) setIsSidebarOpen(false);
-            }}
+            onClick={() => sidebarClick("settings")}
             className={`sidebar-menu-item ${activeMenu === "settings" ? "active" : ""}`}
           >
             <BsGear size={20} />
@@ -603,6 +631,7 @@ const handleDeleteJob = async (jobId) => {
             onClick={() => {
               localStorage.removeItem("adminToken");
               localStorage.removeItem("adminUser");
+              localStorage.removeItem(STORAGE_KEY);
               navigate("/admin/login");
             }}
             style={{ cursor: "pointer" }}
@@ -826,9 +855,9 @@ const handleDeleteJob = async (jobId) => {
 
               setReplyingTo(null);
               setReplyText("");
-              toast.success("Reply sent successfully");
+              toast.success("Reply sent successfully", { position: "top-center" });
             } catch (err) {
-              toast.error("Failed to send reply");
+              toast.error("Failed to send reply", { position: "top-center" });
             }
           }}
         >
