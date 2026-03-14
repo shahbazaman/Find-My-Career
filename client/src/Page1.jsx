@@ -37,7 +37,7 @@ const getStyle = (title = "") => {
 
 const IS_JOB_SEEKER = (role) => role === "job seekers";
 const CAN_VIEW_SEARCH = (role) => role === "job seekers" || role === "guest";
-const IS_RECRUITER = (role) => role === "recruiters";
+const IS_RECRUITER = (role) => role?.toLowerCase().includes("recruiter");
 
 export default function JobSearchPage() {
   const [role, setRole]               = useState("guest");
@@ -103,7 +103,9 @@ useEffect(() => {
       .catch((err) => console.error("Companies fetch error:", err))
       .finally(() => setLoadingCompanies(false));
   }, []);
-
+useEffect(() => {
+  if (!roleLoading) console.log("ROLE:", role);
+}, [roleLoading]);
   const dummyCategories = [
     { icon: <FaGraduationCap />, title: "Freshers",      jobs: "21,442", color: "#10b981", bgColor: "#ecfdf5", gradient: "linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)" },
     { icon: <FaLaptopCode />,    title: "IT",             jobs: "43,456", color: "#3b82f6", bgColor: "#eff6ff", gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" },
@@ -140,10 +142,11 @@ useEffect(() => {
     console.log({ skills, experience, location });
   };
 
-  // ✅ don't render anything until role is known
-  if (roleLoading) return null;
+ if (roleLoading) return null;
 
- if (IS_RECRUITER(role)) return null;
+if (IS_RECRUITER(role)) {
+  return null;
+}
 
   return (
     <div style={{
