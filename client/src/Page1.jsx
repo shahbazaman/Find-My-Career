@@ -36,7 +36,7 @@ const getStyle = (title = "") => {
 };
 
 // ✅ single source of truth — update here if role name ever changes
-const IS_JOB_SEEKER = (role) => role === "job seeker";
+const IS_JOB_SEEKER = (role) => role === "job seekers";
 
 export default function JobSearchPage() {
   const [role, setRole]               = useState("guest");
