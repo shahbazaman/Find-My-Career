@@ -35,8 +35,8 @@ const getStyle = (title = "") => {
   return ROLE_STYLES.find((s) => lower.includes(s.keyword)) || DEFAULT_STYLE;
 };
 
-// ✅ single source of truth — update here if role name ever changes
 const IS_JOB_SEEKER = (role) => role === "job seekers";
+const CAN_VIEW_SEARCH = (role) => role === "job seekers" || role === "guest";
 
 export default function JobSearchPage() {
   const [role, setRole]               = useState("guest");
@@ -51,7 +51,6 @@ export default function JobSearchPage() {
   const [realCompanies, setRealCompanies]   = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [loadingCompanies, setLoadingCompanies]   = useState(true);
-
   const userId = localStorage.getItem("userId");
 
   /* ── Fetch user role ── */
@@ -141,8 +140,7 @@ export default function JobSearchPage() {
   // ✅ don't render anything until role is known
   if (roleLoading) return null;
 
-  // ✅ recruiters and guests see nothing — no blank space
-  if (!IS_JOB_SEEKER(role)) return null;
+ if (!CAN_VIEW_SEARCH(role)) return null;
 
   return (
     <div style={{
