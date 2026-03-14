@@ -31,24 +31,27 @@ export const createJob = async (req, res) => {
  */
 export const getJobs = async (req, res) => {
   try {
-    const keyword = req.query.search
-      ? {
-          $or: [
-            { jobTitle: { $regex: req.query.search, $options: "i" } },
-            { companyName: { $regex: req.query.search, $options: "i" } },
-            { requirements: { $regex: req.query.search, $options: "i" } }
-          ]
-        }
-      : {};
+    const filter = {};
 
-    const jobs = await Job.find(keyword)
+    // existing search filter
+    if (req.query.search) {
+      filter.$or = [
+        { jobTitle:     { $regex: req.query.search, $options: "i" } },
+        { companyName:  { $regex: req.query.search, $options: "i" } },
+        { requirements: { $regex: req.query.search, $options: "i" } }
+      ];
+    }
+
+    // ✅ NEW: filter by exact jobTitle from Page2 card click
+    if (req.query.title) {
+      filter.jobTitle = { $regex: `^${req.query.title}$`, $options: "i" };
+    }
+
+    const jobs = await Job.find(filter)
       .sort({ createdAt: -1 })
       .select("-recruiter");
 
-    res.json({
-      jobs,
-      totalJobs: jobs.length
-    });
+    res.json({ jobs, totalJobs: jobs.length });
   } catch (error) {
     console.error("GET JOBS ERROR:", error);
     res.status(500).json({ message: error.message });

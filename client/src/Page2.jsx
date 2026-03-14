@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import {
   FaDatabase, FaChartLine, FaUserTie, FaJava,
   FaChevronRight, FaCode, FaRobot, FaHeadset,
@@ -10,31 +11,30 @@ import "./css/Page2.css";
 
 /* ── map keywords → icon + color ── */
 const ROLE_STYLES = [
-  { keyword: "data",        icon: <FaDatabase />,   color: "#4e73df" },
-  { keyword: "analyst",     icon: <FaChartLine />,  color: "#1cc88a" },
-  { keyword: "sales",       icon: <FaUserTie />,    color: "#f6c23e" },
-  { keyword: "java",        icon: <FaJava />,       color: "#e74a3b" },
-  { keyword: "frontend",    icon: <FaCode />,       color: "#36b9cc" },
-  { keyword: "ai",          icon: <FaRobot />,      color: "#6610f2" },
-  { keyword: "customer",    icon: <FaHeadset />,    color: "#fd7e14" },
-  { keyword: "design",      icon: <FaPenNib />,     color: "#e83e8c" },
-  { keyword: "backend",     icon: <FaCode />,       color: "#20c997" },
-  { keyword: "engineer",    icon: <FaRobot />,      color: "#6f42c1" },
+  { keyword: "data",      icon: <FaDatabase />,  color: "#4e73df" },
+  { keyword: "analyst",   icon: <FaChartLine />, color: "#1cc88a" },
+  { keyword: "sales",     icon: <FaUserTie />,   color: "#f6c23e" },
+  { keyword: "java",      icon: <FaJava />,      color: "#e74a3b" },
+  { keyword: "frontend",  icon: <FaCode />,      color: "#36b9cc" },
+  { keyword: "ai",        icon: <FaRobot />,     color: "#6610f2" },
+  { keyword: "customer",  icon: <FaHeadset />,   color: "#fd7e14" },
+  { keyword: "design",    icon: <FaPenNib />,    color: "#e83e8c" },
+  { keyword: "backend",   icon: <FaCode />,      color: "#20c997" },
+  { keyword: "engineer",  icon: <FaRobot />,     color: "#6f42c1" },
 ];
 
 const DEFAULT_STYLE = { icon: <FaBriefcase />, color: "#6c757d" };
 
 const getStyle = (title = "") => {
   const lower = title.toLowerCase();
-  return (
-    ROLE_STYLES.find((s) => lower.includes(s.keyword)) || DEFAULT_STYLE
-  );
+  return ROLE_STYLES.find((s) => lower.includes(s.keyword)) || DEFAULT_STYLE;
 };
 
 export default function Page2() {
-  const [allRoles, setAllRoles]     = useState([]);
+  const [allRoles, setAllRoles]       = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 4;
+  const navigate = useNavigate();
 
   /* ── fetch jobs, count by jobTitle ── */
   useEffect(() => {
@@ -43,14 +43,12 @@ export default function Page2() {
       .then((res) => {
         const jobs = res.data.jobs || [];
 
-        // count occurrences of each jobTitle
         const countMap = {};
         jobs.forEach((j) => {
           const t = j.jobTitle?.trim();
           if (t) countMap[t] = (countMap[t] || 0) + 1;
         });
 
-        // build role cards sorted by count desc
         const roles = Object.entries(countMap)
           .sort((a, b) => b[1] - a[1])
           .map(([title, count]) => {
@@ -77,6 +75,11 @@ export default function Page2() {
   const scrollToJobs = () => {
     const el = document.getElementById("jobs-section");
     if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  /* ── navigate to /jobs?title=<roleTitle> ── */
+  const handleRoleClick = (title) => {
+    navigate(`/jobs?title=${encodeURIComponent(title)}`);
   };
 
   return (
@@ -115,7 +118,12 @@ export default function Page2() {
               <>
                 <div className="cards-wrapper" key={currentPage}>
                   {currentRoles.map((role, index) => (
-                    <Card key={index} className="role-card border-0 shadow-sm animate-in">
+                    <Card
+                      key={index}
+                      className="role-card border-0 shadow-sm animate-in"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleRoleClick(role.title)}
+                    >
                       <Card.Body className="d-flex align-items-center justify-content-between p-3">
                         <div className="d-flex align-items-center">
                           <div

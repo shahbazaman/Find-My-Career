@@ -143,7 +143,7 @@ export default function JobSearchPage() {
 
   return (
     <div style={{
-      minHeight: "100vh",
+      minHeight: role === "job seekers" ? "100vh" : 0,
       position: "relative",
       overflow: "hidden",
       fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
