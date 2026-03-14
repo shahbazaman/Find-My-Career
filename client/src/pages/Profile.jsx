@@ -305,7 +305,7 @@ console.log("Saving profile for userId:", userId);
   payload
 );
     toast.success("Profile saved successfully 🎉");
-    navigate('/client/src/pages/Manage.jsx');
+    navigate('/manage');
     } catch (err) {
       console.error(err);
       toast.error("Error saving profile");

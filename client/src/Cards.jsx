@@ -67,7 +67,7 @@ const mappedJobs = jobsRes.data.jobs.map(job => {
     company: job.companyName,
     postion: job.jobTitle,
     skills: job.requirements,
-    salary: `${job.salaryMin || 0}$ - ${job.salaryMax || 0}$`,
+    salary: `${job.salaryMin || 0}₹ - ${job.salaryMax || 0}₹`,
     experiance: `${job.experienceMin || 0}-${job.experienceMax || 0}`,
     location: job.location,
     date: job.createdAt?.slice(0, 10),
@@ -574,8 +574,12 @@ const toggleApply = async (jobId) => {
                     width:"30%"
                   }}
                 >
-                  <BiRupee size={16} color="#667eea" />
-                  <span style={{ fontWeight: "600" }}>{job.salary}</span>
+                  {job.salary !== "0₹ - 0₹" && (
+                  <div>
+                    <BiRupee size={16} color="#667eea" />
+                    <span style={{ fontWeight: "600" }}>{job.salary}</span>
+                  </div>
+                )}
                 </div>
                 <div
                   style={{

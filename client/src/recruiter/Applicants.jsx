@@ -38,6 +38,7 @@ const Applicants = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
   const [showInterviewModal, setShowInterviewModal] = useState(false);
+  const [viewingApplicant, setViewingApplicant] = useState(null);
 const ROWS_PER_PAGE = 15;
 const [currentPage, setCurrentPage] = useState(1);
 
@@ -1012,6 +1013,15 @@ const paginatedApplicants = useMemo(() => {
                           {a.status}
                         </span>
                       </td>
+                      <td style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+                        <button
+                          className="btn btn-secondary"
+                          style={{ padding: "0.4rem 0.9rem", fontSize: "0.82rem" }}
+                          onClick={() => setViewingApplicant(a)}
+                        >
+                          <FiUser /> View
+                        </button>
+                        </td>
                       <td>
                         <select
                           className="status-select"
@@ -1206,6 +1216,145 @@ onClick={() => {
           </div>
         )}
       </div>
+      {/* ── APPLICANT DETAILS MODAL ── */}
+{viewingApplicant && (
+  <div
+    style={{
+      position: "fixed", inset: 0,
+      background: "rgba(0,0,0,0.5)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      zIndex: 9999, padding: "16px",
+    }}
+    onClick={() => setViewingApplicant(null)}
+  >
+    <div
+      style={{
+        background: "white", borderRadius: "16px",
+        width: "100%", maxWidth: "520px",
+        maxHeight: "85vh", overflowY: "auto",
+        padding: "32px", position: "relative",
+        boxShadow: "0 25px 60px rgba(0,0,0,0.3)",
+        animation: "modalFadeIn 0.25s ease-out",
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Close */}
+      <button
+        onClick={() => setViewingApplicant(null)}
+        style={{
+          position: "absolute", top: "16px", right: "16px",
+          background: "#f1f5f9", border: "none", borderRadius: "50%",
+          width: "32px", height: "32px", cursor: "pointer",
+          fontSize: "16px", display: "flex", alignItems: "center",
+          justifyContent: "center", color: "#64748b",
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.background = "#e2e8f0"}
+        onMouseLeave={(e) => e.currentTarget.style.background = "#f1f5f9"}
+      >✕</button>
+
+      {/* Avatar + Name */}
+      <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px" }}>
+        <div style={{
+          width: "56px", height: "56px", borderRadius: "50%",
+          background: "linear-gradient(135deg, #667eea, #764ba2)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          color: "white", fontSize: "22px", fontWeight: "700", flexShrink: 0,
+        }}>
+          {viewingApplicant.name?.trim()?.[0]?.toUpperCase() || "?"}
+        </div>
+        <div>
+          <h3 style={{ margin: 0, fontWeight: "700", fontSize: "1.2rem", color: "#1e293b" }}>
+            {viewingApplicant.name}
+          </h3>
+          <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: "13px" }}>
+            {viewingApplicant.email}
+          </p>
+        </div>
+      </div>
+
+      {/* Info cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "20px" }}>
+        {[
+          ["💼 Applied For",  viewingApplicant.jobTitle],
+          ["⏱ Experience",    calculateExperience(viewingApplicant.experience)],
+          ["📊 Status",       viewingApplicant.status],
+          ["📄 Resume",       viewingApplicant.resumeUrl ? "Uploaded" : "Not uploaded"],
+        ].map(([label, value]) => (
+          <div key={label} style={{
+            background: "#f8fafc", borderRadius: "10px",
+            padding: "12px 14px", border: "1px solid #e2e8f0",
+          }}>
+            <div style={{ fontSize: "11px", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "4px" }}>
+              {label}
+            </div>
+            <div style={{ fontSize: "14px", fontWeight: "600", color: "#1e293b" }}>
+              {value || "—"}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Experience list */}
+      {viewingApplicant.experience?.length > 0 && (
+        <div style={{ marginBottom: "16px" }}>
+          <p style={{ fontSize: "11px", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: "600", marginBottom: "10px" }}>
+            Experience
+          </p>
+          {viewingApplicant.experience.map((exp, i) => (
+            <div key={i} style={{
+              background: "#f8fafc", borderRadius: "10px",
+              padding: "12px 14px", marginBottom: "8px",
+              border: "1px solid #e2e8f0",
+            }}>
+              <div style={{ fontWeight: "600", fontSize: "14px", color: "#1e293b" }}>
+                {exp.position || "—"} {exp.company ? `@ ${exp.company}` : ""}
+              </div>
+              <div style={{ fontSize: "12px", color: "#64748b", marginTop: "4px" }}>
+                {exp.startDate ? new Date(exp.startDate).getFullYear() : "?"} —{" "}
+                {exp.endDate ? new Date(exp.endDate).getFullYear() : "Present"}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Resume button */}
+      {viewingApplicant.resumeUrl && (
+        <a href={viewingApplicant.resumeUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+          <button style={{
+            width: "100%", padding: "12px", borderRadius: "10px",
+            border: "2px solid #667eea", background: "white",
+            color: "#667eea", fontWeight: "600", fontSize: "14px",
+            cursor: "pointer", display: "flex", alignItems: "center",
+            justifyContent: "center", gap: "8px", transition: "all 0.2s",
+          }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "#667eea"; e.currentTarget.style.color = "white"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "white"; e.currentTarget.style.color = "#667eea"; }}
+          >
+            <FiExternalLink /> View Resume
+          </button>
+        </a>
+      )}
+
+      {/* Close footer */}
+      <div style={{ marginTop: "20px", display: "flex", justifyContent: "flex-end" }}>
+        <button
+          onClick={() => setViewingApplicant(null)}
+          style={{
+            padding: "10px 24px", borderRadius: "10px",
+            border: "2px solid #e2e8f0", background: "white",
+            fontWeight: "600", fontSize: "14px",
+            cursor: "pointer", color: "#475569", transition: "all 0.2s",
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "#f8fafc"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "white"; }}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </>
   );
 };

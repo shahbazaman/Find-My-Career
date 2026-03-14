@@ -93,8 +93,10 @@ const NavigationBar = () => {
           width: "40px",
           height: "40px",
           borderRadius: "50%",
-          objectFit: "cover",
+          objectFit: "contain",
+          objectPosition: "center",
           border: "2px solid #eee",
+          background: "#f5f5f5",
         }}
         onError={() => setImgError(true)}
       />
