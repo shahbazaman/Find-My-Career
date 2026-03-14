@@ -37,6 +37,7 @@ const getStyle = (title = "") => {
 
 const IS_JOB_SEEKER = (role) => role === "job seekers";
 const CAN_VIEW_SEARCH = (role) => role === "job seekers" || role === "guest";
+const IS_RECRUITER = (role) => role === "recruiters";
 
 export default function JobSearchPage() {
   const [role, setRole]               = useState("guest");
@@ -87,7 +88,9 @@ export default function JobSearchPage() {
       .catch((err) => console.error("Category fetch error:", err))
       .finally(() => setLoadingCategories(false));
   }, []);
-
+useEffect(() => {
+  if (!roleLoading) console.log("ROLE:", JSON.stringify(role));
+}, [roleLoading]);
   /* ── Fetch companies ── */
   useEffect(() => {
     setLoadingCompanies(true);
@@ -140,7 +143,7 @@ export default function JobSearchPage() {
   // ✅ don't render anything until role is known
   if (roleLoading) return null;
 
- if (!CAN_VIEW_SEARCH(role)) return null;
+ if (IS_RECRUITER(role)) return null;
 
   return (
     <div style={{

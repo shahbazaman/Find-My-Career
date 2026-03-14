@@ -7,7 +7,7 @@ import {
   BsEnvelope,
   BsCheckCircleFill
 } from "react-icons/bs";
-
+import { useNavigate } from "react-router-dom";
 /* ================= CONFIG ================= */
 const API_URL = `${import.meta.env.VITE_API_BASE_URL}/companies/me/profile`;
 const getStoredUser = () => {
@@ -19,7 +19,7 @@ const getStoredUser = () => {
 };
 export default function CompanyProfileForm() {
   const token = localStorage.getItem("token");
-
+const navigate = useNavigate();
   const [form, setForm] = useState({
     companyName: "",
     email: "",
@@ -112,6 +112,7 @@ export default function CompanyProfileForm() {
       });
 
       alert("Company profile saved successfully");
+      navigate("/manageCompany");
     } catch (err) {
       console.error("COMPANY PROFILE SAVE ERROR:", err);
       setError(err?.response?.data?.message || "Failed to save profile");
