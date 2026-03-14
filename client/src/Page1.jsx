@@ -8,7 +8,7 @@ import {
   FaCode, FaRobot, FaHeadset, FaPenNib, FaDatabase,
   FaUserTie, FaCogs, FaBullhorn
 } from "react-icons/fa";
-
+import { useNavigate } from "react-router-dom";
 const ROLE_STYLES = [
   { keyword: "data",      color: "#3b82f6", bgColor: "#eff6ff", gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", icon: <FaDatabase /> },
   { keyword: "developer", color: "#6366f1", bgColor: "#eef2ff", gradient: "linear-gradient(135deg, #667eea 0%, #4facfe 100%)", icon: <FaCode /> },
@@ -36,7 +36,7 @@ const getStyle = (title = "") => {
 };
 
 const IS_JOB_SEEKER = (role) => role === "job seekers";
-const CAN_VIEW_SEARCH = (role) => role === "job seekers" || role === "guest";
+const CAN_VIEW_SEARCH = (role) => role === "job seekers";
 const IS_RECRUITER = (role) => role?.toLowerCase().includes("recruiter");
 
 export default function JobSearchPage() {
@@ -47,7 +47,7 @@ export default function JobSearchPage() {
   const [location, setLocation]       = useState("");
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const [hoveredCompany, setHoveredCompany]   = useState(null);
-
+  const navigate = useNavigate();
   const [realCategories, setRealCategories] = useState([]);
   const [realCompanies, setRealCompanies]   = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
@@ -164,7 +164,8 @@ if (IS_RECRUITER(role)) {
       <Container fluid style={{ padding: "40px 15px", position: "relative", zIndex: 1 }}>
 
         {/* ── Search Bar ── */}
-        <Row className="justify-content-center mb-5">
+        {CAN_VIEW_SEARCH(role) && (
+<Row className="justify-content-center mb-5">
           <Col lg={10}>
             <Card style={{
               borderRadius: "30px", border: "none",
@@ -226,9 +227,11 @@ if (IS_RECRUITER(role)) {
             </Card>
           </Col>
         </Row>
+        )}
 
         {/* ── Browse by Category + Top Companies ── */}
-        <Row className="justify-content-center mb-5">
+        {CAN_VIEW_SEARCH(role) && (
+<Row className="justify-content-center mb-5">
           <Col lg={10}>
             <Card style={{
               borderRadius: "30px", border: "none",
@@ -263,6 +266,7 @@ if (IS_RECRUITER(role)) {
                         }}
                         onMouseEnter={() => setHoveredCategory(i)}
                         onMouseLeave={() => setHoveredCategory(null)}
+                        onClick={() => navigate(`/jobs?title=${encodeURIComponent(cat.title)}`)} 
                       >
                         <Card.Body style={{ padding: "28px 16px" }}>
                           <div style={{
@@ -354,10 +358,11 @@ if (IS_RECRUITER(role)) {
               </Card.Body>
             </Card>
           </Col>
-        </Row>
+        </Row>)}
 
         {/* ── View All Jobs CTA ── */}
-        <Row className="justify-content-center mt-5">
+        {CAN_VIEW_SEARCH(role) && (
+<Row className="justify-content-center mt-5">
           <Col lg={5} md={6} style={{ justifyItems: "center" }}>
             <Button style={{
               width: "100%", maxWidth: "220px",
@@ -373,7 +378,7 @@ if (IS_RECRUITER(role)) {
               View All Jobs <FaArrowRight />
             </Button>
           </Col>
-        </Row>
+        </Row>)}
 
       </Container>
 
