@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   FaCode,
   FaBoxOpen,
@@ -25,7 +25,7 @@ import {
 const DbmsNotes = () => {
   const topicsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);
-
+  const topRef = useRef(null);
   const topics = [
     {
       icon: <FaCode />,
@@ -496,7 +496,78 @@ const DbmsNotes = () => {
             "Real-life example: Event listeners in the browser — multiple handlers react to a single button click."
         }
       ]
-    }
+    },{
+    icon: <FaCode />,
+    title: "this Keyword",
+    questions: [
+      { q: "What does 'this' refer to in JavaScript?", a: "'this' refers to the object that is currently executing the function. Its value depends on how the function is called, not where it is defined.", example: "Real-life example: Inside a method, 'this' refers to the object owning the method." },
+      { q: "How does 'this' behave in arrow functions?", a: "Arrow functions do not have their own 'this'. They inherit 'this' from the surrounding lexical scope.", example: "Real-life example: An arrow function inside a class method uses the class instance as 'this'." },
+      { q: "What are call(), apply(), and bind()?", a: "call() and apply() invoke a function with an explicit 'this'. bind() returns a new function with 'this' permanently bound.", example: "Real-life example: greet.call(user) calls greet with user as 'this'." }
+    ]
+  },
+  {
+    icon: <FaSyncAlt />,
+    title: "Event Handling",
+    questions: [
+      { q: "How do you add event listeners in JavaScript?", a: "Using addEventListener(event, callback) on a DOM element. It supports multiple listeners on the same element.", example: "Real-life example: btn.addEventListener('click', handleClick)." },
+      { q: "What is event bubbling?", a: "Event bubbling means an event triggered on a child element propagates up to parent elements unless stopped with stopPropagation().", example: "Real-life example: Clicking a button inside a div triggers both the button and div click handlers." },
+      { q: "What is the difference between preventDefault() and stopPropagation()?", a: "preventDefault() stops the default browser action (like form submit). stopPropagation() stops the event from bubbling up the DOM.", example: "Real-life example: Preventing a form from reloading the page on submit." }
+    ]
+  },
+  {
+    icon: <FaBolt />,
+    title: "Debouncing and Throttling",
+    questions: [
+      { q: "What is debouncing?", a: "Debouncing delays the execution of a function until after a specified time has passed since the last call. Useful for search inputs.", example: "Real-life example: Search bar — API is called only after the user stops typing for 300ms." },
+      { q: "What is throttling?", a: "Throttling limits how often a function can execute — it runs at most once in a given time interval regardless of how many times it is triggered.", example: "Real-life example: Scroll event handler running at most once every 200ms." },
+      { q: "When to use debounce vs throttle?", a: "Use debounce when you want to wait for activity to stop (search, resize). Use throttle when you want regular execution during continuous activity (scroll, mousemove).", example: "Real-life example: Window resize → debounce. Game character movement → throttle." }
+    ]
+  },
+  {
+    icon: <FaDatabase />,
+    title: "JSON and Data Handling",
+    questions: [
+      { q: "What is JSON?", a: "JSON (JavaScript Object Notation) is a lightweight data format for storing and transmitting data. It is text-based and language-independent.", example: "Real-life example: API responses are usually sent as JSON strings." },
+      { q: "What is JSON.stringify() and JSON.parse()?", a: "JSON.stringify() converts a JavaScript object to a JSON string. JSON.parse() converts a JSON string back to a JavaScript object.", example: "Real-life example: Saving an object to localStorage requires stringify; reading it back requires parse." },
+      { q: "What are common JSON pitfalls?", a: "JSON does not support undefined, functions, or circular references. These are silently omitted or throw errors during stringify.", example: "Real-life example: { fn: () => {} } stringifies to {} because functions are dropped." }
+    ]
+  },
+  {
+    icon: <FaShieldAlt />,
+    title: "Security in JavaScript",
+    questions: [
+      { q: "What is XSS (Cross-Site Scripting)?", a: "XSS is an attack where malicious scripts are injected into web pages viewed by other users. Avoid using innerHTML with user data.", example: "Real-life example: An attacker injects a script tag via a comment field that steals cookies." },
+      { q: "What is CSRF?", a: "CSRF (Cross-Site Request Forgery) tricks a user into making an unintended request to another site where they are authenticated.", example: "Real-life example: A malicious link that submits a bank transfer on the user's behalf." },
+      { q: "How to protect against XSS?", a: "Use textContent instead of innerHTML, sanitize user inputs, and use Content Security Policy (CSP) headers.", example: "Real-life example: element.textContent = userInput is safe; element.innerHTML = userInput is dangerous." }
+    ]
+  },
+  {
+    icon: <FaLayerGroup />,
+    title: "Memory Management",
+    questions: [
+      { q: "How does JavaScript manage memory?", a: "JavaScript automatically allocates memory when objects are created and frees it via garbage collection when objects are no longer reachable.", example: "Real-life example: A variable going out of scope is eligible for garbage collection." },
+      { q: "What is a memory leak?", a: "A memory leak occurs when memory that is no longer needed is not released. Common causes include forgotten event listeners, global variables, and closures holding large references.", example: "Real-life example: Adding event listeners in a loop without removing them causes the DOM to retain memory." },
+      { q: "How to prevent memory leaks?", a: "Remove event listeners when not needed, avoid unnecessary global variables, and clear timers with clearTimeout/clearInterval.", example: "Real-life example: Call removeEventListener in React's useEffect cleanup function." }
+    ]
+  },
+  {
+    icon: <FaProjectDiagram />,
+    title: "Prototype vs Class Inheritance",
+    questions: [
+      { q: "What is prototypal inheritance?", a: "In prototypal inheritance, objects directly inherit from other objects via the prototype chain rather than through class blueprints.", example: "Real-life example: const dog = Object.create(animal) — dog inherits from animal directly." },
+      { q: "How does ES6 class inheritance differ?", a: "ES6 classes are syntactic sugar over prototypal inheritance. They use extends and super but still use the prototype chain internally.", example: "Real-life example: class Dog extends Animal is cleaner syntax but behaves the same as prototype-based code." },
+      { q: "What is Object.create()?", a: "Object.create(proto) creates a new object with the specified prototype, allowing manual prototype chain setup.", example: "Real-life example: const obj = Object.create(baseObj) inherits all baseObj methods." }
+    ]
+  },
+  {
+    icon: <FaKey />,
+    title: "Proxy and Reflect",
+    questions: [
+      { q: "What is a Proxy in JavaScript?", a: "A Proxy wraps an object and intercepts operations like get, set, and delete using handler traps, allowing custom behavior.", example: "Real-life example: Validating property assignments before they are set on an object." },
+      { q: "What is Reflect?", a: "Reflect is a built-in object that provides methods for interceptable JavaScript operations, mirroring the Proxy traps.", example: "Real-life example: Reflect.set(target, key, value) inside a Proxy handler to set the value normally." },
+      { q: "What are common use cases for Proxy?", a: "Validation, logging, access control, data binding, and building reactive systems like Vue 3's reactivity.", example: "Real-life example: Vue 3 uses Proxy to detect when reactive data changes and update the UI." }
+    ]
+  },
   ];
 
   const totalPages = Math.ceil(topics.length / topicsPerPage);
@@ -504,11 +575,13 @@ const DbmsNotes = () => {
   const paginatedTopics = topics.slice(startIndex, startIndex + topicsPerPage);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }, [currentPage]);
 
   return (
-    <main style={styles.container}>
+    <main style={styles.container} ref={topRef}>
       <header style={styles.header}>
         <h1 style={styles.title}>JavaScript</h1>
         <p style={styles.subtitle}>
@@ -579,7 +652,8 @@ const styles = {
     maxWidth: "1200px",
     margin: "0 auto",
     fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",
-    backgroundColor: "#ebeaea"
+    backgroundColor: "#ebeaea",
+    scrollMarginTop: "80px",
   },
   header: {
     textAlign: "center",

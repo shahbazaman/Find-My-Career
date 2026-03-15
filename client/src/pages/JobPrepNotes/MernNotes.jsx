@@ -1,5 +1,5 @@
 // File: src/pages/JobPrepNotes/MernNotes.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   FaProjectDiagram,
   FaListUl,
@@ -27,7 +27,7 @@ import {
 const MernNotes = () => {
   const topicsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);
-
+  const topRef = useRef(null);
 const topics = [
   {
     icon: <FaLayerGroup />,
@@ -293,7 +293,78 @@ const topics = [
         example: "Real-life example: Ensuring that when a job link is shared on LinkedIn, it shows the correct Job Title and Image instead of just the website name."
       }
     ]
-  }
+  },{
+    icon: <FaDatabase />,
+    title: "MongoDB Advanced Queries",
+    questions: [
+      { q: "What is the aggregation pipeline in MongoDB?", a: "The aggregation pipeline processes documents through multiple stages like $match, $group, $sort, and $project to perform complex data transformations and analytics.", example: "Real-life example: Finding the total number of job applications per company from a large applications collection." },
+      { q: "What are MongoDB indexes and why are they important?", a: "Indexes store a small portion of data in an easy-to-traverse form. Without indexes, MongoDB scans every document (collection scan), which is very slow for large datasets.", example: "Real-life example: Adding an index on 'email' field so user lookups during login are instant instead of scanning 1 million records." },
+      { q: "What is the difference between embedded documents and references in MongoDB?", a: "Embedded documents store related data in a single document (faster reads). References store related data in separate collections linked by IDs (better for large, frequently updated data).", example: "Real-life example: Embed 'address' inside user document, but reference 'orders' separately since orders grow over time." }
+    ]
+  },
+  {
+    icon: <FaServer />,
+    title: "REST API Design",
+    questions: [
+      { q: "What are RESTful API best practices?", a: "Use proper HTTP methods (GET, POST, PUT, DELETE), meaningful endpoint names (nouns not verbs), correct status codes, versioning (/api/v1/), and pagination for large datasets.", example: "Real-life example: GET /api/v1/jobs returns all jobs. POST /api/v1/jobs creates a new job. DELETE /api/v1/jobs/:id deletes one." },
+      { q: "What HTTP status codes should every developer know?", a: "200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 500 Internal Server Error.", example: "Real-life example: Returning 401 when JWT token is missing, 403 when user lacks permission, 404 when job ID doesn't exist." },
+      { q: "What is the difference between PUT and PATCH?", a: "PUT replaces the entire resource with new data. PATCH updates only the specified fields of an existing resource.", example: "Real-life example: PATCH /users/:id to update just the phone number without sending the entire user object." }
+    ]
+  },
+  {
+    icon: <FaReact />,
+    title: "React Hooks (Deep Dive)",
+    questions: [
+      { q: "What is the difference between useEffect with [], no array, and [dependency]?", a: "Empty [] runs once on mount (like componentDidMount). No array runs after every render. [dependency] runs only when that dependency changes.", example: "Real-life example: Fetch user data once on page load [], but re-fetch when userId changes [userId]." },
+      { q: "What is useMemo and useCallback?", a: "useMemo memoizes a computed value to avoid recalculation on every render. useCallback memoizes a function reference to prevent child components from re-rendering unnecessarily.", example: "Real-life example: Wrapping an expensive filter function with useMemo so it only recalculates when the job list changes." },
+      { q: "What is useReducer and when to use it over useState?", a: "useReducer is better when state logic is complex, has multiple sub-values, or the next state depends on the previous one. It follows the Redux pattern locally.", example: "Real-life example: Managing a multi-step form with fields, validation errors, and submission status together." }
+    ]
+  },
+  {
+    icon: <FaNodeJs />,
+    title: "Node.js Streams and File Handling",
+    questions: [
+      { q: "What are streams in Node.js?", a: "Streams are objects that let you read or write data piece by piece (chunks) instead of loading everything into memory at once. Types: Readable, Writable, Duplex, Transform.", example: "Real-life example: Streaming a large CSV file of job applications to process records one by one without crashing the server." },
+      { q: "What is the difference between fs.readFile and fs.createReadStream?", a: "fs.readFile loads the entire file into memory before processing. fs.createReadStream reads the file in chunks, making it memory-efficient for large files.", example: "Real-life example: Use createReadStream to serve a large video or PDF resume download without high memory usage." },
+      { q: "What is the cluster module in Node.js?", a: "The cluster module allows Node.js to create child processes that share the same server port, utilizing all CPU cores since Node is single-threaded by default.", example: "Real-life example: A server with 8 CPU cores spawns 8 worker processes to handle 8x more simultaneous requests." }
+    ]
+  },
+  {
+    icon: <FaLock />,
+    title: "JWT and Session Management",
+    questions: [
+      { q: "What is the structure of a JWT token?", a: "A JWT has three parts separated by dots: Header (algorithm), Payload (user data/claims), and Signature (verification hash). Only the signature is secret.", example: "Real-life example: Decoding a JWT on jwt.io shows the user ID and role stored in the payload in plain base64." },
+      { q: "What is the difference between Access Token and Refresh Token?", a: "Access tokens are short-lived (15 min) for security. Refresh tokens are long-lived (7 days) and used to get a new access token without re-login.", example: "Real-life example: When your access token expires, the frontend silently calls /refresh to get a new one, keeping the user logged in." },
+      { q: "Where should JWT tokens be stored on the client?", a: "Storing in HttpOnly cookies is safest (XSS-proof). Storing in localStorage is convenient but vulnerable to XSS attacks. Never store in regular cookies without HttpOnly flag.", example: "Real-life example: Banking apps use HttpOnly cookies; simpler apps often use localStorage despite the risk." }
+    ]
+  },
+  {
+    icon: <FaSync />,
+    title: "React Context API",
+    questions: [
+      { q: "What is the Context API and when to use it?", a: "Context API provides a way to pass data through the component tree without prop drilling. Use it for global data like theme, user auth, or language settings.", example: "Real-life example: Storing the logged-in user's name in Context so any component (navbar, sidebar, profile) can read it directly." },
+      { q: "What is the difference between Context API and Redux?", a: "Context API is simpler and built-in, suitable for low-frequency updates. Redux is better for complex state with many actions, middleware needs, and frequent updates across many components.", example: "Real-life example: Use Context for dark/light theme toggle. Use Redux for a shopping cart that updates across 20+ components." },
+      { q: "What is the performance concern with Context API?", a: "When Context value changes, ALL components consuming that context re-render, even if they only use one part of the value. Split contexts or use useMemo to fix this.", example: "Real-life example: Separating UserContext and ThemeContext so a theme change doesn't re-render all user-related components." }
+    ]
+  },
+  {
+    icon: <FaCloudUploadAlt />,
+    title: "File Upload and Cloud Storage",
+    questions: [
+      { q: "How do you handle file uploads in MERN?", a: "Use Multer middleware on the Express backend to handle multipart/form-data. Files can be stored locally or uploaded to cloud services like AWS S3 or Cloudinary.", example: "Real-life example: A job seeker uploading their resume PDF which is stored in AWS S3 and the URL saved in MongoDB." },
+      { q: "What is Cloudinary and why is it used?", a: "Cloudinary is a cloud media management service that handles image/video upload, storage, transformation, and delivery via CDN automatically.", example: "Real-life example: Uploading a company logo that Cloudinary automatically resizes to thumbnail, medium, and large versions." },
+      { q: "What is the difference between multipart/form-data and application/json?", a: "multipart/form-data is used when sending files along with text fields. application/json is used for sending plain JSON data without file attachments.", example: "Real-life example: Resume upload form uses multipart/form-data. Login form sending email and password uses application/json." }
+    ]
+  },
+  {
+    icon: <FaTachometerAlt />,
+    title: "Error Handling in MERN",
+    questions: [
+      { q: "What is centralized error handling in Express?", a: "A global error handler middleware with 4 parameters (err, req, res, next) catches all errors passed via next(error) and returns a consistent error response format.", example: "Real-life example: Instead of every route having its own try/catch, errors are passed to a single handler that returns {success: false, message: err.message}." },
+      { q: "How do you handle async errors in Express?", a: "Wrap async route handlers with a higher-order function (asyncHandler/catchAsync) that automatically calls next(error) if the promise rejects, avoiding repetitive try/catch blocks.", example: "Real-life example: const asyncHandler = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);" },
+      { q: "What are custom error classes in Node.js?", a: "Extending the built-in Error class allows creating errors with custom status codes and messages, making error responses more structured and informative.", example: "Real-life example: class AppError extends Error { constructor(message, statusCode) { super(message); this.statusCode = statusCode; } }" }
+    ]
+  },
 ];
 
   const totalPages = Math.ceil(topics.length / topicsPerPage);
@@ -304,11 +375,13 @@ const topics = [
   );
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }, [currentPage]);
 
   return (
-    <main style={styles.container}>
+    <main style={styles.container} ref={topRef}>
       <header style={styles.header}>
         <h1 style={styles.title}>MERN Stack</h1>
         <p style={styles.subtitle}>
@@ -380,7 +453,8 @@ const styles = {
     padding: "24px",
     maxWidth: "1200px",
     margin: "0 auto",
-    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",backgroundColor:"#ebeaea"
+    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",backgroundColor:"#ebeaea",
+    scrollMarginTop: "80px",
   },
   header: {
     textAlign: "center",

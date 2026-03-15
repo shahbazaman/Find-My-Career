@@ -1,4 +1,4 @@
-  import React, { useState } from "react";
+  import React, { useEffect, useState } from "react";
   import { ToastContainer, toast } from "react-toastify";
   import "react-toastify/dist/ReactToastify.css";
   import { 
@@ -11,7 +11,7 @@
     FiCheck
   } from "react-icons/fi";
   import "./AdminLogin.css";
-  import { useNavigate } from "react-router-dom";
+  import { useLocation, useNavigate } from "react-router-dom";
 
   const AdminLogin = () => {
     const [formData, setFormData] = useState({
@@ -28,7 +28,12 @@
         [e.target.name]: e.target.value,
       });
     };
-
+    const location = useLocation();
+useEffect(() => {
+  if (location.state?.loggedOut) {
+    toast.success("Logged out successfully", { position: "top-center" });
+  }
+}, []);
     const handleSubmit = async (e) => {
       e.preventDefault();
       

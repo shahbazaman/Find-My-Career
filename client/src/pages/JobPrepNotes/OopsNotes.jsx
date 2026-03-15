@@ -23,12 +23,12 @@ import {
   FaRecycle,
   FaShieldAlt
 } from "react-icons/fa";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const OopsNotes = () => {
   const topicsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);
-
+  const topRef = useRef(null);
 const topics = [
   {
     icon: <FaObjectGroup />,
@@ -524,7 +524,78 @@ const topics = [
         "Real-life example: Explaining design choices confidently."
     }
   ]
-}
+},{
+    icon: <FaDraftingCompass />,
+    title: "SOLID Principles (Deep Dive)",
+    questions: [
+      { q: "What is the Single Responsibility Principle (SRP)?", a: "A class should have only one reason to change — it should do one thing only. This makes classes easier to test, maintain, and understand.", example: "Real-life example: A UserService class only handles user logic. A separate EmailService handles email sending — not the same class." },
+      { q: "What is the Open/Closed Principle (OCP)?", a: "Classes should be open for extension but closed for modification. Add new features by extending, not by editing existing code.", example: "Real-life example: Adding a new payment method (UPI) by creating a new class that implements PaymentInterface, without changing existing CreditCard class." },
+      { q: "What is the Liskov Substitution Principle (LSP)?", a: "A child class should be substitutable for its parent class without breaking the application.", example: "Real-life example: If Bird has a fly() method, Penguin (which can't fly) should not extend Bird — it violates LSP." }
+    ]
+  },
+  {
+    icon: <FaPuzzlePiece />,
+    title: "Design Patterns (Basics)",
+    questions: [
+      { q: "What are design patterns?", a: "Design patterns are reusable solutions to commonly occurring problems in software design. They are divided into Creational, Structural, and Behavioral patterns.", example: "Real-life example: Using Singleton to ensure only one database connection exists in the entire application." },
+      { q: "What is the Singleton pattern?", a: "Singleton ensures only one instance of a class exists and provides a global access point to it.", example: "Real-life example: A Logger class that writes to one log file — creating multiple instances would cause conflicts." },
+      { q: "What is the Factory pattern?", a: "Factory pattern creates objects without exposing the instantiation logic. A factory method decides which class to instantiate based on input.", example: "Real-life example: A NotificationFactory that returns EmailNotification or SMSNotification based on user preference." }
+    ]
+  },
+  {
+    icon: <FaRandom />,
+    title: "Static and Final Keywords",
+    questions: [
+      { q: "What is a static method or variable?", a: "Static members belong to the class itself, not to any instance. They are shared across all objects of that class.", example: "Real-life example: A counter variable that tracks how many User objects have been created — it must be static to be shared." },
+      { q: "What does the final keyword do in OOP?", a: "final on a variable makes it a constant. final on a method prevents overriding. final on a class prevents inheritance.", example: "Real-life example: The Math class in Java is final — no class can extend it to override its methods." },
+      { q: "Can a static method be overridden?", a: "No. Static methods are resolved at compile time (method hiding), not runtime. They cannot be overridden in the true polymorphic sense.", example: "Real-life example: Calling Parent.staticMethod() always calls the parent version regardless of which object reference you use." }
+    ]
+  },
+  {
+    icon: <FaShieldAlt />,
+    title: "Access Modifiers",
+    questions: [
+      { q: "What are the four access modifiers in Java/C++?", a: "private (same class only), default/package (same package), protected (same package + subclasses), public (everywhere).", example: "Real-life example: Bank balance is private. Account number is protected for subclasses. Bank name is public." },
+      { q: "Why should we prefer private over public for fields?", a: "Private fields enforce encapsulation — external code cannot directly modify internal state, reducing bugs and unintended side effects.", example: "Real-life example: Making salary private and exposing it only through getSalary() with validation logic inside." },
+      { q: "What is the difference between protected and private in inheritance?", a: "Private members are NOT inherited by child classes. Protected members ARE accessible in child classes but not outside the class hierarchy.", example: "Real-life example: A parent class Account has private balance — even the SavingsAccount child class cannot directly access it." }
+    ]
+  },
+  {
+    icon: <FaSyncAlt />,
+    title: "Generics and Templates",
+    questions: [
+      { q: "What are generics in OOP?", a: "Generics allow classes and methods to operate on any data type while providing type safety at compile time, avoiding unnecessary casting.", example: "Real-life example: A Stack<T> class that works for Stack<Integer>, Stack<String>, or Stack<User> without rewriting the class." },
+      { q: "Why are generics better than using Object type?", a: "Using Object type requires casting and can cause ClassCastException at runtime. Generics catch type errors at compile time.", example: "Real-life example: List<String> prevents accidentally adding an Integer to a list of Strings." },
+      { q: "What is a bounded type parameter in generics?", a: "Bounded type parameters restrict which types can be used. <T extends Number> means T can only be Number or its subclasses.", example: "Real-life example: A calculateSum() method that only accepts Number types — Integer, Double, Float — not String." }
+    ]
+  },
+  {
+    icon: <FaNetworkWired />,
+    title: "Dependency Injection",
+    questions: [
+      { q: "What is Dependency Injection (DI)?", a: "DI is a design pattern where an object receives its dependencies from outside rather than creating them internally. It promotes loose coupling.", example: "Real-life example: Instead of UserService creating its own DatabaseConnection, it receives one via constructor — making it easy to swap with a mock database in tests." },
+      { q: "What are the types of Dependency Injection?", a: "Constructor Injection (via constructor), Setter Injection (via setter method), and Interface Injection (via interface method).", example: "Real-life example: Spring Framework in Java uses constructor injection by default for mandatory dependencies." },
+      { q: "How does DI relate to the Dependency Inversion Principle?", a: "Dependency Inversion says high-level modules should depend on abstractions, not concrete classes. DI is the technique used to implement this principle.", example: "Real-life example: UserService depends on IEmailService interface, not on GmailService directly — so you can switch to OutlookService without changing UserService." }
+    ]
+  },
+  {
+    icon: <FaCodeBranch />,
+    title: "Operator Overloading",
+    questions: [
+      { q: "What is operator overloading?", a: "Operator overloading allows redefining how operators like +, -, *, == work for user-defined classes.", example: "Real-life example: A Vector class where v1 + v2 adds coordinates instead of throwing an error." },
+      { q: "Which languages support operator overloading?", a: "C++ and Python support operator overloading. Java does not support it for user-defined classes (only for String concatenation internally).", example: "Real-life example: Python's __add__ method lets you define what + means for a Money class." },
+      { q: "What are the benefits and risks of operator overloading?", a: "Benefit: makes code more readable and intuitive. Risk: can confuse other developers if overloaded behavior is unexpected or inconsistent.", example: "Real-life example: Overloading == to compare object values instead of references is useful — but overloading + to do subtraction is confusing." }
+    ]
+  },
+  {
+    icon: <FaRecycle />,
+    title: "Immutability in OOP",
+    questions: [
+      { q: "What is an immutable object?", a: "An immutable object is one whose state cannot be changed after creation. All fields are set once in the constructor and never modified.", example: "Real-life example: Java's String class is immutable — every 'modification' creates a new String object." },
+      { q: "How do you create an immutable class?", a: "Make all fields private and final, provide only a constructor (no setters), and ensure no methods modify state or return mutable references.", example: "Real-life example: A Money class with private final amount and currency — safe to share across threads without synchronization." },
+      { q: "Why are immutable objects preferred in concurrent applications?", a: "Immutable objects are inherently thread-safe because their state never changes — no synchronization is needed, reducing bugs and complexity.", example: "Real-life example: Sharing a configuration object across multiple threads without locks." }
+    ]
+  },
 ];
 
 
@@ -536,11 +607,13 @@ const topics = [
   );
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }, [currentPage]);
 
   return (
-    <main style={styles.container}>
+    <main style={styles.container} ref={topRef}>
       <header style={styles.header}>
         <h1 style={styles.title}>Object Oriented Programming</h1>
         <p style={styles.subtitle}>
@@ -612,7 +685,8 @@ const styles = {
     padding: "24px",
     maxWidth: "1200px",
     margin: "0 auto",
-    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",backgroundColor:"#ebeaea"
+    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",backgroundColor:"#ebeaea",
+    scrollMarginTop: "80px", 
   },
   header: {
     textAlign: "center",

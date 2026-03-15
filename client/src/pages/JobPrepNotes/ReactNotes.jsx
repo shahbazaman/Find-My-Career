@@ -11,22 +11,14 @@ import {
   FaBolt,
   FaRoute,
   FaTachometerAlt,
-  FaTools,
-  FaCloudDownloadAlt,    // For Data Fetching
-  FaPuzzlePiece,         // For Design Patterns
-  FaUsersCog,            // For Context API
-  FaMicroscope,          // For Profiling/Debugging
-  FaUniversalAccess,     // For Portals/Accessibility
-  FaSkullCrossbones,     // For Error Boundaries
-  FaExpandArrowsAlt,     // For Lifting State Up
-  FaLink,                // For Refs
-  FaBrain                // For Memoization
+  FaTools,FaCloudDownloadAlt,FaPuzzlePiece, FaUsersCog,FaMicroscope,FaUniversalAccess,FaSkullCrossbones,FaExpandArrowsAlt,FaLink,
+  FaBrain                
 } from "react-icons/fa";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 const ReactNotes = () => {
   const topicsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);
-
+  const topRef = useRef(null);
 const topics = [
   {
     icon: <FaReact />,
@@ -311,7 +303,69 @@ const topics = [
         example: "Real-life example: Detecting that you are using a legacy lifecycle method that will be removed in future React versions."
       }
     ]
-  }
+  },{
+    icon: <FaBolt />,
+    title: "React Lifecycle (Functional)",
+    questions: [
+      { q: "What are the lifecycle phases in a functional component?", a: "Mount (component appears), Update (state/props change), Unmount (component removed). useEffect with [], [deps], and cleanup function handles all three phases.", example: "Real-life example: [] = fetch data on page load. [userId] = re-fetch when user changes. cleanup = cancel API call when user leaves the page." },
+      { q: "How do you run code on component unmount?", a: "Return a cleanup function from useEffect. It runs when the component is removed from the DOM, preventing memory leaks from timers, subscriptions, or event listeners.", example: "Real-life example: return () => clearInterval(timer) inside useEffect to stop a countdown when the modal closes." },
+      { q: "What happens if you update state inside useEffect without a dependency array?", a: "It causes an infinite loop — state update triggers re-render, re-render triggers useEffect, which updates state again, forever.", example: "Real-life example: setCount(count + 1) inside useEffect with no deps array crashes the app with infinite re-renders." }
+    ]
+  },
+  {
+    icon: <FaDatabase />,
+    title: "Forms and Validation in React",
+    questions: [
+      { q: "What is the difference between controlled and uncontrolled forms?", a: "Controlled forms store input values in React state — React is the single source of truth. Uncontrolled forms store values in the DOM itself, accessed via refs.", example: "Real-life example: A registration form using useState for each field is controlled. A simple file upload using useRef is uncontrolled." },
+      { q: "How do you handle form validation in React?", a: "Validate on onChange (real-time), onBlur (when field loses focus), or onSubmit. Set error messages in state and display them conditionally below each field.", example: "Real-life example: Showing 'Email is required' in red under the email field when the user clicks Submit without filling it." },
+      { q: "What are form libraries used in React projects?", a: "React Hook Form (performance-focused, minimal re-renders), Formik (popular, feature-rich), and Yup (schema-based validation used alongside both).", example: "Real-life example: Using React Hook Form with Yup to validate a multi-step job application form with 10+ fields." }
+    ]
+  },
+  {
+    icon: <FaRoute />,
+    title: "React Router (Advanced)",
+    questions: [
+      { q: "What is the difference between useNavigate and useLocation?", a: "useNavigate returns a function to programmatically redirect the user. useLocation returns the current URL object including pathname, search params, and state.", example: "Real-life example: After login, useNavigate('/dashboard') redirects the user. useLocation reads ?redirectTo=/profile from the URL." },
+      { q: "What are protected routes?", a: "Protected routes check if a user is authenticated before rendering a page. If not, they redirect to the login page using useNavigate or the Navigate component.", example: "Real-life example: Wrapping /dashboard and /profile in an AuthGuard component that redirects to /login if no token exists in localStorage." },
+      { q: "What are dynamic routes in React Router?", a: "Dynamic routes use URL parameters (/:id) to render different content based on the URL. useParams() hook extracts these parameters inside the component.", example: "Real-life example: /jobs/:jobId renders different job details based on which job was clicked. useParams() gives the jobId value." }
+    ]
+  },
+  {
+    icon: <FaLayerGroup />,
+    title: "Code Splitting and Lazy Loading",
+    questions: [
+      { q: "What is code splitting in React?", a: "Code splitting breaks the app bundle into smaller chunks that are loaded on demand instead of loading everything upfront. React.lazy() and dynamic import() enable this.", example: "Real-life example: The admin dashboard code is only downloaded when an admin user navigates to /admin — regular users never download it." },
+      { q: "How do you implement lazy loading in React?", a: "Use React.lazy(() => import('./Component')) with a Suspense wrapper that shows a fallback (loading spinner) while the component loads.", example: "Real-life example: const Dashboard = React.lazy(() => import('./Dashboard')); wrapped in <Suspense fallback={<Spinner />}>." },
+      { q: "What is the difference between lazy loading components and images?", a: "Component lazy loading uses React.lazy(). Image lazy loading uses the native loading='lazy' HTML attribute or Intersection Observer API to load images only when they enter the viewport.", example: "Real-life example: A job listing page with 100 company logos — images load only as the user scrolls down." }
+    ]
+  },
+  {
+    icon: <FaTools />,
+    title: "Testing React Components",
+    questions: [
+      { q: "What tools are used to test React components?", a: "Jest (test runner + assertions), React Testing Library (RTL) for component testing, and Cypress for end-to-end testing. RTL is preferred because it tests behavior, not implementation.", example: "Real-life example: Testing that clicking 'Add to Cart' button increases the cart count by 1 — without caring about internal state structure." },
+      { q: "What is the difference between getBy, queryBy, and findBy in RTL?", a: "getBy throws if element not found (synchronous). queryBy returns null if not found (good for checking absence). findBy returns a promise (for async elements).", example: "Real-life example: Use findByText('Welcome') after login to wait for the greeting that appears after an API call resolves." },
+      { q: "What is mocking in React tests?", a: "Mocking replaces real functions, APIs, or modules with fake versions during tests to isolate the component being tested.", example: "Real-life example: Mocking axios.get to return fake job data instead of making a real API call during a JobList component test." }
+    ]
+  },
+  {
+    icon: <FaSync />,
+    title: "Concurrent Features (React 18)",
+    questions: [
+      { q: "What is Concurrent Mode in React 18?", a: "Concurrent Mode allows React to work on multiple tasks simultaneously and pause, interrupt, or resume rendering. This keeps the UI responsive even during heavy updates.", example: "Real-life example: Typing in a search box feels instant because React prioritizes the input update over the expensive list filtering re-render." },
+      { q: "What is the useTransition hook?", a: "useTransition marks a state update as non-urgent. React renders it in the background without blocking urgent updates like user input.", example: "Real-life example: Filtering 10,000 records — wrap the filter state update in startTransition so typing stays smooth while the list updates later." },
+      { q: "What is the useDeferredValue hook?", a: "useDeferredValue defers re-rendering a part of the UI to avoid blocking urgent updates. Similar to useTransition but for values rather than state setters.", example: "Real-life example: const deferredSearch = useDeferredValue(searchText) — the search results lag slightly behind typing but input stays instant." }
+    ]
+  },
+  {
+    icon: <FaTachometerAlt />,
+    title: "React Performance Patterns",
+    questions: [
+      { q: "What is React.memo and when should you use it?", a: "React.memo is a HOC that prevents a functional component from re-rendering if its props haven't changed. Use it for pure components that receive the same props frequently.", example: "Real-life example: Wrapping a JobCard component with React.memo so it doesn't re-render when the parent's unrelated state (like a search input) changes." },
+      { q: "What is the key prop and why is it critical in lists?", a: "The key prop helps React identify which list items changed, were added, or removed during reconciliation. Keys must be unique and stable — avoid using array indexes as keys.", example: "Real-life example: Using job._id as key in a job list. If you use index as key and delete item 2, React gets confused and re-renders wrong items." },
+      { q: "What is windowing or virtual scrolling?", a: "Windowing renders only the visible items in a long list instead of all items. Libraries like react-window or react-virtual implement this pattern.", example: "Real-life example: A list of 10,000 employees — only 20 visible rows are in the DOM at a time, making scroll buttery smooth." }
+    ]
+  },
 ];
 
   const totalPages = Math.ceil(topics.length / topicsPerPage);
@@ -322,11 +376,13 @@ const topics = [
   );
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }, [currentPage]);
 
   return (
-    <main style={styles.container}>
+    <main style={styles.container} ref={topRef}>
       <header style={styles.header}>
         <h1 style={styles.title}>React Js</h1>
         <p style={styles.subtitle}>
@@ -398,7 +454,8 @@ const styles = {
     padding: "24px",
     maxWidth: "1200px",
     margin: "0 auto",
-    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",backgroundColor:"#ebeaea"
+    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",backgroundColor:"#ebeaea",
+    scrollMarginTop: "80px",
   },
   header: {
     textAlign: "center",

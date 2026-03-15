@@ -26,13 +26,12 @@ import {
   FaHandshake
 } from "react-icons/fa6";
 import { FaExchangeAlt } from "react-icons/fa";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useRef} from "react";
 
 const EnglishNotes = () => {
   const topicsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);
-
-
+  const topRef = useRef(null);
   const topics = [
   {
     icon: <FaLanguage />,
@@ -517,7 +516,96 @@ const EnglishNotes = () => {
         "Real-life example: Professional presentations."
     }
   ]
-}
+},{
+    icon: <FaSpellCheck />,
+    title: "Vocabulary Building",
+    questions: [
+      { q: "Why is vocabulary important in professional life?", a: "A strong vocabulary helps express ideas precisely, improves writing quality, and creates a confident impression in interviews and meetings.", example: "Real-life example: Using 'collaborate' instead of 'work together' in a resume." },
+      { q: "How can freshers build vocabulary effectively?", a: "Read newspapers, practice word-a-day habits, use vocabulary apps, and learn words in context rather than isolated lists.", example: "Real-life example: Reading The Hindu editorial daily improves both vocabulary and grammar." },
+      { q: "What are synonyms and antonyms and why are they tested?", a: "Synonyms are words with similar meanings; antonyms are opposites. They are tested to assess word knowledge and communication range.", example: "Real-life example: 'Confident' synonyms: assured, self-reliant. Antonym: hesitant." }
+    ]
+  },
+  {
+    icon: <FaAlignLeft />,
+    title: "Reading Comprehension",
+    questions: [
+      { q: "What is reading comprehension?", a: "Reading comprehension is the ability to read a passage and understand its meaning, main idea, tone, and implied information.", example: "Real-life example: Answering questions based on a company's policy document." },
+      { q: "What strategy helps in comprehension questions?", a: "Read the questions first, then read the passage. Underline keywords and focus on topic sentences of each paragraph.", example: "Real-life example: Competitive exam RC sections like CAT or placement written tests." },
+      { q: "What are inference questions?", a: "Inference questions ask what can be concluded from the passage even if it is not stated directly.", example: "Real-life example: 'What does the author imply about remote work in paragraph 2?'" }
+    ]
+  },
+  {
+    icon: <FaComments />,
+    title: "Presentation Skills",
+    questions: [
+      { q: "What are presentation skills?", a: "Presentation skills involve organizing and delivering information clearly and confidently to an audience using speech, slides, and body language.", example: "Real-life example: Presenting a project demo during a technical interview." },
+      { q: "What is the structure of a good presentation?", a: "Introduction (what you'll cover), body (key points with examples), and conclusion (summary and takeaway).", example: "Real-life example: A 5-minute college project presentation." },
+      { q: "How to handle nervousness during presentations?", a: "Practice beforehand, breathe deeply, maintain eye contact, and focus on the message rather than yourself.", example: "Real-life example: Mock presentations before placement drives." }
+    ]
+  },
+  {
+    icon: <FaUserTie />,
+    title: "Self Introduction",
+    questions: [
+      { q: "How should a fresher introduce themselves in an interview?", a: "Cover your name, education, key skills, a brief project or achievement, and why you are interested in the role — all in 60–90 seconds.", example: "Real-life example: 'I am Arjun, a Computer Science graduate from XYZ College. I have worked on a web app using React and Node.js and I am keen to join your team as a frontend developer.'" },
+      { q: "What mistakes should be avoided in self-introduction?", a: "Reading from memory, repeating resume content word for word, going off-topic, and speaking too fast or too slow.", example: "Real-life example: Saying 'I am hardworking' without any supporting example." },
+      { q: "How does a strong self-introduction impact an interview?", a: "A confident and structured introduction sets a positive tone for the entire interview and shows communication ability.", example: "Real-life example: Interviewers form 60% of their impression in the first 2 minutes." }
+    ]
+  },
+  {
+    icon: <FaExchangeAlt />,
+    title: "Conjunctions and Connectors",
+    questions: [
+      { q: "What are conjunctions?", a: "Conjunctions are words that join clauses, sentences, or words together. Common types are coordinating (FANBOYS), subordinating, and correlative conjunctions.", example: "Real-life example: 'I applied for the job but did not hear back' — 'but' is a coordinating conjunction." },
+      { q: "What are discourse connectors?", a: "Connectors link ideas between sentences logically — addition (furthermore), contrast (however), cause (therefore), and sequence (firstly).", example: "Real-life example: 'The project was delayed. However, we delivered it within budget.'" },
+      { q: "Why are connectors important in written communication?", a: "They make writing flow smoothly, show logical relationships, and improve the overall quality of essays and emails.", example: "Real-life example: Using 'Moreover' and 'In addition' in a formal email." }
+    ]
+  },
+  {
+    icon: <FaMicrophone />,
+    title: "Public Speaking",
+    questions: [
+      { q: "What is public speaking?", a: "Public speaking is the act of communicating a message to a live audience clearly, confidently, and engagingly.", example: "Real-life example: Speaking at a college seminar or company town hall." },
+      { q: "What are the qualities of a good public speaker?", a: "Clarity of message, confident body language, audience awareness, appropriate pace, and good use of pauses.", example: "Real-life example: TED Talk speakers maintaining eye contact and pausing for effect." },
+      { q: "How can freshers improve public speaking?", a: "Join debate clubs, practice in front of a mirror, record yourself, and volunteer for presentations.", example: "Real-life example: Taking part in college technical fest events." }
+    ]
+  },
+  {
+    icon: <FaEnvelopeOpenText />,
+    title: "Formal vs Informal English",
+    questions: [
+      { q: "What is the difference between formal and informal English?", a: "Formal English uses complete sentences, proper grammar, and professional tone. Informal English uses contractions, slang, and casual expressions.", example: "Real-life example: 'I would like to request a meeting' (formal) vs 'Can we meet?' (informal)." },
+      { q: "When should formal English be used?", a: "In emails, reports, interviews, presentations, and any professional or academic setting.", example: "Real-life example: Writing to a company HR manager." },
+      { q: "What are common informal phrases that should be avoided professionally?", a: "Phrases like 'gonna', 'wanna', 'u', 'asap' in full form, and filler words like 'like', 'you know', 'basically'.", example: "Real-life example: Avoiding slang in client-facing communication." }
+    ]
+  },
+  {
+    icon: <FaBalanceScale />,
+    title: "Confusable Words",
+    questions: [
+      { q: "What are confusable words in English?", a: "Confusable words are pairs that look or sound similar but have different meanings, causing frequent errors.", example: "Real-life example: 'Accept' vs 'Except', 'Affect' vs 'Effect', 'Then' vs 'Than'." },
+      { q: "What is the difference between 'its' and 'it's'?", a: "'Its' is a possessive pronoun. 'It's' is a contraction of 'it is' or 'it has'.", example: "Real-life example: 'The company updated its policy.' vs 'It's a great opportunity.'" },
+      { q: "Why are confusable words important in competitive exams?", a: "They appear frequently in fill-in-the-blank, error spotting, and sentence correction questions.", example: "Real-life example: 'She has a fewer/less number of options' — correct answer is 'fewer'." }
+    ]
+  },
+  {
+    icon: <FaProjectDiagram />,
+    title: "Paragraph Writing",
+    questions: [
+      { q: "What is a paragraph and what is its structure?", a: "A paragraph is a group of sentences about one idea. Structure: Topic sentence → Supporting sentences → Concluding sentence.", example: "Real-life example: Writing a paragraph about your strengths for an HR form." },
+      { q: "What makes a good paragraph?", a: "Unity (one main idea), coherence (logical flow), and adequate development (enough detail).", example: "Real-life example: Project description in a resume or cover letter." },
+      { q: "How long should a professional paragraph be?", a: "Typically 4–8 sentences. Avoid very long paragraphs in emails and reports as they reduce readability.", example: "Real-life example: Email body paragraphs." }
+    ]
+  },
+  {
+    icon: <FaListUl />,
+    title: "Idioms and Phrases",
+    questions: [
+      { q: "What are idioms?", a: "Idioms are fixed expressions whose meaning cannot be understood from the individual words.", example: "Real-life example: 'Hit the ground running' means to start something energetically." },
+      { q: "Why are idioms tested in placement exams?", a: "They test understanding of figurative language and exposure to natural English usage.", example: "Real-life example: 'The ball is in your court' — the decision is yours." },
+      { q: "What are common professional idioms to know?", a: "'Think outside the box' (be creative), 'On the same page' (mutual understanding), 'Touch base' (make contact), 'Bite the bullet' (endure difficulty).", example: "Real-life example: 'Let's touch base after the meeting' in a work email." }
+    ]
+  },
 ];
 
   const totalPages = Math.ceil(topics.length / topicsPerPage);
@@ -528,11 +616,13 @@ const EnglishNotes = () => {
   );
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }, [currentPage]);
 
   return (
-    <main style={styles.container}>
+    <main style={styles.container} ref={topRef}>
       <header style={styles.header}>
         <h1 style={styles.title}>English</h1>
         <p style={styles.subtitle}>
@@ -604,7 +694,8 @@ const styles = {
     padding: "24px",
     maxWidth: "1200px",
     margin: "0 auto",
-    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",backgroundColor:"#ebeaea"
+    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",backgroundColor:"#ebeaea",
+    scrollMarginTop: "80px", 
   },
   header: {
     textAlign: "center",

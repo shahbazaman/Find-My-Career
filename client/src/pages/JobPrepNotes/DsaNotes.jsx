@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   FaProjectDiagram,
   FaListUl,
@@ -19,8 +19,7 @@ import {
 const DsaNotes = () => {
   const topicsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);
-
-
+  const topRef = useRef(null);
 const topics = [
   {
     icon: <FaListUl />,
@@ -391,7 +390,96 @@ const topics = [
         "Real-life example: Maintaining stable software systems."
     }
   ]
-}
+},{
+    icon: <FaTree />,
+    title: "Binary Search Tree (BST)",
+    questions: [
+      { q: "What is a Binary Search Tree?", a: "A BST is a binary tree where the left child is always smaller than the parent and the right child is always larger.", example: "Real-life example: Phone book sorted so you can go left for earlier names, right for later names." },
+      { q: "What are the common BST operations?", a: "Search, Insert, and Delete — all have average time complexity of O(log n) in a balanced BST.", example: "Real-life example: Finding a specific employee ID in a sorted employee database." },
+      { q: "What is the worst case for BST?", a: "When the tree becomes skewed (like a linked list), operations degrade to O(n).", example: "Real-life example: Inserting sorted data 1,2,3,4,5 creates a right-skewed tree." }
+    ]
+  },
+  {
+    icon: <FaSitemap />,
+    title: "Tree Traversals",
+    questions: [
+      { q: "What are the types of tree traversal?", a: "Inorder (Left-Root-Right), Preorder (Root-Left-Right), and Postorder (Left-Right-Root) are the three depth-first traversals.", example: "Real-life example: Inorder traversal of a BST gives elements in sorted order." },
+      { q: "What is BFS (Level Order Traversal)?", a: "BFS visits nodes level by level from top to bottom using a queue.", example: "Real-life example: Printing an org chart level by level." },
+      { q: "Where are traversals used in real applications?", a: "Inorder is used for sorting, Preorder for copying trees, Postorder for deleting trees, BFS for shortest path problems.", example: "Real-life example: File system directory traversal." }
+    ]
+  },
+  {
+    icon: <FaProjectDiagram />,
+    title: "Graph Traversals (BFS & DFS)",
+    questions: [
+      { q: "What is BFS in graphs?", a: "Breadth-First Search explores all neighbors of a node before moving deeper. It uses a queue and finds shortest paths in unweighted graphs.", example: "Real-life example: Finding the closest friend suggestion on a social network." },
+      { q: "What is DFS in graphs?", a: "Depth-First Search explores as far as possible along each branch before backtracking. It uses a stack or recursion.", example: "Real-life example: Solving a maze by going deep into each path before trying another." },
+      { q: "When to use BFS vs DFS?", a: "Use BFS for shortest path and level-order problems. Use DFS for connectivity, topological sort, and cycle detection.", example: "Real-life example: BFS for GPS shortest route, DFS for detecting circular dependencies." }
+    ]
+  },
+  {
+    icon: <FaExchangeAlt />,
+    title: "Merge Sort and Quick Sort",
+    questions: [
+      { q: "How does Merge Sort work?", a: "Merge Sort divides the array into two halves, recursively sorts each half, then merges them. Time complexity is O(n log n) always.", example: "Real-life example: Sorting two sorted halves of exam papers together." },
+      { q: "How does Quick Sort work?", a: "Quick Sort picks a pivot, partitions elements smaller/larger around it, then recursively sorts each partition. Average O(n log n).", example: "Real-life example: Partitioning students above/below average marks." },
+      { q: "Which is better — Merge Sort or Quick Sort?", a: "Merge Sort is stable and consistent but uses extra space. Quick Sort is faster in practice with in-place sorting but can be O(n²) worst case.", example: "Real-life example: Merge Sort for linked lists, Quick Sort for arrays." }
+    ]
+  },
+  {
+    icon: <FaCubes />,
+    title: "Dynamic Programming (Classic Problems)",
+    questions: [
+      { q: "What is the 0/1 Knapsack problem?", a: "Given items with weights and values, maximize value within a weight limit. Each item can only be taken once (0 or 1).", example: "Real-life example: Packing a bag for a trip with limited weight." },
+      { q: "What is the Longest Common Subsequence (LCS)?", a: "LCS finds the longest sequence common to two strings without rearranging characters.", example: "Real-life example: DNA sequence comparison in bioinformatics." },
+      { q: "What is memoization vs tabulation?", a: "Memoization is top-down DP — recursion with caching. Tabulation is bottom-up DP — filling a table iteratively.", example: "Real-life example: Fibonacci using memo vs filling an array from index 0 upward." }
+    ]
+  },
+  {
+    icon: <FaRedo />,
+    title: "Backtracking",
+    questions: [
+      { q: "What is backtracking?", a: "Backtracking builds solutions incrementally and abandons a path (backtracks) as soon as it determines it cannot lead to a valid solution.", example: "Real-life example: Solving a Sudoku puzzle by trying numbers and undoing when stuck." },
+      { q: "How is backtracking different from brute force?", a: "Brute force tries all possibilities. Backtracking prunes invalid paths early, making it more efficient.", example: "Real-life example: N-Queens problem — placing queens and backtracking on conflict." },
+      { q: "What are common backtracking problems?", a: "N-Queens, Sudoku Solver, Permutations, Combinations, and Rat in a Maze.", example: "Real-life example: Word search in a grid of letters." }
+    ]
+  },
+  {
+    icon: <FaCompressArrowsAlt />,
+    title: "Heap and Priority Queue",
+    questions: [
+      { q: "What is a heap?", a: "A heap is a complete binary tree where the parent is always greater (max-heap) or smaller (min-heap) than its children.", example: "Real-life example: Hospital emergency queue — most critical patient treated first." },
+      { q: "What is a priority queue?", a: "A priority queue is an abstract data type where elements are served based on priority, not insertion order. Implemented using a heap.", example: "Real-life example: OS process scheduling by priority." },
+      { q: "What are common heap operations and their complexity?", a: "Insert: O(log n), Delete max/min: O(log n), Peek max/min: O(1).", example: "Real-life example: Finding the top K largest numbers from a stream." }
+    ]
+  },
+  {
+    icon: <FaKey />,
+    title: "Trie (Prefix Tree)",
+    questions: [
+      { q: "What is a Trie?", a: "A Trie is a tree-like data structure used to store strings where each node represents a character. It enables fast prefix-based searching.", example: "Real-life example: Autocomplete feature in search engines." },
+      { q: "What are the advantages of a Trie?", a: "Search, insert, and delete take O(L) time where L is the length of the word — faster than hash tables for prefix queries.", example: "Real-life example: Spell checker finding all words starting with 'pre'." },
+      { q: "Where are Tries used?", a: "Used in autocomplete, spell checking, IP routing, and word games like Boggle.", example: "Real-life example: Browser address bar suggesting URLs as you type." }
+    ]
+  },
+  {
+    icon: <FaSearch />,
+    title: "Bit Manipulation",
+    questions: [
+      { q: "What is bit manipulation?", a: "Bit manipulation uses bitwise operators (AND, OR, XOR, NOT, shifts) to solve problems at the binary level efficiently.", example: "Real-life example: Checking if a number is even/odd using n & 1." },
+      { q: "What are common bit manipulation tricks?", a: "n & (n-1) clears the lowest set bit. n ^ n = 0. Left shift multiplies by 2, right shift divides by 2.", example: "Real-life example: Counting set bits in a number (Brian Kernighan's algorithm)." },
+      { q: "Why is bit manipulation asked in interviews?", a: "It tests deep understanding of binary representation and produces very fast, memory-efficient solutions.", example: "Real-life example: Finding the single non-duplicate in an array using XOR." }
+    ]
+  },
+  {
+    icon: <FaSortAmountUp />,
+    title: "Space Complexity",
+    questions: [
+      { q: "What is space complexity?", a: "Space complexity measures the total memory an algorithm uses relative to input size, including auxiliary space and input space.", example: "Real-life example: A recursive function using call stack space." },
+      { q: "What is auxiliary space?", a: "Auxiliary space is the extra memory used by an algorithm beyond the input data.", example: "Real-life example: Merge Sort uses O(n) auxiliary space for the merge step." },
+      { q: "How do you optimize space complexity?", a: "Use in-place algorithms, iterative instead of recursive solutions, and avoid redundant data copies.", example: "Real-life example: Reversing an array in-place using two pointers instead of a new array." }
+    ]
+  },
 ];
 
   const totalPages = Math.ceil(topics.length / topicsPerPage);
@@ -402,11 +490,13 @@ const topics = [
   );
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }, [currentPage]);
 
   return (
-    <main style={styles.container}>
+    <main style={styles.container} ref={topRef}>
       <header style={styles.header}>
         <h1 style={styles.title}>Data Structures & Algorithms</h1>
         <p style={styles.subtitle}>
@@ -478,7 +568,8 @@ const styles = {
     padding: "24px",
     maxWidth: "1200px",
     margin: "0 auto",
-    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",backgroundColor:"#ebeaea"
+    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",backgroundColor:"#ebeaea",
+    scrollMarginTop: "80px"
   },
   header: {
     textAlign: "center",
@@ -559,5 +650,3 @@ const styles = {
 };
 
 export default DsaNotes;
-
-
