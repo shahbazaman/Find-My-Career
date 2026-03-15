@@ -142,12 +142,9 @@ useEffect(() => {
     console.log({ skills, experience, location });
   };
 
- if (roleLoading) return null;
-
-if (IS_RECRUITER(role)) {
-  return null;
-}
-
+if (roleLoading) return null;
+if (IS_RECRUITER(role)) return null;
+if (!CAN_VIEW_SEARCH(role)) return null;
   return (
     <div style={{
       minHeight: "100vh",

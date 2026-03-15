@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef  } from "react";
 import {
   FaProjectDiagram,
   FaListUl,
@@ -33,13 +33,14 @@ import {
   FaSortNumericUp,
   FaBalanceScaleRight,
   FaChessBoard,
-  FaChartBar
+  FaChartBar,
+  FaInfinity
 } from "react-icons/fa";
 
 const AptitudeNotes = () => {
   const topicsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);
-
+  const topRef = useRef(null);
 const topics = [
   {
     icon: <FaCalculator />,
@@ -785,7 +786,97 @@ const topics = [
         "Real-life example: Policy documents."
     }
   ]
-}
+},
+{
+    icon: <FaInfinity />,
+    title: "Sequences and Series",
+    questions: [
+      { q: "What is an arithmetic progression (AP)?", a: "An AP is a sequence where the difference between consecutive terms is constant. The nth term is a + (n-1)d.", example: "Real-life example: Monthly rent increasing by ₹500 each year." },
+      { q: "What is a geometric progression (GP)?", a: "A GP is a sequence where each term is multiplied by a constant ratio. nth term = ar^(n-1).", example: "Real-life example: Bacteria doubling every hour." },
+      { q: "What is the sum formula for AP and GP?", a: "AP sum = n/2 × (2a + (n-1)d). GP sum = a(rⁿ - 1)/(r - 1) for r ≠ 1.", example: "Real-life example: Calculating total savings over years." }
+    ]
+  },
+  {
+    icon: <FaClock />,
+    title: "Clock and Calendar",
+    questions: [
+      { q: "How do clock problems work?", a: "A clock completes 360° in 12 hours. The minute hand moves 6° per minute, hour hand moves 0.5° per minute.", example: "Real-life example: Finding angle between hands at 3:30." },
+      { q: "What are calendar problems?", a: "Calendar problems involve finding day of the week for a given date using odd days concept.", example: "Real-life example: On what day does Jan 1, 2030 fall?" },
+      { q: "What are odd days?", a: "Odd days are the extra days beyond complete weeks. Ordinary year has 1 odd day, leap year has 2.", example: "Real-life example: Date calculation across years." }
+    ]
+  },
+  {
+    icon: <FaListUl />,
+    title: "Divisibility Rules",
+    questions: [
+      { q: "What are divisibility rules?", a: "Shortcut rules to check if a number is divisible by 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 without dividing.", example: "Real-life example: Divisible by 3 if sum of digits is divisible by 3." },
+      { q: "What is the rule for divisibility by 11?", a: "Alternating sum of digits from right must be divisible by 11.", example: "Real-life example: 121 → 1-2+1=0, divisible by 11." },
+      { q: "Why are divisibility rules important?", a: "They save time in exams by avoiding long division.", example: "Real-life example: Quick check in MCQ exams." }
+    ]
+  },
+  {
+    icon: <FaCubes />,
+    title: "Cubes and Dice",
+    questions: [
+      { q: "What are cube-based aptitude problems?", a: "Problems involving painted cubes cut into smaller cubes — finding how many pieces have 0, 1, 2, or 3 faces painted.", example: "Real-life example: A cube painted red on all sides, cut into 27 pieces." },
+      { q: "What are dice problems?", a: "Dice problems test spatial reasoning using the standard 6-faced cube rules: opposite faces sum to 7.", example: "Real-life example: If top face is 5, what is the bottom face?" },
+      { q: "Key formula for painted cubes?", a: "For n×n×n cube: 0 faces = (n-2)³, 1 face = 6(n-2)², 2 faces = 12(n-2), 3 faces = always 8.", example: "Real-life example: 3×3×3 cube gives 1 piece with 0 painted faces." }
+    ]
+  },
+  {
+    icon: <FaSearch />,
+    title: "Direction Sense",
+    questions: [
+      { q: "What are direction sense problems?", a: "Problems where a person moves in various directions and you must find the final position or distance from start.", example: "Real-life example: A person walks North 5km, then East 3km — how far from start?" },
+      { q: "What is the key rule for directions?", a: "Use a compass diagram: North/South/East/West. Right turns rotate clockwise, left turns counter-clockwise.", example: "Real-life example: Navigation and GPS logic." },
+      { q: "How to find final distance?", a: "Use Pythagoras theorem when two perpendicular displacements are given.", example: "Real-life example: √(5² + 3²) = √34 km from start." }
+    ]
+  },
+  {
+    icon: <FaSortAmountUp />,
+    title: "Ranking and Order",
+    questions: [
+      { q: "What are ranking problems?", a: "Problems involving position of a person in a row or queue from left/right or top/bottom.", example: "Real-life example: Ravi is 7th from the left in a row of 20." },
+      { q: "Key formula for total people?", a: "Total = Rank from left + Rank from right − 1.", example: "Real-life example: 7th from left, 14th from right → Total = 7+14-1 = 20." },
+      { q: "What are common variations?", a: "Position after swapping, between two persons, and in circular arrangements.", example: "Real-life example: Class rank problems in competitive exams." }
+    ]
+  },
+  {
+    icon: <FaBug />,
+    title: "Blood Relations",
+    questions: [
+      { q: "What are blood relation problems?", a: "Problems testing family relationships like parent, sibling, grandparent, uncle, aunt, cousin.", example: "Real-life example: A is B's brother's wife's son — what is A to B?" },
+      { q: "How to solve blood relation problems?", a: "Draw a family tree diagram with generations. Use M/F to mark gender.", example: "Real-life example: 3-generation family tree solving." },
+      { q: "What is a coded blood relation?", a: "Relations are expressed using symbols like + for father, – for mother, × for brother, ÷ for sister.", example: "Real-life example: A + B means A is father of B." }
+    ]
+  },
+  {
+    icon: <FaKey />,
+    title: "Syllogisms",
+    questions: [
+      { q: "What are syllogisms?", a: "Syllogisms are logical arguments where two or more statements lead to a conclusion using Venn diagrams.", example: "Real-life example: All dogs are animals. All animals breathe. → All dogs breathe." },
+      { q: "How to solve syllogism questions?", a: "Draw Venn diagrams for each statement and check if the conclusion is always/sometimes/never true.", example: "Real-life example: Using circles to represent sets of data." },
+      { q: "What are the key words in syllogisms?", a: "'All', 'Some', 'No', 'Some not' — each maps to a specific Venn diagram relationship.", example: "Real-life example: 'Some cats are dogs' means partial overlap." }
+    ]
+  },
+  {
+    icon: <FaRedo />,
+    title: "Work and Wages",
+    questions: [
+      { q: "What are work and wages problems?", a: "These problems combine time & work with proportional pay — wages are distributed based on work done.", example: "Real-life example: Three workers complete a project, paid proportionally." },
+      { q: "How is wage divided?", a: "Wage is divided in the ratio of work done by each person in the given time.", example: "Real-life example: A does 1/3 work, B does 2/3 work → wages split 1:2." },
+      { q: "What is the key formula?", a: "Wage per person = (individual work / total work) × total wage.", example: "Real-life example: Construction worker pay distribution." }
+    ]
+  },
+  {
+    icon: <FaCompressArrowsAlt />,
+    title: "Critical Reasoning",
+    questions: [
+      { q: "What is critical reasoning in aptitude?", a: "Critical reasoning tests the ability to analyze arguments, identify assumptions, and draw logical conclusions.", example: "Real-life example: Evaluating a business proposal for flaws." },
+      { q: "What are common question types?", a: "Strengthening/weakening arguments, finding assumptions, drawing inferences, and identifying logical flaws.", example: "Real-life example: 'All managers earn more than clerks' — what can we infer?" },
+      { q: "How to approach critical reasoning questions?", a: "Read carefully, identify conclusion and premises, eliminate irrelevant options, choose the most logical answer.", example: "Real-life example: Legal reasoning and case analysis." }
+    ]
+  },
 ];
 
   const totalPages = Math.ceil(topics.length / topicsPerPage);
@@ -796,11 +887,13 @@ const topics = [
   );
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }, [currentPage]);
 
   return (
-    <main style={styles.container}>
+    <main style={styles.container} ref={topRef}>
       <header style={styles.header}>
         <h1 style={styles.title}>Technical Aptitude</h1>
         <p style={styles.subtitle}>
@@ -872,7 +965,8 @@ const styles = {
     padding: "24px",
     maxWidth: "1200px",
     margin: "0 auto",
-    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",backgroundColor:"#ebeaea"
+    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",backgroundColor:"#ebeaea",
+    scrollMarginTop: "80px",   
   },
   header: {
     textAlign: "center",

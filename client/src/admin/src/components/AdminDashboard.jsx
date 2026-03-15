@@ -635,7 +635,7 @@ const handleDeleteJob = (jobId) => {
             toast.success("Logged out successfully", {
               position: "top-center",
               autoClose: 1500,
-              onClose: () => navigate("/admin/login"),
+              onClose: () => navigate("/admin/login"),  
             });
           }}
             style={{ cursor: "pointer" }}

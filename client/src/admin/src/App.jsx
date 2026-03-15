@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import AdminNavigationBar from "./components/AdminNavigationBar";
 import AdminHome from "./AdminHome";
@@ -13,12 +15,9 @@ import EditUser from "./components/EditUser";
 function App() {
   return (
     <BrowserRouter>
-
-      {/* Show navbar only after admin login */}
-      {/* {localStorage.getItem("admin-auth") === "true" && <AdminNavigationBar />} */}
+      <ToastContainer />
 
       <Routes>
-
         {/* Public routes */}
         <Route path="/" element={<AdminHome />} />
         <Route path="/home" element={<AdminHome2/>} />
@@ -26,6 +25,7 @@ function App() {
         <Route path="/addUserForm" element={<AddUserForm />} />
         <Route path="/admin/user/view/:id" element={<ViewUser />} />
         <Route path="/admin/user/edit/:id" element={<EditUser />} />
+
         {/* Protected admin routes */}
         <Route
           path="/admin"
@@ -35,7 +35,6 @@ function App() {
             </AdminProtectedRoute>
           }
         />
-
         <Route
           path="/admin/dashboard"
           element={
@@ -44,7 +43,6 @@ function App() {
             </AdminProtectedRoute>
           }
         />
-
       </Routes>
     </BrowserRouter>
   );
