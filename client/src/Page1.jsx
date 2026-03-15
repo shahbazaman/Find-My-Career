@@ -52,17 +52,14 @@ export default function JobSearchPage() {
   const [realCompanies, setRealCompanies]   = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [loadingCompanies, setLoadingCompanies]   = useState(true);
-  const userId = localStorage.getItem("userId");
 
   /* ── Fetch user role ── */
   useEffect(() => {
-    if (!userId) { setRoleLoading(false); return; }
-    axios
-      .get(`${import.meta.env.VITE_API_BASE_URL}/users/${userId}`)
-      .then((res) => setRole(res.data.role))
-      .catch((err) => console.error(err))
-      .finally(() => setRoleLoading(false));
-  }, [userId]);
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const userRole = storedUser?.role || "guest";
+    setRole(userRole);
+    setRoleLoading(false);
+  }, []);
 
   /* ── Fetch job categories ── */
   useEffect(() => {
@@ -88,9 +85,6 @@ export default function JobSearchPage() {
       .catch((err) => console.error("Category fetch error:", err))
       .finally(() => setLoadingCategories(false));
   }, []);
-useEffect(() => {
-  if (!roleLoading) console.log("ROLE:", JSON.stringify(role));
-}, [roleLoading]);
   /* ── Fetch companies ── */
   useEffect(() => {
     setLoadingCompanies(true);
@@ -103,9 +97,7 @@ useEffect(() => {
       .catch((err) => console.error("Companies fetch error:", err))
       .finally(() => setLoadingCompanies(false));
   }, []);
-useEffect(() => {
-  if (!roleLoading) console.log("ROLE:", role);
-}, [roleLoading]);
+
   const dummyCategories = [
     { icon: <FaGraduationCap />, title: "Freshers",      jobs: "21,442", color: "#10b981", bgColor: "#ecfdf5", gradient: "linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)" },
     { icon: <FaLaptopCode />,    title: "IT",             jobs: "43,456", color: "#3b82f6", bgColor: "#eff6ff", gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" },
@@ -177,7 +169,8 @@ if (!CAN_VIEW_SEARCH(role)) return null;
                     <Col xs={12} md={4}>
                       <div style={inputBoxStyle}
                         onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#764ba2"; e.currentTarget.style.boxShadow = "0 4px 15px rgba(118,75,162,0.2)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#e5e7eb"; e.currentTarget.style.boxShadow = "none"; }}>
+                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#e5e7eb"; e.currentTarget.style.boxShadow = "none"; }}
+                        >
                         <FaSearch style={{ color: "#764ba2", fontSize: "20px" }} />
                         <Form.Control placeholder="Skills, Job Title..." value={skills} onChange={(e) => setSkills(e.target.value)} style={inputCtrlStyle} />
                       </div>
@@ -323,6 +316,7 @@ if (!CAN_VIEW_SEARCH(role)) return null;
                       }}
                         onMouseEnter={() => setHoveredCompany(i)}
                         onMouseLeave={() => setHoveredCompany(null)}
+                        onClick={() => navigate(`/companies?company=${encodeURIComponent(c.name)}`)}
                       >
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
                           {c.logo ? (

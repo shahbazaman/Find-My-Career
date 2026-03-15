@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa";
 import "../css/Companies.css";
 import axios from "axios";
-
+import { useNavigate, useSearchParams } from "react-router-dom";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Companies() {
@@ -23,7 +23,17 @@ export default function Companies() {
   const filteredCompanies = companies.filter((c) =>
     c.name?.toLowerCase().includes(search.toLowerCase())
   );
+  const [searchParams] = useSearchParams();
 
+useEffect(() => {
+  const companyName = searchParams.get("company");
+  if (companyName && companies.length > 0) {
+    const found = companies.find(
+      (c) => c.name?.toLowerCase() === companyName.toLowerCase()
+    );
+    if (found) handleCardClick(found);
+  }
+}, [companies]);
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
