@@ -629,7 +629,7 @@ const handleDeleteJob = (jobId) => {
           <div
             className="sidebar-logout"
             onClick={() => {
-            jslocalStorage.removeItem("adminToken");
+            localStorage.removeItem("adminToken");
             localStorage.removeItem("adminUser");
             localStorage.removeItem(STORAGE_KEY);
             navigate("/admin/login", { state: { loggedOut: true } });
