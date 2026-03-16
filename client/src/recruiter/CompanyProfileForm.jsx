@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button, Spinner } from "react-bootstrap";
 import axios from "axios";
+import { toast,ToastContainer  } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   BsUpload,
   BsGeoAlt,
@@ -96,7 +98,7 @@ const navigate = useNavigate();
     e.preventDefault();
 
     if (!token) {
-      alert("Please login again");
+      toast.error("Please login again", { position: "top-center" });
       return;
     }
 
@@ -111,7 +113,7 @@ const navigate = useNavigate();
         }
       });
 
-      alert("Company profile saved successfully");
+      toast.success("Company profile saved successfully", { position: "top-center" });
       navigate("/manageCompany");
     } catch (err) {
       console.error("COMPANY PROFILE SAVE ERROR:", err);
@@ -274,6 +276,7 @@ const navigate = useNavigate();
           </Form>
         </Col>
       </Row>
+      <ToastContainer />
     </Container>
   );
 }

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const JobDetails = () => {
   const { jobId } = useParams();
   const [job, setJob] = useState(null);
@@ -18,8 +19,8 @@ const JobDetails = () => {
     if (!userId) return navigate("/login");
 
     axios.post(`${import.meta.env.VITE_API_BASE_URL}/jobs/${jobId}/apply`, { userId })
-      .then(() => alert("Applied successfully"))
-      .catch(() => alert("Failed to apply"));
+      .then(() => toast.success("Applied successfully", { position: "top-center" }))
+      .catch(() => toast.error("Failed to apply", { position: "top-center" }));
   };
 
   if (!job) return <p>Loading...</p>;
@@ -35,6 +36,7 @@ const JobDetails = () => {
       <button style={styles.btn} onClick={handleApply}>
         Apply Now
       </button>
+      <ToastContainer />
     </div>
   );
 };

@@ -22,7 +22,7 @@ const ContactUs = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!userId) {
-      alert("User not authenticated");
+      toast.error("User not authenticated", { position: "top-center" });
       return;
     }
 

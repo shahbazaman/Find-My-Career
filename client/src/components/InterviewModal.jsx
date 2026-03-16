@@ -36,7 +36,7 @@ const InterviewModal = ({ isOpen, onClose, onSave, selectedApplicants }) => {
 
   const handleSubmit = () => {
     if (!form.date || !form.time || !form.location) {
-      alert("Please fill required fields");
+      toast.warning("Please fill required fields", { position: "top-center" });
       return;
     }
 

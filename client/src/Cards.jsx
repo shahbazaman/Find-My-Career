@@ -35,7 +35,29 @@ const Cards = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const cardsPerPage = 9;
+const [hasResume, setHasResume] = useState(false);
 
+useEffect(() => {
+  const checkResume = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      // Decode token to get userId (or use a /me endpoint if you have one)
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const userId = payload.id || payload._id;
+
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/profile/${userId}`
+      );
+      setHasResume(!!res.data?.resumeUrl);
+    } catch (err) {
+      console.error("Failed to check resume", err);
+    }
+  };
+
+  checkResume();
+}, []);
 useEffect(() => {
   const fetchJobsAndApplications = async () => {
     try {
@@ -177,6 +199,11 @@ const mappedJobs = jobsRes.data.jobs.map(job => {
   const token = localStorage.getItem("token");
 
 const toggleApply = async (jobId) => {
+  if (!hasResume) {
+    toast.warning("Please upload a resume before applying!");
+    return;
+  }
+
   try {
     await axios.post(
       `${import.meta.env.VITE_API_BASE_URL}/applications/${jobId}`,
@@ -199,8 +226,8 @@ const toggleApply = async (jobId) => {
       )
     );
   } catch (err) {
-  toast.error(err?.response?.data?.message || "Failed to apply");
-}
+    toast.error(err?.response?.data?.message || "Failed to apply");
+  }
 };
 
 

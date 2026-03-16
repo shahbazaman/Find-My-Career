@@ -433,10 +433,10 @@ const fetchRecruiters = async () => {
     setActiveRecruiterPage(1);
   }, [filteredRecruitersList.length]);
   const exportRecruitersCSV = () => {
-    if (filteredRecruitersList.length === 0) {
-      alert("No data to export");
-      return;
-    }
+  if (filteredRecruitersList.length === 0) {
+    toast.warning("No data to export", { position: "top-center" });
+    return;
+  }
     const headers = ["ID,First Name,Last Name,Email"];
     const rows = filteredRecruitersList.map(
       (r) => `${r._id},${r.firstName},${r.lastName},${r.email}`,
@@ -629,10 +629,12 @@ const handleDeleteJob = (jobId) => {
           <div
             className="sidebar-logout"
             onClick={() => {
-            localStorage.removeItem("adminToken");
-            localStorage.removeItem("adminUser");
-            localStorage.removeItem(STORAGE_KEY);
-            navigate("/admin/login", { state: { loggedOut: true } });
+            toastConfirm("Are you sure you want to logout?", () => {
+              localStorage.removeItem("adminToken");
+              localStorage.removeItem("adminUser");
+              localStorage.removeItem(STORAGE_KEY);
+              navigate("/admin/login", { state: { loggedOut: true } });
+            });
           }}
             style={{ cursor: "pointer" }}
            >
