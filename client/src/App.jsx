@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import NavigationBar from "./NavigationBar";
-
-/* Admin */
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import AdminRoutes from "./admin/AdminRoutes";
 
 /* Public & User Pages */
@@ -61,7 +61,7 @@ const Layout = () => {
   return (
     <>
       {!isAdminRoute && <NavigationBar />}
-
+      <ToastContainer position="top-center" autoClose={3000} />
       <Routes>
         {/* ADMIN ROUTES */}
         <Route path="/admin/*" element={<AdminRoutes />} />

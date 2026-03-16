@@ -15,7 +15,7 @@ import EditUser from "./components/EditUser";
 function App() {
   return (
     <BrowserRouter>
-      <ToastContainer />
+      <ToastContainer position="top-center" autoClose={3000} />
 
       <Routes>
         {/* Public routes */}
