@@ -93,6 +93,7 @@ const handleSetActiveMenu = (menu) => {
     (queryPage - 1) * QUERIES_PER_PAGE,
     queryPage * QUERIES_PER_PAGE,
   );
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [jobsData, setJobsData] = useState([]);
   const [allRecruiters, setAllRecruiters] = useState([]);
   const [recruiters, setRecruiters] = useState([]);
@@ -628,14 +629,7 @@ const handleDeleteJob = (jobId) => {
         <div className="sidebar-logout-wrap">
           <div
             className="sidebar-logout"
-            onClick={() => {
-            toastConfirm("Are you sure you want to logout?", () => {
-              localStorage.removeItem("adminToken");
-              localStorage.removeItem("adminUser");
-              localStorage.removeItem(STORAGE_KEY);
-              navigate("/admin/login", { state: { loggedOut: true } });
-            });
-          }}
+            onClick={() => setShowLogoutModal(true)}
             style={{ cursor: "pointer" }}
            >
             <BsBoxArrowRight size={20} />
@@ -2803,6 +2797,63 @@ const handleDeleteJob = (jobId) => {
           )}
         </div>
       </div>
+      {showLogoutModal && (
+  <div style={{
+    position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    zIndex: 99999, backdropFilter: "blur(4px)"
+  }}>
+    <div style={{
+      background: "white", borderRadius: "20px", padding: "40px",
+      width: "100%", maxWidth: "420px", textAlign: "center",
+      boxShadow: "0 25px 60px rgba(0,0,0,0.3)",
+      animation: "fadeIn 0.2s ease-out"
+    }}>
+      <div style={{
+        width: "70px", height: "70px", borderRadius: "50%",
+        background: "linear-gradient(135deg, #ff4d4d, #c82333)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        margin: "0 auto 20px", fontSize: "32px"
+      }}>
+        🚪
+      </div>
+      <h2 style={{ margin: "0 0 10px", fontWeight: "800", color: "#1a1a1a", fontSize: "1.5rem" }}>
+        Logout?
+      </h2>
+      <p style={{ color: "#6c757d", marginBottom: "30px", fontSize: "15px" }}>
+        Are you sure you want to logout from the admin panel?
+      </p>
+      <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+        <button
+          onClick={() => setShowLogoutModal(false)}
+          style={{
+            padding: "12px 30px", borderRadius: "10px", border: "2px solid #dee2e6",
+            background: "white", fontWeight: "700", fontSize: "15px",
+            cursor: "pointer", color: "#495057", transition: "all 0.2s"
+          }}
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => {
+            localStorage.removeItem("adminToken");
+            localStorage.removeItem("adminUser");
+            localStorage.removeItem(STORAGE_KEY);
+            navigate("/admin/login", { state: { loggedOut: true } });
+          }}
+          style={{
+            padding: "12px 30px", borderRadius: "10px", border: "none",
+            background: "linear-gradient(135deg, #ff4d4d, #c82333)",
+            color: "white", fontWeight: "700", fontSize: "15px",
+            cursor: "pointer", boxShadow: "0 4px 15px rgba(220,53,69,0.4)"
+          }}
+        >
+          Yes, Logout
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };
