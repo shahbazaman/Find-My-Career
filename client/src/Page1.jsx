@@ -153,7 +153,7 @@ if (!CAN_VIEW_SEARCH(role)) return null;
       <Container fluid style={{ padding: "40px 15px", position: "relative", zIndex: 1 }}>
 
         {/* ── Search Bar ── */}
-        {CAN_VIEW_SEARCH(role) && (
+        {/* {CAN_VIEW_SEARCH(role) && (
 <Row className="justify-content-center mb-5">
           <Col lg={10}>
             <Card style={{
@@ -217,7 +217,7 @@ if (!CAN_VIEW_SEARCH(role)) return null;
             </Card>
           </Col>
         </Row>
-        )}
+        )} */}
 
         {/* ── Browse by Category + Top Companies ── */}
         {CAN_VIEW_SEARCH(role) && (
