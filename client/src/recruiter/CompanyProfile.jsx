@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const CompanyProfile = () => {
   const token = localStorage.getItem("token");
 
@@ -75,6 +76,7 @@ const CompanyProfile = () => {
           style={{ maxWidth: 120, marginTop: 12 }}
         />
       )}
+      <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );
 };
