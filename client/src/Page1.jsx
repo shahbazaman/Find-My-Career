@@ -352,7 +352,7 @@ if (!CAN_VIEW_SEARCH(role)) return null;
         </Row>)}
 
         {/* ── View All Jobs CTA ── */}
-        {CAN_VIEW_SEARCH(role) && (
+        {/* {CAN_VIEW_SEARCH(role) && (
 <Row className="justify-content-center mt-5">
           <Col lg={5} md={6} style={{ justifyItems: "center" }}>
             <Button style={{
@@ -369,7 +369,7 @@ if (!CAN_VIEW_SEARCH(role)) return null;
               View All Jobs <FaArrowRight />
             </Button>
           </Col>
-        </Row>)}
+        </Row>)} */}
 
       </Container>
 
