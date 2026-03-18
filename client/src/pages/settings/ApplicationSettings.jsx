@@ -168,6 +168,7 @@ const DeleteResume = async () => {
     border: 'none',
     color: 'white',
     padding: '0.5rem 1rem',
+    whiteSpace: 'nowrap',
     borderRadius: '9999px',
     display: 'flex',
     alignItems: 'center',
@@ -195,6 +196,7 @@ const DeleteResume = async () => {
       alignItems: 'center',
       gap: '0.5rem',
       zIndex: 99,
+      whiteSpace: 'nowrap',
       transition: 'all 0.2s'
     }}
     onClick={() => resumeUrl && DeleteResume()} // Only run if a resume exists

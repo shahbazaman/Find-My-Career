@@ -316,7 +316,7 @@ const toggleApply = async (jobId) => {
             position: "fixed",
             top: 0,
             right: 0,
-            height: "100vh",
+            height: "100dvh",
             width: "min(350px, 100vw)",
             maxWidth: "100vw",
             background: "white",
@@ -363,7 +363,7 @@ const toggleApply = async (jobId) => {
               <BsX />
             </button>
           </div>
-        <div style={{ overflowY: "auto", flex: 1, padding: "20px 25px", paddingBottom: "40px" }}>
+        <div style={{ overflowY: "auto", flex: 1, padding: "20px 25px", paddingBottom: "120px" }}>
           <p
             style={{
               fontSize: "14px",
