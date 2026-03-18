@@ -276,10 +276,6 @@ const DeleteResume = async () => {
 
       <style>{`
       /* This ensures the button is high enough to be "reachable" by your mouse */
-.resume-status {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 
 .resume-badge-action {
   pointer-events: auto !important;
@@ -294,10 +290,6 @@ const DeleteResume = async () => {
           max-width: 80rem;
           margin: 0 auto;
         }
-.resume-actions {
-    width: 100%;
-    justify-content: flex-start;
-  }
 
 .view-badge-btn {
   display: flex;
@@ -912,28 +904,35 @@ const DeleteResume = async () => {
         .slide-right {
           animation: slide-right 0.5s ease-out backwards;
         }
-
-        /* Responsive */
         @media (max-width: 640px) {
-          .settings-card-content {
-            padding: 1.5rem;
-          }
-
-          .settings-header {
-            flex-direction: column;
-            align-items: flex-start;
-          }
-
-         
-
-          .button-group {
-            grid-template-columns: 1fr;
-          }
-
-          .stats-grid {
-            grid-template-columns: 1fr;
-          }
+        .settings-card-content {
+          padding: 1.5rem;
         }
+
+        .settings-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .button-group {
+          grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        /* ← Add these two back here only */
+        .resume-status {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .resume-actions {
+          width: 100%;
+          justify-content: flex-start;
+        }
+      }
       `}</style>
     </div>
   );
