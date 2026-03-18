@@ -431,159 +431,80 @@ export default function Page6() {
                       📋 Recent Applications
                     </h2>
 
-                    <div
-                      style={{
-                        maxHeight: "600px",
-                        overflowY: "auto",
-                        overflowX: "auto",
-                        borderRadius: "12px",
-                        border: "1px solid #e9ecef",
-                      }}
-                    >
-                      <table
-                        style={{
-                          width: "100%",
-                          borderCollapse: "collapse",
-                          minWidth: "600px",
-                        }}
-                      >
-                        <thead
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                            position: "sticky",
-                            top: 0,
-                            zIndex: 10,
-                          }}
+                   {/* Desktop Table */}
+                <div className="desktop-table" style={{
+                  maxHeight: "600px",
+                  overflowY: "auto",
+                  borderRadius: "12px",
+                  border: "1px solid #e9ecef",
+                }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
+                    <thead style={{
+                      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      position: "sticky", top: 0, zIndex: 10,
+                    }}>
+                      <tr>
+                        <th style={{ padding: "18px 20px", textAlign: "left", color: "white", fontWeight: "600", fontSize: "15px", width: "25%" }}>Company</th>
+                        <th style={{ padding: "18px 20px", textAlign: "left", color: "white", fontWeight: "600", fontSize: "15px", width: "35%" }}>Role</th>
+                        <th style={{ padding: "18px 20px", textAlign: "left", color: "white", fontWeight: "600", fontSize: "15px", width: "22%" }}>Applied Date</th>
+                        <th style={{ padding: "18px 20px", textAlign: "center", color: "white", fontWeight: "600", fontSize: "15px", width: "18%" }}>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {safeJobs.map((job, index) => (
+                        <tr key={index} style={{ borderBottom: "1px solid #f1f3f5", transition: "all 0.3s ease" }}
+                          onMouseOver={(e) => { e.currentTarget.style.background = "#f8f9fa"; }}
+                          onMouseOut={(e) => { e.currentTarget.style.background = "white"; }}
                         >
-                          <tr>
-                            <th
-                              style={{
-                                padding: "18px 20px",
-                                textAlign: "left",
-                                color: "white",
-                                fontWeight: "600",
-                                fontSize: "15px",
-                                width: "25%",
-                              }}
-                            >
-                              Company
-                            </th>
-                            <th
-                              style={{
-                                padding: "18px 20px",
-                                textAlign: "left",
-                                color: "white",
-                                fontWeight: "600",
-                                fontSize: "15px",
-                                width: "35%",
-                              }}
-                            >
-                              Role
-                            </th>
-                            <th
-                              style={{
-                                padding: "18px 20px",
-                                textAlign: "left",
-                                color: "white",
-                                fontWeight: "600",
-                                fontSize: "15px",
-                                width: "22%",
-                              }}
-                            >
-                              Applied Date
-                            </th>
-                            <th
-                              style={{
-                                padding: "18px 20px",
-                                textAlign: "center",
-                                color: "white",
-                                fontWeight: "600",
-                                fontSize: "15px",
-                                width: "18%",
-                              }}
-                            >
-                              Status
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {safeJobs.map((job, index) => (
-                            <tr
-                              key={index}
-                              style={{
-                                borderBottom: "1px solid #f1f3f5",
-                                transition: "all 0.3s ease",
-                              }}
-                              onMouseOver={(e) => {
-                                e.currentTarget.style.background =
-                                  "#f8f9fa";
-                                e.currentTarget.style.transform =
-                                  "scale(1.01)";
-                              }}
-                              onMouseOut={(e) => {
-                                e.currentTarget.style.background = "white";
-                                e.currentTarget.style.transform =
-                                  "scale(1)";
-                              }}
-                            >
-                              <td
-                                style={{
-                                  padding: "20px",
-                                  fontWeight: "700",
-                                  color: "#495057",
-                                  fontSize: "15px",
-                                }}
-                              >
-                                {job.company || "-"}
-                              </td>
-                              <td
-                                style={{
-                                  padding: "20px",
-                                  color: "#6c757d",
-                                  fontSize: "15px",
-                                  fontWeight: "500",
-                                }}
-                              >
-                                {job.role || "-"}
-                              </td>
-                              <td
-                                style={{
-                                  padding: "20px",
-                                  color: "#6c757d",
-                                  fontSize: "14px",
-                                }}
-                              >
-                                {job.date || "-"}
-                              </td>
-                              <td
-                                style={{
-                                  padding: "20px",
-                                  textAlign: "center",
-                                }}
-                              >
-                                <span
-                                  style={{
-                                    padding: "8px 16px",
-                                    borderRadius: "20px",
-                                    fontSize: "13px",
-                                    fontWeight: "600",
-                                    color: "white",
-                                    background:
-                                      statusColors[job.status],
-                                    display: "inline-block",
-                                    boxShadow: `0 3px 10px ${statusColors[job.status]}40`,
-                                    minWidth: "90px",
-                                  }}
-                                >
-                                  {job.status}
-                                </span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          <td style={{ padding: "20px", fontWeight: "700", color: "#495057", fontSize: "15px" }}>{job.company || "-"}</td>
+                          <td style={{ padding: "20px", color: "#6c757d", fontSize: "15px", fontWeight: "500" }}>{job.role || "-"}</td>
+                          <td style={{ padding: "20px", color: "#6c757d", fontSize: "14px" }}>{job.date || "-"}</td>
+                          <td style={{ padding: "20px", textAlign: "center" }}>
+                            <span style={{
+                              padding: "8px 16px", borderRadius: "20px", fontSize: "13px",
+                              fontWeight: "600", color: "white", background: statusColors[job.status],
+                              display: "inline-block", boxShadow: `0 3px 10px ${statusColors[job.status]}40`, minWidth: "90px",
+                            }}>{job.status}</span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile Cards */}
+                <div className="mobile-cards">
+                  {safeJobs.map((job, index) => (
+                    <div key={index} style={{
+                      border: "1px solid #e9ecef", borderRadius: "12px",
+                      padding: "16px", marginBottom: "12px", background: "#fafafa",
+                    }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
+                        <div>
+                          <div style={{ fontWeight: "700", color: "#495057", fontSize: "15px" }}>{job.company || "-"}</div>
+                          <div style={{ color: "#6c757d", fontSize: "14px", marginTop: "4px" }}>{job.role || "-"}</div>
+                        </div>
+                        <span style={{
+                          padding: "6px 14px", borderRadius: "20px", fontSize: "12px",
+                          fontWeight: "600", color: "white", background: statusColors[job.status],
+                          whiteSpace: "nowrap", marginLeft: "10px",
+                          boxShadow: `0 3px 10px ${statusColors[job.status]}40`,
+                        }}>{job.status}</span>
+                      </div>
+                      <div style={{ fontSize: "13px", color: "#94a3b8" }}>📅 {job.date || "-"}</div>
                     </div>
+                  ))}
+                </div>
+
+                <style>{`
+                  .desktop-table { display: block; }
+                  .mobile-cards { display: none; }
+
+                  @media (max-width: 768px) {
+                    .desktop-table { display: none; }
+                    .mobile-cards { display: block; }
+                  }
+                `}</style>
                   </div>
                 </Col>
 

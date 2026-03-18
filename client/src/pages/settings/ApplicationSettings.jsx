@@ -275,9 +275,9 @@ const DeleteResume = async () => {
       <style>{`
       /* This ensures the button is high enough to be "reachable" by your mouse */
 .resume-status {
-  position: relative;
-  z-index: 5;
-}
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
 .resume-badge-action {
   pointer-events: auto !important;
@@ -293,11 +293,9 @@ const DeleteResume = async () => {
           margin: 0 auto;
         }
 .resume-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  z-index: 20; /* High z-index to stay above background glows */
-}
+    width: 100%;
+    justify-content: flex-start;
+  }
 
 .view-badge-btn {
   display: flex;
@@ -471,13 +469,14 @@ const DeleteResume = async () => {
         /* Update these specific sections in your <style> tag */
 
 .resume-status {
-  position: relative; /* Add this */
-  z-index: 1;         /* Add this */
+  position: relative;
+  z-index: 1;
   padding: 1.5rem;
   background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
   border: 2px solid #93c5fd;
   border-radius: 1rem;
   display: flex;
+  flex-wrap: wrap;          
   align-items: center;
   justify-content: space-between;
   margin-bottom: 2rem;
@@ -533,10 +532,8 @@ const DeleteResume = async () => {
         }
 
         .resume-name {
-          font-size: 0.875rem;
-          font-weight: 600;
-          color: #1e293b;
-          margin-top: 0.25rem;
+          word-break: break-all;
+          font-size: 0.75rem;
         }
         .setting-section {
           margin-bottom: 2rem;

@@ -317,11 +317,13 @@ const toggleApply = async (jobId) => {
             top: 0,
             right: 0,
             height: "100vh",
-            width: "350px",
-            maxWidth: "90vw",
+            width: "min(350px, 100vw)",
+            maxWidth: "100vw",
             background: "white",
             boxShadow: "-5px 0 25px rgba(0,0,0,0.3)",
-            padding: "30px 25px",
+            padding: "0",
+            display: "flex",
+            flexDirection: "column",
             transform: isFilterOpen ? "translateX(0)" : "translateX(100%)",
             transition:
               "transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
@@ -334,7 +336,13 @@ const toggleApply = async (jobId) => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              marginBottom: "20px"
+              padding: "20px 25px 15px 25px",
+              position: "sticky",
+              top: 0,
+              background: "white",
+              zIndex: 10,
+              borderBottom: "1px solid #e9ecef",
+              flexShrink: 0
             }}
           >
             <h3
@@ -355,7 +363,7 @@ const toggleApply = async (jobId) => {
               <BsX />
             </button>
           </div>
-
+        <div style={{ overflowY: "auto", flex: 1, padding: "20px 25px", paddingBottom: "40px" }}>
           <p
             style={{
               fontSize: "14px",
@@ -478,7 +486,9 @@ const toggleApply = async (jobId) => {
           >
             Clear All Filters
           </button>
+          </div>
         </div>
+        
 
         {isFilterOpen && (
           <div
