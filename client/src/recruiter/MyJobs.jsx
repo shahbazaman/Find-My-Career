@@ -132,21 +132,24 @@ const handleViewJob = async (jobId) => {
         thead { background: #0c248d; color: white; }
         th, td { padding: 16px; text-align: left; border-bottom: 1px solid #eee; }
         .mobile-view { display: none; }
-        .job-card { background: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .card-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f5f5f5; }
-        .card-label { font-weight: 700; color: #666; font-size: 13px; }
-        .btn-group { display: flex; gap: 8px; margin-top: 12px; }
-        .action-btn { flex: 1; border: none; padding: 10px; border-radius: 6px; font-weight: 600; color: white !important; cursor: pointer; font-size: 13px; text-align: center; }
+        .job-card { background: white; border: 1px solid #e0e0e0; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+        .card-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+        .card-label { font-weight: 700; color: #888; font-size: 11px; letter-spacing: 0.6px; text-transform: uppercase; }
+        .card-value { font-size: 15px; font-weight: 600; color: #1e293b; text-align: right; max-width: 60%; }
+        .btn-group { display: flex; gap: 8px; margin-top: 16px; flex-direction: column; }
+        .top-btn-row { display: flex; gap: 8px; }
+        .action-btn { border: none; padding: 11px 8px; border-radius: 10px; font-weight: 700; color: white !important; cursor: pointer; font-size: 13px; text-align: center; }
         .edit-btn { background: #4facfe; }
         .apps-btn { background: #764ba2; }
-        .del-btn { background: #ff4b2b; }
+        .del-btn { background: #ff4b2b; width: 100%; font-size: 14px; padding: 12px; border-radius: 10px; }
         .view-btn { background: #10b981; }
-        .status-pill { padding: 4px 10px; border-radius: 20px; background: #e6fffa; color: #047857; font-size: 12px; font-weight: bold; }
+        .top-btn-row .action-btn { flex: 1; }
+        .status-pill { padding: 5px 12px; border-radius: 20px; background: #e6fffa; color: #047857; font-size: 12px; font-weight: 700; }
 
         @media screen and (max-width: 770px) {
           .desktop-view { display: none; }
           .mobile-view { display: block; }
-          .jobs-container { padding: 10px; }
+          .jobs-container { padding: 12px; }
         }
       `}</style>
 
@@ -214,57 +217,55 @@ const handleViewJob = async (jobId) => {
 
       {!loading && jobs.length > 0 && (
         <div className="mobile-view">
-          {jobs.map(job => (
-            <div className="job-card" key={job._id}>
-              <div className="card-row">
-                <span className="card-label">JOB TITLE</span>
-                <span>{job.jobTitle}</span>
-              </div>
+  {jobs.map(job => (
+    <div className="job-card" key={job._id}>
+      <div className="card-row">
+        <span className="card-label">Job Title</span>
+        <span className="card-value">{job.jobTitle}</span>
+      </div>
 
-              <div className="card-row">
-                <span className="card-label">COMPANY</span>
-                <span>{job.companyName}</span>
-              </div>
+      <div className="card-row">
+        <span className="card-label">Company</span>
+        <span className="card-value">{job.companyName}</span>
+      </div>
 
-              <div className="card-row">
-                <span className="card-label">STATUS</span>
-                <span className="status-pill">
-                  {job.status || "Active"}
-                </span>
-              </div>
+      <div className="card-row" style={{ borderBottom: "none" }}>
+        <span className="card-label">Status</span>
+        <span className="status-pill">{job.status || "Active"}</span>
+      </div>
 
-              <div className="btn-group" style={{ flexDirection: "column" }}>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <button
-                    className="action-btn view-btn"
-                    onClick={() => handleViewJob(job._id)}
-                  >
-                    View
-                  </button>
-                  <button
-                    className="action-btn edit-btn"
-                    onClick={() => navigate(`/edit-job/${job._id}`)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="action-btn apps-btn"
-                    onClick={() => navigate(`/recruiter/applicants/${job._id}`)}
-                  >
-                    Applicants
-                  </button>
-                </div>
-
-                <button
-                  className="action-btn del-btn"
-                  onClick={() => confirmDelete(job._id)}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
+      <div className="btn-group">
+        <div className="top-btn-row">
+          <button
+            className="action-btn view-btn"
+            onClick={() => handleViewJob(job._id)}
+          >
+            View
+          </button>
+          <button
+            className="action-btn edit-btn"
+            onClick={() => navigate(`/edit-job/${job._id}`)}
+          >
+            Edit
+          </button>
+          <button
+            className="action-btn apps-btn"
+            onClick={() => navigate(`/recruiter/applicants/${job._id}`)}
+          >
+            Applicants
+          </button>
         </div>
+
+        <button
+          className="action-btn del-btn"
+          onClick={() => confirmDelete(job._id)}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
       )}
       {/* ── JOB DETAILS MODAL ── */}
 {viewingJob !== null && (

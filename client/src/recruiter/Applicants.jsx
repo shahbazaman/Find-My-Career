@@ -364,34 +364,34 @@ const paginatedApplicants = useMemo(() => {
         /* Controls Panel */
         .controls-panel {
           background: white;
-          padding: 10px;
+          padding: 0.85rem;
           border-radius: 12px;
           box-shadow: 0 2px 8px rgba(0,0,0,0.08);
           margin-bottom: 1rem;
         }
 
         .controls-row {
-          display: flex;
-          gap: 1rem;
-          flex-wrap: wrap;
-          align-items: center;
-        }
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+          }
 
         .search-box {
-          flex: 1;
-          min-width: 250px;
-          position: relative;
-        }
+            width: 100%;
+            position: relative;
+          }
 
-        .search-box input {
-          width: 100%;
-          padding: 0.75rem 1rem 0.75rem 2.75rem;
-          border: 2px solid #e2e8f0;
-          border-radius: 10px;
-          font-size: 0.95rem;
-          transition: all 0.2s;
-          background: #f7fafc;
-        }
+          .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            background: #f7fafc;
+            box-sizing: border-box;
+          }
 
         .search-box input:focus {
           outline: none;
@@ -410,11 +410,11 @@ const paginatedApplicants = useMemo(() => {
         }
 
         .filter-box {
-          min-width: 200px;
+          width: 100%;
           position: relative;
         }
 
-        .filter-box select {
+       .filter-box select {
           width: 100%;
           padding: 0.75rem 1rem 0.75rem 2.75rem;
           border: 2px solid #e2e8f0;
@@ -423,6 +423,7 @@ const paginatedApplicants = useMemo(() => {
           background: #f7fafc;
           cursor: pointer;
           transition: all 0.2s;
+          box-sizing: border-box;
         }
 
         .filter-box select:focus {
@@ -689,19 +690,21 @@ const paginatedApplicants = useMemo(() => {
 
         @media (max-width: 768px) {
           .applicants-container {
-            padding: 1rem;
+            padding: 0.85rem;
           }
 
           .applicants-header h1 {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
           }
 
           .controls-panel {
-            padding: 1rem;
+            padding: 0.85rem;
           }
 
           .controls-row {
             flex-direction: column;
+            gap: 0.6rem;
           }
 
           .search-box,
@@ -710,16 +713,25 @@ const paginatedApplicants = useMemo(() => {
             min-width: unset;
           }
 
+          .search-box input,
+          .filter-box select {
+            width: 100%;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+          }
+
           .action-buttons {
             flex-direction: column;
+            gap: 0.5rem;
           }
 
           .btn {
             width: 100%;
             justify-content: center;
+            font-size: 0.9rem;
+            padding: 0.7rem 1rem;
           }
 
-          /* Hide table on mobile, show cards instead */
           .table-wrapper {
             display: none;
           }
@@ -727,22 +739,12 @@ const paginatedApplicants = useMemo(() => {
           .mobile-cards {
             display: block;
           }
-        }
 
-        /* Mobile Card View */
-        .mobile-cards {
-          display: none;
-        }
-
-        .applicant-card {
-          background: white;
-          border-radius: 12px;
-          padding: 1.25rem;
-          margin-bottom: 1rem;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-          border: 2px solid transparent;
-          transition: all 0.2s;
-        }
+          .applicant-card {
+            border-radius: 14px;
+            padding: 1rem;
+            margin-bottom: 0.85rem;
+          }
 
         .applicant-card.selected {
           border-color: #667eea;
@@ -761,13 +763,14 @@ const paginatedApplicants = useMemo(() => {
           align-items: center;
           gap: 0.75rem;
         }
-
-        .card-name {
-          font-size: 1.1rem;
-          font-weight: 600;
-          color: #2d3748;
-          margin: 0;
-        }
+.card-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
 
         .card-body {
           display: flex;
@@ -776,22 +779,51 @@ const paginatedApplicants = useMemo(() => {
         }
 
         .card-row {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          color: #4a5568;
-          font-size: 0.9rem;
-        }
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #4a5568;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
 
         .card-row svg {
           color: #718096;
         }
 
         .card-footer {
-          margin-top: 1rem;
-          padding-top: 1rem;
-          border-top: 1px solid #e2e8f0;
-        }
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+  .status-badge {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.85rem;
+  }
+
+  .stat-card {
+    padding: 0.85rem;
+  }
+
+  .stat-info h3 {
+    font-size: 1.4rem;
+  }
+
+  .stat-info p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .applicants-header h1 {
+    font-size: 1.1rem;
+  }
+}
           /* ===== INTERVIEW MODAL OVERLAY ===== */
 .interview-modal-overlay {
   position: fixed;
@@ -904,7 +936,7 @@ const paginatedApplicants = useMemo(() => {
         <div className="controls-panel">
           <div className="controls-row">
             <div className="search-box">
-              <FiSearch className="search-icon" />
+              <FiSearch className="search-icon ms-4 me-4" />
               <input
                 type="text"
                 placeholder="Search by name or job title..."
@@ -1059,75 +1091,122 @@ const paginatedApplicants = useMemo(() => {
           </div>
         )}
 
-        {/* Mobile Card View */}
-        {!loading && filteredApplicants.length > 0 && (
-          <div className="mobile-cards">
-            {paginatedApplicants.map((a) => (
-              <div 
-                key={a._id} 
-                className={`applicant-card ${selectedIds.includes(a._id) ? 'selected' : ''}`}
-              >
-                <div className="card-header">
-                  <div className="card-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.includes(a._id)}
-                      onChange={() => toggleRow(a._id)}
-                    />
-                    <h3 className="card-name">{a.name}</h3>
-                  </div>
-                </div>
-                
-                <div className="card-body">
-                  <div className="card-row">
-                    <FiBriefcase />
-                    <span>{a.jobTitle}</span>
-                  </div>
-                  <div className="card-row">
-                    <FiClock />
-                    <span>{calculateExperience(a.experience)} experience</span>
-                  </div>
-                  <div className="card-row">
-                    {a.resumeUrl ? (
-                      <a href={a.resumeUrl} target="_blank" rel="noopener noreferrer">
-                        <button className="btn btn-secondary" style={{ padding: "0.4rem 0.9rem", fontSize: "0.82rem" }}>
-                          <FiExternalLink /> View Resume
-                        </button>
-                      </a>
-                    ) : (
-                      <button
-                        className="btn"
-                        style={{ padding: "0.4rem 0.9rem", fontSize: "0.82rem", background: "#f7fafc", color: "#a0aec0", border: "2px solid #e2e8f0" }}
-                        onClick={() => toast.info("Resume not uploaded by applicant", { position: "top-right", autoClose: 3000 })}
-                      >
-                        No Resume
-                      </button>
-                    )}
-                  </div>
-                  <div className="card-row">
-                    <span className={`status-badge ${getStatusClass(a.status)}`}>
-                      {getStatusIcon(a.status)}
-                      {a.status}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="card-footer">
-                  <select
-                    className="status-select"
-                    style={{ width: '100%' }}
-                    value={a.status}
-                    onChange={(e) => handleStatusChange(a, e.target.value)}
-                  >
-                    {STATUS_OPTIONS.map((s) => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            ))}
+ {/* Mobile Card View */}
+{!loading && filteredApplicants.length > 0 && (
+  <div className="mobile-cards">
+    {paginatedApplicants.map((a) => (
+      <div
+        key={a._id}
+        className={`applicant-card ${selectedIds.includes(a._id) ? 'selected' : ''}`}
+      >
+        {/* Card Header: checkbox + name + email */}
+        <div className="card-header">
+          <div className="card-checkbox">
+            <input
+              type="checkbox"
+              checked={selectedIds.includes(a._id)}
+              onChange={() => toggleRow(a._id)}
+            />
+            <div>
+              <h3 className="card-name">{a.name}</h3>
+              <p style={{ margin: "2px 0 0", fontSize: "0.78rem", color: "#718096", fontWeight: 400 }}>
+                {a.email}
+              </p>
+            </div>
           </div>
-        )}
+          {/* Status badge top-right */}
+          <span className={`status-badge ${getStatusClass(a.status)}`}
+            style={{ fontSize: "0.72rem", padding: "0.3rem 0.7rem" }}>
+            {getStatusIcon(a.status)}
+            {a.status}
+          </span>
+        </div>
+
+        {/* Card Body */}
+        <div className="card-body">
+          <div className="card-row">
+            <FiBriefcase size={14} />
+            <span>{a.jobTitle}</span>
+          </div>
+          <div className="card-row">
+            <FiClock size={14} />
+            <span>{calculateExperience(a.experience)} experience</span>
+          </div>
+        </div>
+
+        {/* Card Footer: action buttons + status changer */}
+        <div className="card-footer">
+          <div style={{ display: "flex", gap: "8px", marginBottom: "10px" }}>
+            {/* View Profile button */}
+            <button
+              className="btn btn-secondary"
+              style={{ flex: 1, padding: "0.45rem 0.5rem", fontSize: "0.82rem", justifyContent: "center" }}
+              onClick={async () => {
+                setViewingApplicant(a);
+                setProfileData(null);
+                setProfileLoading(true);
+                try {
+                  const res = await axios.get(
+                    `${import.meta.env.VITE_API_BASE_URL}/profile/${a.userId}`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                  );
+                  setProfileData(res.data);
+                } catch {
+                  setProfileData(null);
+                } finally {
+                  setProfileLoading(false);
+                }
+              }}
+            >
+              <FiUser size={13} /> Profile
+            </button>
+
+            {/* Resume button */}
+            {a.resumeUrl ? (<a
+              
+                href={a.resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ flex: 1, textDecoration: "none" }}
+              >
+                <button
+                  className="btn btn-secondary"
+                  style={{ width: "100%", padding: "0.45rem 0.5rem", fontSize: "0.82rem", justifyContent: "center" }}
+                >
+                  <FiExternalLink size={13} /> Resume
+                </button>
+              </a>
+            ) : (
+              <button
+                className="btn"
+                style={{
+                  flex: 1, padding: "0.45rem 0.5rem", fontSize: "0.82rem",
+                  background: "#f7fafc", color: "#a0aec0",
+                  border: "2px solid #e2e8f0", justifyContent: "center"
+                }}
+                onClick={() => toast.info("Resume not uploaded", { position: "top-right", autoClose: 3000 })}
+              >
+                No Resume
+              </button>
+            )}
+          </div>
+
+          {/* Status changer */}
+          <select
+            className="status-select"
+            style={{ width: "100%", fontSize: "0.88rem" }}
+            value={a.status}
+            onChange={(e) => handleStatusChange(a, e.target.value)}
+          >
+            {STATUS_OPTIONS.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
 
         {/* Empty State */}
         {!loading && filteredApplicants.length === 0 && (

@@ -247,7 +247,6 @@ const fetchRecruiters = async () => {
     try {
       await axios.post(`${import.meta.env.VITE_API_BASE_URL}/notifications/user/${id}`, {
         title,
-        label: "Just now",
         type: "system",
       });
     } catch (error) {

@@ -346,6 +346,7 @@ const handleSubmit = async (e) => {
                             name="salaryMin"
                             value={formData.salaryMin}
                             onChange={handleChange}
+                            onWheel={(e) => e.target.blur()}   // ← add this
                             placeholder="Min (₹)"
                             className="ps-5"
                             style={{
@@ -362,6 +363,7 @@ const handleSubmit = async (e) => {
                           name="salaryMax"
                           value={formData.salaryMax}
                           onChange={handleChange}
+                          onWheel={(e) => e.target.blur()}   // ← add this
                           placeholder="Max (₹)"
                           style={{
                             border: "2px solid #e9ecef",
@@ -382,18 +384,19 @@ const handleSubmit = async (e) => {
                     <Form.Label className="fw-semibold text-muted mb-2">Experience Required (years)</Form.Label>
                     <Row>
                       <Col md={6}>
-                        <Form.Control
-                          type="number"
-                          name="experienceMin"
-                          value={formData.experienceMin}
-                          onChange={handleChange}
-                          placeholder="Min (years)"
-                          style={{
-                            border: "2px solid #e9ecef",
-                            borderRadius: "12px",
-                            fontSize: "clamp(14px, 2.8vw, 15px)"
-                          }}
-                        />
+                      <Form.Control
+                      type="number"
+                      name="experienceMin"
+                      value={formData.experienceMin}
+                      onChange={handleChange}
+                      onWheel={(e) => e.target.blur()}   // ← add this
+                      placeholder="Min (years)"
+                      style={{
+                        border: "2px solid #e9ecef",
+                        borderRadius: "12px",
+                        fontSize: "clamp(14px, 2.8vw, 15px)"
+                      }}
+                    />
                       </Col>
                       <Col md={6}>
                         <Form.Control
@@ -401,6 +404,7 @@ const handleSubmit = async (e) => {
                           name="experienceMax"
                           value={formData.experienceMax}
                           onChange={handleChange}
+                          onWheel={(e) => e.target.blur()}   // ← add this
                           placeholder="Max (years)"
                           style={{
                             border: "2px solid #e9ecef",
@@ -605,6 +609,15 @@ const handleSubmit = async (e) => {
                 .form-select:focus {
                   border-color: #667eea !important;
                   box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+                }
+                  
+                input[type="number"]::-webkit-inner-spin-button,
+                input[type="number"]::-webkit-outer-spin-button {
+                  -webkit-appearance: none;
+                  margin: 0;
+                }
+                input[type="number"] {
+                  -moz-appearance: textfield;
                 }
               `}</style>
             </div>

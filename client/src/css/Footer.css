@@ -72,3 +72,111 @@ copyright {
   font-size: 13px;
   color: #94a3b8;
 }
+@media (max-width: 768px) {
+  .footer {
+    padding: 1.2rem 0 0.8rem;
+  }
+
+  /* Stack all columns in a 2-column grid */
+  .footer .row {
+    --bs-gutter-y: 0.6rem;
+  }
+
+  /* Shrink the brand/social column */
+  .footer-title {
+    font-size: 0.95rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .footer-text {
+    font-size: 0.78rem;
+    margin-bottom: 0.4rem;
+    line-height: 1.4;
+  }
+
+  /* Social icons row — compact */
+  .social-icons {
+    gap: 6px !important;
+    margin-bottom: 0.4rem;
+  }
+
+  .social-link {
+    width: 30px;
+    height: 30px;
+    font-size: 0.75rem;
+  }
+
+  /* Contact info below icons */
+  .footer [style*="marginTop"] {
+    margin-top: 6px !important;
+  }
+
+  .footer [style*="marginTop"] p {
+    font-size: 0.78rem;
+    margin-bottom: 2px;
+    line-height: 1.4;
+  }
+
+  /* Section headings */
+  .footer-heading {
+    font-size: 0.82rem;
+    margin-bottom: 0.25rem;
+    margin-top: 0.3rem;
+  }
+
+  /* List items */
+  .footer-list {
+    padding-left: 0;
+    margin-bottom: 0;
+  }
+
+  .footer-list li {
+    font-size: 0.76rem;
+    padding: 1px 0;
+    line-height: 1.5;
+  }
+
+  /* Make the 4 link columns sit in a 2x2 grid */
+  .footer .col-md-2 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  /* Brand column full width */
+  .footer .col-md-4 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .footer-divider {
+    margin: 0.6rem 0;
+  }
+
+  .copyright {
+    font-size: 0.75rem;
+    margin-bottom: 0.4rem;
+    padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 1rem 0 0.6rem;
+  }
+
+  .footer-title {
+    font-size: 0.88rem;
+  }
+
+  .footer-text {
+    font-size: 0.74rem;
+  }
+
+  .footer-list li {
+    font-size: 0.72rem;
+  }
+
+  .footer-heading {
+    font-size: 0.78rem;
+  }
+}

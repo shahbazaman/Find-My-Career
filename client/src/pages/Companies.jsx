@@ -360,12 +360,14 @@ const styles = {
     flexShrink: 0
   },
   modalLogo: {
-    width: "80px",
-    height: "80px",
-    borderRadius: "14px",
-    objectFit: "cover",
-    border: "1px solid #eee"
-  },
+  width: "80px",
+  height: "80px",
+  borderRadius: "14px",
+  objectFit: "contain",    
+  border: "1px solid #eee",
+  padding: "6px",           
+  background: "#fafafa"      
+},
   logoFallback: {
     width: "80px",
     height: "80px",

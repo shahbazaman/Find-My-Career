@@ -15,9 +15,30 @@ import { getUserId } from "../utils/auth";
 
 export default function Notification() {
   const [items, setItems] = useState([]);
-  const [filter, setFilter] = useState("all"); // 'all' or 'unread'
+  const [filter, setFilter] = useState("all");
   const userId = getUserId();
+  
+const formatTime = (dateStr) => {
+  if (!dateStr) return "Just now";
+  
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
 
+  if (diffMins < 1) return "Just now";
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+
+  return date.toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: diffDays > 365 ? "numeric" : undefined,
+  });
+};
   useEffect(() => {
     if (!userId) return;
     fetchNotifications();
@@ -144,7 +165,7 @@ export default function Notification() {
                           {item.title} 
                           {!item.isRead && <span className="unread-badge">•</span>}
                         </h4>
-                        <span className="notif-time">{item.time || "Just now"}</span>
+                        <span className="notif-time">{formatTime(item.deliveredAt || item.createdAt)}</span>
                       </div>
                       <p>{item.message || item.label}</p>
                     </div>

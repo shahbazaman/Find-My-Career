@@ -180,6 +180,14 @@ const RecruiterPages = () => {
         thead { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
 
         @media (max-width: 768px) {
+        .action-row {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+        .action-row .btn {
+          width: 100%;
+        }
           .wrap { padding: 1rem; }
           .page-title { text-align: center; }
           .btn { width: 100%; margin-bottom: .5rem; }
@@ -192,15 +200,18 @@ const RecruiterPages = () => {
 
         {/* ================= MY JOBS ================= */}
         <div className="section">
-          <div className="action-row">
-            <h4>My Jobs</h4>
-            <button
-              className="btn primary"
-              onClick={() => navigate("/recruiter/add-job")}
-            >
-              + Post New Job
-            </button>
-          </div>
+        <div style={{ marginBottom: "16px" }}>
+          <h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1e293b", margin: "0 0 12px 0" }}>
+            My Jobs
+          </h4>
+          <button
+            className="btn primary"
+            style={{ width: "100%" }}
+            onClick={() => navigate("/recruiter/add-job")}
+          >
+            + Post New Job
+          </button>
+        </div>
 
           {loadingJobs && <p>Loading jobs...</p>}
           {!loadingJobs && jobs.length === 0 && <MyJobs />}
