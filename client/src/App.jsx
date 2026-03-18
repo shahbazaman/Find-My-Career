@@ -52,7 +52,8 @@ import ReactNotes from "./pages/JobPrepNotes/ReactNotes";
 import MernNotes from "./pages/JobPrepNotes/MernNotes";
 import DSANotes from "./pages/JobPrepNotes/DsaNotes"
 import "./css/App.css";
-
+import UploadResume from "./pages/UploadResume";
+import SavedJobs from "./pages/SavedJobs";
 /* Hide NavigationBar on /admin routes */
 const Layout = () => {
   const location = useLocation();
@@ -79,6 +80,8 @@ const Layout = () => {
         <Route path="/contactUs" element={<ContactUs/>}/>
         <Route path="/schedule-interview" element={<ScheduleInterview />} />
         <Route path="/dsaNotes" element={<DSANotes />} />
+        <Route path="/upload-resume" element={<UploadResume />} />
+        <Route path="/saved-jobs" element={<SavedJobs />} />
 <Route path="/dsa" element={<DSAMcq />} />
 
 <Route path="/aptitudeNotes" element={<AptitudeNotes />} />

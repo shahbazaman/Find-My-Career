@@ -63,27 +63,34 @@ useEffect(() => {
     try {
       const token = localStorage.getItem("token");
 
-      const [jobsRes, appliedRes] = await Promise.all([
-        axios.get(`${import.meta.env.VITE_API_BASE_URL}/jobs`),
-        token
-          ? axios.get(`${import.meta.env.VITE_API_BASE_URL}/applications/my`, {
-              headers: { Authorization: `Bearer ${token}` }
-            })
-          : Promise.resolve({ data: [] })
-      ]);
+      const [jobsRes, appliedRes, savedRes] = await Promise.all([
+  axios.get(`${import.meta.env.VITE_API_BASE_URL}/jobs`),
+  token
+    ? axios.get(`${import.meta.env.VITE_API_BASE_URL}/applications/my`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+    : Promise.resolve({ data: [] }),
+  token
+    ? axios.get(`${import.meta.env.VITE_API_BASE_URL}/saved-jobs`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+    : Promise.resolve({ data: [] })
+]);
             const appliedMap = {};
       if (Array.isArray(appliedRes.data)) {
         appliedRes.data.forEach(app => {
           if (app.job) appliedMap[app.job] = app.status;
         });
       }
-      const appliedJobIds = Array.isArray(appliedRes.data)
-  ? appliedRes.data.map(app => app.job)
-  : [];
+
+const savedJobIds = new Set(
+  Array.isArray(savedRes.data)
+    ? savedRes.data.map(s => s.job?._id || s.job)
+    : []
+);
 
 const mappedJobs = jobsRes.data.jobs.map(job => {
   const status = appliedMap[job._id];
-
   return {
     _id: job._id,
     company: job.companyName,
@@ -94,14 +101,10 @@ const mappedJobs = jobsRes.data.jobs.map(job => {
     location: job.location,
     date: job.createdAt?.slice(0, 10),
     applied: [
-      "Applied",
-      "Shortlisted",
-      "Interview Scheduled",
-      "Rejected",
-      "Hired"
+      "Applied", "Shortlisted", "Interview Scheduled", "Rejected", "Hired"
     ].includes(status),
     applicationStatus: status || null,
-    saved: false,
+    saved: savedJobIds.has(job._id),   // ← now works correctly
     rating: (Math.random() * (5 - 3.5) + 3.5).toFixed(1)
   };
 });
@@ -203,7 +206,27 @@ useEffect(() => {
 
 const toggleApply = async (jobId) => {
   if (!hasResume) {
-    toast.warning("Please upload a resume before applying!");
+    toast.warning(
+  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+    <span style={{ fontSize: "22px" }}>📄</span>
+    <div>
+      <div style={{ fontWeight: "700", marginBottom: "4px" }}>Resume Required</div>
+      <div style={{ fontSize: "13px", marginBottom: "8px" }}>Please upload your resume before applying.</div>
+      <button
+        onClick={() => { navigate("/upload-resume"); toast.dismiss(); }}
+        style={{
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          color: "white", border: "none", padding: "6px 16px",
+          borderRadius: "8px", cursor: "pointer", fontWeight: "600",
+          fontSize: "13px", display: "flex", alignItems: "center", gap: "6px"
+        }}
+      >
+        📤 Upload Resume
+      </button>
+    </div>
+  </div>,
+  { autoClose: 6000, position: "top-center" }
+);
     return;
   }
 
@@ -234,14 +257,40 @@ const toggleApply = async (jobId) => {
 };
 
 
-  const toggleSave = (jobId) => {
-    setCards((prev) =>
-      prev.map((c) => (c._id === jobId ? { ...c, saved: !c.saved } : c))
-    );
-    setAllCards((prev) =>
-      prev.map((c) => (c._id === jobId ? { ...c, saved: !c.saved } : c))
-    );
-  };
+ const toggleSave = async (jobId) => {
+  if (!token) {
+    toast.warning("Please login to save jobs");
+    return;
+  }
+
+  const isSaved = cards.find(c => c._id === jobId)?.saved;
+
+  // Optimistic update
+  setCards(prev => prev.map(c => c._id === jobId ? { ...c, saved: !c.saved } : c));
+  setAllCards(prev => prev.map(c => c._id === jobId ? { ...c, saved: !c.saved } : c));
+
+  try {
+    if (isSaved) {
+      await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/saved-jobs/${jobId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.info("Job removed from saved");
+    } else {
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/saved-jobs/${jobId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Job saved! ✨");
+    }
+  } catch (err) {
+    // Revert on failure
+    setCards(prev => prev.map(c => c._id === jobId ? { ...c, saved: !c.saved } : c));
+    setAllCards(prev => prev.map(c => c._id === jobId ? { ...c, saved: !c.saved } : c));
+    toast.error(err?.response?.data?.message || "Failed to update saved jobs");
+  }
+};
 
   const renderStarBadge = (rating) => {
     const fullStars = Math.floor(rating);
@@ -312,7 +361,32 @@ const toggleApply = async (jobId) => {
             {isFilterOpen ? "Close Filters" : "Filters"}
           </button>
         </div>
-
+              {/*saved jobs */}
+              <div>
+              <button
+  onClick={() => navigate("/saved-jobs")}
+  style={{
+    padding: "12px 24px",
+    background: "#ffc107",
+    color: "#1a1a1a",
+    border: "none",
+    borderRadius: "50px",
+    cursor: "pointer",
+    fontSize: "15px",
+    fontWeight: "600",
+    boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    transition: "all 0.3s ease"
+  }}
+  onMouseOver={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
+  onMouseOut={(e) => e.currentTarget.style.transform = "translateY(0)"}
+>
+  <BsBookmarkFill size={16} />
+  Saved Jobs
+</button>
+</div>
         {/* Filter Panel */}
         <div
           style={{
