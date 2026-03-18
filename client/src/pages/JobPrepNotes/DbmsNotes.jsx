@@ -568,6 +568,168 @@ const DbmsNotes = () => {
       { q: "What are common use cases for Proxy?", a: "Validation, logging, access control, data binding, and building reactive systems like Vue 3's reactivity.", example: "Real-life example: Vue 3 uses Proxy to detect when reactive data changes and update the UI." }
     ]
   },
+  {
+  icon: <FaCode />,
+  title: "Promises in Depth",
+  questions: [
+    { q: "What is Promise.all()?", a: "Promise.all() takes an array of promises and resolves when all resolve, or rejects immediately if any one rejects.", example: "Real-life example: Fetching user data, posts, and comments simultaneously and waiting for all three." },
+    { q: "What is Promise.allSettled()?", a: "Promise.allSettled() waits for all promises to settle (resolve or reject) and returns an array of their results.", example: "Real-life example: Sending emails to multiple users and collecting all successes and failures." },
+    { q: "What is Promise.race()?", a: "Promise.race() resolves or rejects as soon as the first promise in the array settles.", example: "Real-life example: Setting a timeout — race between the API call and a timeout promise." }
+  ]
+},
+{
+  icon: <FaFilter />,
+  title: "Immutability",
+  questions: [
+    { q: "What is immutability in JavaScript?", a: "Immutability means once a value is created it cannot be changed. Immutable code is more predictable and easier to debug.", example: "Real-life example: Using spread operator to update state in React instead of mutating directly." },
+    { q: "How do you clone an object immutably?", a: "Use spread operator ({ ...obj }), Object.assign(), or structuredClone() for deep cloning.", example: "Real-life example: const updated = { ...user, age: 30 } — updates age without changing the original." },
+    { q: "What is the difference between shallow and deep copy?", a: "Shallow copy copies only the top-level properties. Nested objects still reference the original. Deep copy creates entirely new copies of all nested levels.", example: "Real-life example: JSON.parse(JSON.stringify(obj)) performs a deep copy but fails with functions and circular refs." }
+  ]
+},
+{
+  icon: <FaSyncAlt />,
+  title: "Callbacks",
+  questions: [
+    { q: "What is a callback function?", a: "A callback is a function passed as an argument to another function and executed after the parent function completes.", example: "Real-life example: setTimeout(() => console.log('Done'), 1000) — anonymous callback runs after 1 second." },
+    { q: "What is callback hell?", a: "Callback hell refers to deeply nested callbacks that make code hard to read and maintain.", example: "Real-life example: Reading a file, then parsing it, then saving results — nested three levels deep." },
+    { q: "How do you avoid callback hell?", a: "Use Promises or async/await to flatten nested callbacks and improve readability.", example: "Real-life example: Replacing nested .then() chains or callbacks with async/await syntax." }
+  ]
+},
+{
+  icon: <FaBoxOpen />,
+  title: "Truthy and Falsy Values",
+  questions: [
+    { q: "What are falsy values in JavaScript?", a: "Falsy values are: false, 0, '' (empty string), null, undefined, NaN, and 0n (BigInt zero). All other values are truthy.", example: "Real-life example: if (username) — fails if username is an empty string or null." },
+    { q: "What is short-circuit evaluation?", a: "Logical operators && and || use short-circuit evaluation. && returns the first falsy value or the last value. || returns the first truthy value.", example: "Real-life example: user && user.name — safely accesses name only if user exists." },
+    { q: "What is optional chaining (?.)?", a: "Optional chaining (?.) safely accesses nested properties without throwing if an intermediate value is null or undefined.", example: "Real-life example: user?.address?.city returns undefined instead of throwing an error if address is null." }
+  ]
+},
+{
+  icon: <FaLayerGroup />,
+  title: "Execution Context",
+  questions: [
+    { q: "What is an execution context?", a: "An execution context is the environment where JavaScript code runs. It contains the variable environment, scope chain, and 'this' binding.", example: "Real-life example: Every function call creates a new execution context pushed onto the call stack." },
+    { q: "What are the types of execution contexts?", a: "Global Execution Context (GEC) — created once for the script. Function Execution Context (FEC) — created for every function call. Eval Context — created by eval().", example: "Real-life example: The GEC runs first; each function call creates its own FEC." },
+    { q: "What are the two phases of execution context creation?", a: "Creation phase (memory allocation — variables set to undefined, functions stored) and Execution phase (code runs line by line).", example: "Real-life example: Hoisting happens in the creation phase, which is why var variables exist before their line runs." }
+  ]
+},
+{
+  icon: <FaProjectDiagram />,
+  title: "Memoization",
+  questions: [
+    { q: "What is memoization?", a: "Memoization is an optimization technique where the results of expensive function calls are cached and returned when the same inputs occur again.", example: "Real-life example: Caching Fibonacci results so each value is computed only once." },
+    { q: "How do you implement memoization?", a: "Store results in a cache object using the function arguments as keys. Check the cache before computing.", example: "Real-life example: const memo = {}; if (memo[n]) return memo[n]; else memo[n] = compute(n)." },
+    { q: "What are real-world use cases of memoization?", a: "Heavy computation caching, React's useMemo hook, API response caching, and avoiding repeated DOM calculations.", example: "Real-life example: useMemo(() => expensiveCalc(data), [data]) in React to avoid recalculation on every render." }
+  ]
+},
+{
+  icon: <FaSearch />,
+  title: "Regular Expressions",
+  questions: [
+    { q: "What are regular expressions in JavaScript?", a: "Regular expressions (regex) are patterns used to match character combinations in strings. They are created with /pattern/flags or new RegExp().", example: "Real-life example: /^[a-zA-Z]+$/.test(name) — validates that name contains only letters." },
+    { q: "What are common regex methods?", a: "test() — checks for a match and returns boolean. match() — returns matches. replace() — replaces matched text. split() — splits by pattern.", example: "Real-life example: 'hello world'.replace(/world/, 'JS') returns 'hello JS'." },
+    { q: "What are regex flags?", a: "g (global — find all matches), i (case-insensitive), m (multiline), s (dot matches newlines).", example: "Real-life example: /error/gi finds all occurrences of 'error' regardless of case in a log string." }
+  ]
+},
+{
+  icon: <FaDatabase />,
+  title: "Map, Set, WeakMap, WeakSet",
+  questions: [
+    { q: "What is a Map in JavaScript?", a: "A Map is a key-value data structure where any value (including objects) can be a key. Unlike objects, Maps maintain insertion order.", example: "Real-life example: Storing user objects as keys mapped to their session tokens." },
+    { q: "What is a Set in JavaScript?", a: "A Set is a collection of unique values. Adding a duplicate value has no effect. Useful for deduplication.", example: "Real-life example: const unique = [...new Set(arrayWithDuplicates)] removes duplicate entries." },
+    { q: "When to use Map over a plain object?", a: "Use Map when keys are not strings, when key insertion order matters, or when you frequently add/remove entries.", example: "Real-life example: DOM element → metadata mapping where element objects are used as keys." }
+  ]
+},
+{
+  icon: <FaExchangeAlt />,
+  title: "Functional Programming",
+  questions: [
+    { q: "What is functional programming?", a: "Functional programming is a paradigm that treats computation as evaluation of pure functions, avoids shared state, and prefers immutability.", example: "Real-life example: Using map/filter/reduce instead of for loops with mutating variables." },
+    { q: "What is a pure function?", a: "A pure function always returns the same output for the same input and has no side effects (no external state changes).", example: "Real-life example: const add = (a, b) => a + b is pure. Math.random() is not pure." },
+    { q: "What is function composition?", a: "Function composition combines two or more functions so the output of one becomes the input of the next.", example: "Real-life example: const process = (x) => format(validate(sanitize(x))) chains three operations." }
+  ]
+},
+{
+  icon: <FaBolt />,
+  title: "Performance Optimization",
+  questions: [
+    { q: "How do you optimize JavaScript performance?", a: "Use memoization, debounce/throttle, lazy loading, avoid DOM thrashing, use Web Workers for heavy tasks, and minimize reflows.", example: "Real-life example: Lazy loading images with Intersection Observer instead of loading all on page load." },
+    { q: "What is lazy loading?", a: "Lazy loading defers loading of non-critical resources until they are needed, improving initial page load time.", example: "Real-life example: import() for dynamic module imports — load a chart library only when the user navigates to the reports page." },
+    { q: "What is DOM thrashing?", a: "DOM thrashing is when JavaScript alternates between reading and writing DOM layout properties, triggering multiple reflows.", example: "Real-life example: Reading offsetHeight then setting height in a loop causes repeated reflows. Batch writes instead." }
+  ]
+},
+{
+  icon: <FaNetworkWired />,
+  title: "Web APIs",
+  questions: [
+    { q: "What is the Intersection Observer API?", a: "It asynchronously observes changes in the intersection of a target element with an ancestor element or viewport, without expensive scroll listeners.", example: "Real-life example: Triggering lazy image loading when an image scrolls into the viewport." },
+    { q: "What is the MutationObserver API?", a: "MutationObserver watches for changes to the DOM tree (added nodes, attribute changes, text changes) and fires a callback.", example: "Real-life example: Detecting when a third-party script dynamically adds or removes elements." },
+    { q: "What is the Web Storage API?", a: "The Web Storage API provides localStorage and sessionStorage for storing data in the browser as key-value string pairs.", example: "Real-life example: Persisting a shopping cart across page reloads using localStorage." }
+  ]
+},
+{
+  icon: <FaShieldAlt />,
+  title: "CORS and HTTP",
+  questions: [
+    { q: "What is CORS?", a: "CORS (Cross-Origin Resource Sharing) is a browser security policy that restricts HTTP requests made from one origin to a different origin. Servers must explicitly allow cross-origin requests via headers.", example: "Real-life example: A React app on localhost:3000 fetching from api.example.com requires CORS headers on the server." },
+    { q: "What are HTTP methods used in REST APIs?", a: "GET (read), POST (create), PUT (full update), PATCH (partial update), DELETE (remove). Each maps to a CRUD operation.", example: "Real-life example: POST /users creates a user; DELETE /users/1 removes user with id 1." },
+    { q: "What is the difference between 401 and 403?", a: "401 Unauthorized means the request lacks valid authentication credentials. 403 Forbidden means the server understood the request but refuses to authorize it.", example: "Real-life example: 401 when not logged in; 403 when logged in but not an admin." }
+  ]
+},
+{
+  icon: <FaLock />,
+  title: "Authentication and JWT",
+  questions: [
+    { q: "What is JWT (JSON Web Token)?", a: "JWT is a compact, URL-safe token format used for securely transmitting information between parties. It consists of three parts: Header, Payload, and Signature.", example: "Real-life example: After login, a server returns a JWT which the client sends in the Authorization header for subsequent requests." },
+    { q: "What is the difference between authentication and authorization?", a: "Authentication verifies who the user is. Authorization determines what the user is allowed to do.", example: "Real-life example: Login is authentication. Checking if the user is an admin before accessing a dashboard is authorization." },
+    { q: "What is token refresh and why is it needed?", a: "Access tokens have short expiry for security. A refresh token (long-lived) is used to get a new access token without re-login.", example: "Real-life example: Access token expires in 15 minutes; the app silently refreshes it using a refresh token stored in an httpOnly cookie." }
+  ]
+},
+{
+  icon: <FaCalculator />,
+  title: "Recursion",
+  questions: [
+    { q: "What is recursion?", a: "Recursion is when a function calls itself until a base condition is met. Every recursive solution needs a base case to prevent infinite loops.", example: "Real-life example: Traversing nested folder structures where each folder can contain sub-folders." },
+    { q: "What is tail recursion?", a: "Tail recursion is when the recursive call is the last operation in the function. Some engines optimize this to avoid stack overflow.", example: "Real-life example: Factorial computed tail-recursively passes the accumulated result as an argument." },
+    { q: "When should you avoid recursion?", a: "Avoid deep recursion without memoization or tail call optimization — it can cause stack overflow. Use iteration for flat, predictable depths.", example: "Real-life example: Fibonacci without memoization recurses exponentially — use iteration or memoization instead." }
+  ]
+},
+{
+  icon: <FaEye />,
+  title: "TypeScript Basics",
+  questions: [
+    { q: "What is TypeScript and why use it?", a: "TypeScript is a statically typed superset of JavaScript that compiles to plain JavaScript. It catches type errors at compile time, improving code reliability.", example: "Real-life example: TypeScript catches passing a string where a number is expected before the code even runs." },
+    { q: "What are interfaces in TypeScript?", a: "Interfaces define the shape of an object — which properties and their types it must have. They are used for type checking only and are erased at runtime.", example: "Real-life example: interface User { name: string; age: number; } enforces structure on any object typed as User." },
+    { q: "What is the difference between type and interface?", a: "Both define types, but interface is extendable and better for objects. type is more flexible and can represent unions, primitives, and tuples.", example: "Real-life example: type ID = string | number is possible with type but not interface." }
+  ]
+},
+{
+  icon: <FaRedoAlt />,
+  title: "Testing in JavaScript",
+  questions: [
+    { q: "What is unit testing?", a: "Unit testing tests individual functions or components in isolation to verify they behave correctly for given inputs.", example: "Real-life example: Testing that an add(2, 3) function always returns 5 using Jest." },
+    { q: "What is the difference between Jest and Vitest?", a: "Jest is a widely-used testing framework by Meta. Vitest is a faster alternative built for Vite projects with near-identical API.", example: "Real-life example: Vite + React projects often use Vitest for speed; CRA projects traditionally used Jest." },
+    { q: "What is mocking in tests?", a: "Mocking replaces real dependencies (like API calls) with controlled fake implementations to test code in isolation.", example: "Real-life example: jest.fn() mocks an axios.get call to return fake data without hitting the real server." }
+  ]
+},
+{
+  icon: <FaLink />,
+  title: "Browser Rendering",
+  questions: [
+    { q: "How does a browser render a web page?", a: "Browser parses HTML → builds DOM, parses CSS → builds CSSOM, combines both into a Render Tree, then Layouts (reflow) and Paints (repaint) pixels to screen.", example: "Real-life example: Adding a CSS class that changes an element's width triggers reflow and repaint." },
+    { q: "What is the difference between reflow and repaint?", a: "Reflow recalculates layout (positions and sizes). Repaint redraws pixels (colors, visibility). Reflow is more expensive than repaint.", example: "Real-life example: Changing color triggers repaint only. Changing width triggers both reflow and repaint." },
+    { q: "What is the critical rendering path?", a: "The critical rendering path is the sequence of steps the browser takes to render the first pixel — parsing HTML, CSS, executing blocking JS, building render tree, layout, and paint.", example: "Real-life example: Placing scripts at the bottom of body or using defer/async speeds up the critical rendering path." }
+  ]
+},
+{
+  icon: <FaCogs />,
+  title: "Concurrency Patterns",
+  questions: [
+    { q: "What are Web Workers?", a: "Web Workers run JavaScript in a background thread separate from the main UI thread, preventing heavy computation from blocking the UI.", example: "Real-life example: Running image processing or large data sorting in a Worker so the UI stays responsive." },
+    { q: "What is the microtask queue?", a: "The microtask queue (for Promises and queueMicrotask) has higher priority than the macrotask queue (setTimeout, setInterval). Microtasks run after the current task but before the next macrotask.", example: "Real-life example: Promise.resolve().then() runs before setTimeout(() => {}, 0) even though both are async." },
+    { q: "What is requestAnimationFrame?", a: "requestAnimationFrame schedules a callback before the next browser repaint, making it ideal for smooth animations synchronized with the display refresh rate.", example: "Real-life example: Animating a progress bar using requestAnimationFrame instead of setInterval for 60fps smoothness." }
+  ]
+},
   ];
 
   const totalPages = Math.ceil(topics.length / topicsPerPage);
@@ -581,27 +743,41 @@ const DbmsNotes = () => {
   }, [currentPage]);
 
   return (
-    <main style={styles.container} ref={topRef}>
+    <>
+    <style>{`
+      @media (max-width: 768px) {
+        .js-notes-title { font-size: 1.5rem !important; }
+        .js-notes-subtitle { font-size: 0.88rem !important; }
+        .js-card-title { font-size: 1.05rem !important; }
+        .js-question { font-size: 0.88rem !important; }
+        .js-answer { font-size: 0.83rem !important; line-height: 1.55 !important; }
+        .js-example { font-size: 0.78rem !important; }
+        .js-container { padding: 14px !important; }
+        .js-card { padding: 14px !important; gap: 10px !important; }
+        .js-page-btn { padding: 6px 10px !important; font-size: 0.82rem !important; }
+      }
+    `}</style>
+    <main style={styles.container} className="js-container" ref={topRef}>
       <header style={styles.header}>
-        <h1 style={styles.title}>JavaScript</h1>
-        <p style={styles.subtitle}>
+        <h1 style={styles.title} className="js-notes-title">JavaScript</h1>
+        <p style={styles.subtitle} className="js-notes-subtitle">           
           Starter notes for beginners with interview-focused explanations
         </p>
       </header>
 
       <section style={styles.topicsGrid}>
         {paginatedTopics.map((topic, index) => (
-          <article key={index} style={styles.card}>
+          <article key={index} style={styles.card} className="js-card">
             <div style={styles.cardHeader}>
               <span style={styles.icon}>{topic.icon}</span>
-              <h2 style={styles.cardTitle}>{topic.title}</h2>
+              <h2 style={styles.cardTitle} className="js-card-title">{topic.title}</h2>
             </div>
 
             {topic.questions.map((item, idx) => (
               <div key={idx} style={styles.qaBlock}>
-                <h3 style={styles.question}>Q. {item.q}</h3>
-                <p style={styles.answer}>{item.a}</p>
-                <p style={styles.example}>
+                <h3 style={styles.question} className="js-question">Q. {item.q}</h3>
+                <p style={styles.answer} className="js-answer">{item.a}</p>
+                <p style={styles.example} className="js-example">
                   <strong>Example:</strong> {item.example}
                 </p>
               </div>
@@ -612,8 +788,7 @@ const DbmsNotes = () => {
 
       {/* Pagination */}
       <div style={styles.pagination}>
-        <button
-          style={styles.pageBtn}
+        <button style={styles.pageBtn} className="js-page-btn"
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((p) => p - 1)}
         >
@@ -643,6 +818,7 @@ const DbmsNotes = () => {
         </button>
       </div>
     </main>
+    </>
   );
 };
 
@@ -731,7 +907,7 @@ const styles = {
     border: "1px solid #ddd",
     cursor: "pointer",
     backgroundColor: "#fff"
-  }
+  },
 };
 
 export default DbmsNotes;

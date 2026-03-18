@@ -366,6 +366,78 @@ const topics = [
       { q: "What is windowing or virtual scrolling?", a: "Windowing renders only the visible items in a long list instead of all items. Libraries like react-window or react-virtual implement this pattern.", example: "Real-life example: A list of 10,000 employees — only 20 visible rows are in the DOM at a time, making scroll buttery smooth." }
     ]
   },
+  {
+  icon: <FaDatabase />,
+  title: "State Management (Redux Toolkit)",
+  questions: [
+    { q: "What is Redux Toolkit and why is it preferred over plain Redux?", a: "Redux Toolkit (RTK) is the official, opinionated way to write Redux. It eliminates boilerplate by providing createSlice, createAsyncThunk, and configureStore, reducing the amount of code significantly.", example: "Real-life example: Plain Redux needed 4 files (actions, reducers, constants, store) per feature. RTK does it in one slice file." },
+    { q: "What is createSlice in Redux Toolkit?", a: "createSlice automatically generates action creators and action types from reducers. You define the initial state, reducer functions, and RTK handles the rest.", example: "Real-life example: const cartSlice = createSlice({ name: 'cart', initialState: [], reducers: { addItem(state, action) { state.push(action.payload); } } })" },
+    { q: "What is createAsyncThunk used for?", a: "createAsyncThunk handles async operations like API calls in Redux. It automatically dispatches pending, fulfilled, and rejected actions based on the Promise outcome.", example: "Real-life example: export const fetchJobs = createAsyncThunk('jobs/fetch', async () => { const res = await axios.get('/api/jobs'); return res.data; })" }
+  ]
+},
+{
+  icon: <FaBolt />,
+  title: "React Suspense and Data Fetching",
+  questions: [
+    { q: "What is React Suspense?", a: "Suspense lets you declaratively specify a loading state for part of the component tree while waiting for something (lazy component, data) to load. It replaces manual loading state management.", example: "Real-life example: <Suspense fallback={<Spinner />}><LazyDashboard /></Suspense> shows spinner while dashboard chunk downloads." },
+    { q: "How does Suspense work with React Query?", a: "With suspenseful queries enabled, React Query integrates with Suspense so the nearest Suspense boundary handles loading and ErrorBoundary handles errors, removing the need for isLoading checks.", example: "Real-life example: A jobs list wrapped in Suspense automatically shows a skeleton loader while React Query fetches data." },
+    { q: "What is the difference between Suspense for lazy loading and for data fetching?", a: "Suspense for lazy loading (React.lazy) is stable and widely used. Suspense for data fetching is an evolving feature, currently best used via frameworks like Next.js or libraries like React Query.", example: "Real-life example: React.lazy() Suspense is production-ready. Data fetching Suspense is recommended only with React Query or Next.js app router." }
+  ]
+},
+{
+  icon: <FaProjectDiagram />,
+  title: "React Rendering Patterns",
+  questions: [
+    { q: "What is Client-Side Rendering (CSR)?", a: "CSR renders the page entirely in the browser using JavaScript. The server sends a minimal HTML shell, and React builds the UI on the client. Fast after initial load but poor for SEO.", example: "Real-life example: A React SPA where the initial HTML is just <div id='root'></div> — everything is painted by JavaScript." },
+    { q: "What is Server-Side Rendering (SSR)?", a: "SSR generates the full HTML on the server for each request and sends it to the browser. Users see content faster and search engines can crawl it, but server load is higher.", example: "Real-life example: Next.js getServerSideProps fetches job data on the server and sends fully rendered HTML to the user." },
+    { q: "What is Static Site Generation (SSG)?", a: "SSG pre-renders pages at build time into static HTML files. They are extremely fast and cheap to host, ideal for content that doesn't change often.", example: "Real-life example: A blog where posts are built into static HTML at deploy time and served directly from a CDN." }
+  ]
+},
+{
+  icon: <FaSync />,
+  title: "useReducer Hook",
+  questions: [
+    { q: "What is useReducer and how does it differ from useState?", a: "useReducer manages complex state with a reducer function, similar to Redux. It is better than useState when multiple state values are related or the next state depends on the previous one.", example: "Real-life example: Managing a multi-step job application form with fields, errors, current step, and submission status all in one reducer." },
+    { q: "What is the signature of useReducer?", a: "const [state, dispatch] = useReducer(reducer, initialState). The reducer function takes current state and an action and returns the new state.", example: "Real-life example: dispatch({ type: 'INCREMENT' }) triggers the reducer to return { count: state.count + 1 }." },
+    { q: "When should you choose useReducer over useState?", a: "Choose useReducer when: state has multiple sub-values, state updates are complex, next state depends on previous state, or you want predictable state transitions like Redux.", example: "Real-life example: A shopping cart with addItem, removeItem, updateQuantity, and clearCart — useReducer handles all actions cleanly." }
+  ]
+},
+{
+  icon: <FaTools />,
+  title: "Accessibility (a11y) in React",
+  questions: [
+    { q: "What is web accessibility and why does it matter in React?", a: "Accessibility ensures web apps are usable by people with disabilities (visual, motor, cognitive). React apps must manage focus, ARIA attributes, and keyboard navigation since they are dynamic SPAs.", example: "Real-life example: A modal that traps keyboard focus inside it so Tab key cycles through modal buttons instead of elements behind." },
+    { q: "What are ARIA attributes in React?", a: "ARIA (Accessible Rich Internet Applications) attributes add semantic meaning to elements. In JSX, use aria-label, aria-hidden, role, and aria-expanded to describe dynamic UI to screen readers.", example: "Real-life example: <button aria-label='Close modal' onClick={onClose}>✕</button> — screen reader announces 'Close modal button' instead of just '✕'." },
+    { q: "How do you manage focus in React for accessibility?", a: "Use useRef and .focus() to programmatically move focus to the correct element after state changes, like focusing the first input of a modal when it opens.", example: "Real-life example: When a dialog opens, useEffect runs inputRef.current.focus() so keyboard users are immediately inside the dialog." }
+  ]
+},
+{
+  icon: <FaCubes />,
+  title: "Component Composition Patterns",
+  questions: [
+    { q: "What is the children prop in React?", a: "The children prop allows components to receive and render any JSX content passed between their opening and closing tags. It is the foundation of flexible, composable components.", example: "Real-life example: <Card><h2>Title</h2><p>Content</p></Card> — Card renders whatever is passed inside it via props.children." },
+    { q: "What is the render props pattern?", a: "Render props is a technique where a component accepts a function as a prop and calls it to determine what to render. It enables sharing logic between components without HOCs.", example: "Real-life example: <MouseTracker render={({ x, y }) => <div>Mouse is at {x}, {y}</div>} /> — logic is shared, UI is customizable." },
+    { q: "What is the difference between composition and inheritance in React?", a: "React strongly favors composition over inheritance. Instead of extending components, you compose them by passing components as props or children, keeping code flexible and reusable.", example: "Real-life example: A Dialog component accepts a header and footer as props rather than creating AdminDialog and UserDialog subclasses." }
+  ]
+},
+{
+  icon: <FaLayerGroup />,
+  title: "React Internationalization (i18n)",
+  questions: [
+    { q: "What is internationalization (i18n) in React?", a: "i18n is the process of designing an app to support multiple languages and locales. In React, libraries like react-i18next or react-intl handle translations, date formatting, and pluralization.", example: "Real-life example: A job portal showing 'Apply Now' in English, 'Postuler maintenant' in French, and 'Jetzt bewerben' in German based on the user's language setting." },
+    { q: "How does react-i18next work?", a: "You define translation JSON files per language, initialize i18next with the files and default language, wrap the app with I18nextProvider, and use the useTranslation hook to access translated strings.", example: "Real-life example: const { t } = useTranslation(); return <button>{t('apply_now')}</button> — renders the correct translation automatically." },
+    { q: "What is locale-aware formatting?", a: "Numbers, dates, and currencies display differently across locales. Use the Intl browser API or libraries to format them correctly without manual conversion.", example: "Real-life example: Salary '50000' displays as '$50,000' in the US, '₹50,000' in India, and '50.000 €' in Germany using Intl.NumberFormat." }
+  ]
+},
+{
+  icon: <FaTachometerAlt />,
+  title: "React Interview Patterns",
+  questions: [
+    { q: "What is the difference between imperative and declarative programming in React context?", a: "Imperative code describes HOW to do something step by step. Declarative code describes WHAT you want. React is declarative — you describe the desired UI state and React figures out the DOM updates.", example: "Real-life example: Imperative: manually add/remove CSS classes. Declarative React: isActive ? 'btn-active' : 'btn' — React updates the DOM automatically." },
+    { q: "What is the stale closure problem in React hooks?", a: "A stale closure happens when a useEffect or event handler captures an old value of state or props from when it was created, not the current value. Fix with dependency arrays or useRef.", example: "Real-life example: A setInterval inside useEffect reading count always shows 0 if count is not in the dependency array — it captured the initial value." },
+    { q: "What is the difference between useEffect and useLayoutEffect?", a: "useEffect runs asynchronously after the browser paints. useLayoutEffect runs synchronously after DOM mutations but before the browser paints. Use useLayoutEffect to measure DOM elements or prevent visual flickering.", example: "Real-life example: A tooltip that needs to read an element's position and reposition itself before the user sees it uses useLayoutEffect to avoid a flash of wrong position." }
+  ]
+},
 ];
 
   const totalPages = Math.ceil(topics.length / topicsPerPage);
@@ -382,27 +454,41 @@ const topics = [
   }, [currentPage]);
 
   return (
-    <main style={styles.container} ref={topRef}>
+  <>
+  <style>{`
+    @media (max-width: 768px) {
+      .react-title { font-size: 1.5rem !important; }
+      .react-subtitle { font-size: 0.88rem !important; }
+      .react-card-title { font-size: 1.05rem !important; }
+      .react-question { font-size: 0.88rem !important; }
+      .react-answer { font-size: 0.83rem !important; line-height: 1.55 !important; }
+      .react-example { font-size: 0.78rem !important; }
+      .react-container { padding: 14px !important; }
+      .react-card { padding: 14px !important; gap: 10px !important; }
+      .react-page-btn { padding: 6px 10px !important; font-size: 0.82rem !important; }
+    }
+  `}</style>
+  <main style={styles.container} className="react-container" ref={topRef}>
       <header style={styles.header}>
-        <h1 style={styles.title}>React Js</h1>
-        <p style={styles.subtitle}>
+        <h1 style={styles.title} className="react-title">React Js</h1>
+        <p style={styles.subtitle} className="react-subtitle">
           Starter notes for beginners with interview-focused explanations
         </p>
       </header>
 
       <section style={styles.topicsGrid}>
         {paginatedTopics.map((topic, index) => (
-          <article key={index} style={styles.card}>
+          <article key={index} style={styles.card} className="react-card">
             <div style={styles.cardHeader}>
               <span style={styles.icon}>{topic.icon}</span>
-              <h2 style={styles.cardTitle}>{topic.title}</h2>
+              <h2 style={styles.cardTitle} className="react-card-title">{topic.title}</h2>
             </div>
 
             {topic.questions.map((item, idx) => (
               <div key={idx} style={styles.qaBlock}>
-                <h3 style={styles.question}>Q. {item.q}</h3>
-                <p style={styles.answer}>{item.a}</p>
-                <p style={styles.example}>
+                <h3 style={styles.question} className="react-question">Q. {item.q}</h3>
+                <p style={styles.answer} className="react-answer">{item.a}</p>
+                <p style={styles.example} className="react-example">
                   <strong>Example:</strong> {item.example}
                 </p>
               </div>
@@ -413,8 +499,7 @@ const topics = [
 
       {/* Pagination */}
       <div style={styles.pagination}>
-        <button
-          style={styles.pageBtn}
+        <button style={styles.pageBtn} className="react-page-btn"
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((p) => p - 1)}
         >
@@ -445,6 +530,7 @@ const topics = [
         </button>
       </div>
     </main>
+    </>
   );
 };
 

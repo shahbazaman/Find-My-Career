@@ -708,7 +708,7 @@ const handleDeleteJob = (jobId) => {
                               <button
                                 className="btn-primary"
                                 onClick={() => setReplyingTo(q)}
-                              >Repaly
+                              >Reply
                               </button>
                             </td>
                           </tr>

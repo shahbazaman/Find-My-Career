@@ -45,7 +45,9 @@ const JobView = () => {
 
     fetchJob();
   }, [jobId]);
-
+useEffect(() => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}, []);
   /* ================= APPLY HANDLER (matches Cards.jsx) ================= */
   const handleApply = async () => {
     const token = localStorage.getItem("token");

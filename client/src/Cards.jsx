@@ -116,7 +116,10 @@ const mappedJobs = jobsRes.data.jobs.map(job => {
   fetchJobsAndApplications();
 }, []);
 
-
+// Scroll to top when Cards page mounts
+useEffect(() => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}, []);
 
   /* ================= FILTERING ================= */
   useEffect(() => {
@@ -683,7 +686,7 @@ const toggleApply = async (jobId) => {
       height: "fit-content" 
     }}>
       <button
-        onClick={() => navigate(`/jobs/${job._id}`)}
+        onClick={() => { window.scrollTo({ top: 0, behavior: "smooth" }); navigate(`/jobs/${job._id}`);}}
         style={{
           padding: "6px 14px", // Reduced padding for better mobile fit
           fontSize: "12px",    // Slightly smaller text

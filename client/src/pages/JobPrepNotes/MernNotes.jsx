@@ -365,6 +365,114 @@ const topics = [
       { q: "What are custom error classes in Node.js?", a: "Extending the built-in Error class allows creating errors with custom status codes and messages, making error responses more structured and informative.", example: "Real-life example: class AppError extends Error { constructor(message, statusCode) { super(message); this.statusCode = statusCode; } }" }
     ]
   },
+  {
+  icon: <FaCodeBranch />,
+  title: "Mongoose ODM",
+  questions: [
+    { q: "What is Mongoose and why is it used?", a: "Mongoose is an ODM (Object Data Modeling) library for MongoDB and Node.js. It provides schema validation, type casting, query building, and middleware hooks on top of the native MongoDB driver.", example: "Real-life example: Defining a User schema with required email and hashed password fields so MongoDB enforces structure on every document." },
+    { q: "What are Mongoose virtuals?", a: "Virtuals are document properties that are not stored in MongoDB but computed from existing fields. They are useful for derived values like full name from first and last name.", example: "Real-life example: userSchema.virtual('fullName').get(() => this.firstName + ' ' + this.lastName) — computed without extra DB storage." },
+    { q: "What are Mongoose middleware (pre/post hooks)?", a: "Mongoose middleware runs before (pre) or after (post) certain operations like save, find, or delete. They are used for tasks like hashing passwords before saving or logging after deletion.", example: "Real-life example: userSchema.pre('save', async function() { this.password = await bcrypt.hash(this.password, 10); })" }
+  ]
+},
+{
+  icon: <FaShieldAlt />,
+  title: "Input Validation",
+  questions: [
+    { q: "How do you validate request data in Express?", a: "Use libraries like express-validator or Joi to validate and sanitize incoming request data before processing. This prevents bad data from reaching the database.", example: "Real-life example: Checking that email is a valid format and password is at least 8 characters before creating a user." },
+    { q: "What is the difference between validation and sanitization?", a: "Validation checks if data meets rules (required, min length, valid email). Sanitization cleans data by trimming spaces, escaping HTML, or normalizing values.", example: "Real-life example: Validating that age is a number, then sanitizing by converting '  25  ' to 25 by trimming whitespace." },
+    { q: "Where should validation happen in MERN — frontend or backend?", a: "Both. Frontend validation improves UX by giving immediate feedback. Backend validation is mandatory for security since clients can bypass frontend checks.", example: "Real-life example: React form shows 'Email required' instantly. Express API also checks and returns 400 if email is missing — even if Postman is used." }
+  ]
+},
+{
+  icon: <FaMicrochip />,
+  title: "WebSockets and Real-Time",
+  questions: [
+    { q: "What is Socket.io and how does it work in MERN?", a: "Socket.io is a library for real-time bidirectional communication between client and server over WebSockets. Unlike HTTP, the connection stays open so the server can push data to clients instantly.", example: "Real-life example: A live chat feature where messages appear instantly for all users without refreshing the page." },
+    { q: "What is the difference between HTTP and WebSocket?", a: "HTTP is request-response — the client always initiates. WebSocket is a persistent two-way connection where both client and server can send messages at any time.", example: "Real-life example: HTTP for loading a job listing page. WebSocket for a real-time notification when someone applies to your job." },
+    { q: "What are Socket.io rooms?", a: "Rooms are virtual channels that sockets can join. Messages sent to a room are only received by sockets in that room, enabling group communication.", example: "Real-life example: Each interview scheduled creates a room so only the recruiter and candidate receive interview reminders." }
+  ]
+},
+{
+  icon: <FaCodeBranch />,
+  title: "Environment and Config",
+  questions: [
+    { q: "What is dotenv and why is it used?", a: "dotenv loads environment variables from a .env file into process.env. It keeps sensitive data like API keys, DB passwords, and JWT secrets out of source code.", example: "Real-life example: Storing MONGO_URI and JWT_SECRET in .env so they are never pushed to GitHub." },
+    { q: "What is the difference between development and production environments?", a: "Development has verbose error messages and debugging tools. Production has minified code, optimized builds, and suppressed error details for security.", example: "Real-life example: In dev, Express shows full stack traces. In production, only a generic 'Something went wrong' message is shown." },
+    { q: "How do you manage different configs for dev and prod?", a: "Use separate .env files (.env.development, .env.production) or environment-specific config objects that switch based on NODE_ENV value.", example: "Real-life example: Development uses a local MongoDB URI. Production uses a MongoDB Atlas URI from the hosting platform's environment variables." }
+  ]
+},
+{
+  icon: <FaTachometerAlt />,
+  title: "Rate Limiting and Security",
+  questions: [
+    { q: "What is rate limiting and why is it important?", a: "Rate limiting restricts how many requests a client can make in a given time window. It protects APIs from brute force attacks, DDoS, and abuse.", example: "Real-life example: Limiting login attempts to 5 per minute per IP using express-rate-limit to prevent password guessing." },
+    { q: "What is Helmet.js?", a: "Helmet is an Express middleware that sets various HTTP security headers to protect against common attacks like clickjacking, MIME sniffing, and cross-site scripting.", example: "Real-life example: app.use(helmet()) adds headers like X-Frame-Options and Content-Security-Policy automatically." },
+    { q: "What is HTTPS and why is it required in production?", a: "HTTPS encrypts data between client and server using TLS/SSL, preventing man-in-the-middle attacks. Browsers also block mixed content and warn users on non-HTTPS sites.", example: "Real-life example: Without HTTPS, a user's login credentials sent over a public WiFi network can be intercepted by anyone on that network." }
+  ]
+},
+{
+  icon: <FaReact />,
+  title: "React Router",
+  questions: [
+    { q: "What is React Router and how does it work?", a: "React Router is a library for client-side routing in React. It maps URLs to components without page reloads, giving SPAs the feel of multi-page apps.", example: "Real-life example: Navigating from /jobs to /jobs/123 shows the job detail component without reloading the page." },
+    { q: "What is the difference between BrowserRouter and HashRouter?", a: "BrowserRouter uses the HTML5 History API for clean URLs (/jobs/123). HashRouter uses the URL hash (#/jobs/123), which works without server configuration but looks less clean.", example: "Real-life example: Production apps on servers with proper redirects use BrowserRouter. Static file hosts without redirect support use HashRouter." },
+    { q: "What are protected routes in React?", a: "Protected routes check if a user is authenticated before rendering a component, redirecting to login if not. They are implemented by wrapping routes with a custom PrivateRoute component.", example: "Real-life example: The /dashboard route redirects to /login if no JWT token is found in localStorage." }
+  ]
+},
+{
+  icon: <FaDatabase />,
+  title: "MongoDB Transactions",
+  questions: [
+    { q: "What are transactions in MongoDB?", a: "Transactions allow multiple operations to execute as an atomic unit — all succeed or all fail together. They are essential for maintaining data consistency across multiple collections.", example: "Real-life example: When a user purchases a course, both the payment record creation and course enrollment must succeed together or both roll back." },
+    { q: "When should you use MongoDB transactions?", a: "Use transactions when multiple writes across different collections must be consistent — like financial operations, inventory updates, or any scenario where partial completion causes data corruption.", example: "Real-life example: Transferring funds between two user accounts — debit one and credit the other must both succeed or neither should happen." },
+    { q: "What is the session object in MongoDB transactions?", a: "A session object tracks the transaction context. All operations that are part of a transaction must use the same session object so MongoDB knows they belong together.", example: "Real-life example: const session = await mongoose.startSession(); session.startTransaction(); then pass session to each Model operation." }
+  ]
+},
+{
+  icon: <FaSync />,
+  title: "React Performance",
+  questions: [
+    { q: "What is React.memo and when to use it?", a: "React.memo is a HOC that prevents a functional component from re-rendering if its props haven't changed. Use it for pure components that receive the same props frequently.", example: "Real-life example: Wrapping a JobCard component with React.memo so it doesn't re-render when the parent's unrelated state changes." },
+    { q: "What is code splitting in React?", a: "Code splitting breaks the JavaScript bundle into smaller chunks that are loaded on demand. React.lazy() and Suspense enable this, reducing initial load time.", example: "Real-life example: The admin dashboard bundle is only downloaded when an admin navigates to /admin, not on initial page load." },
+    { q: "What is the React Profiler?", a: "The React Profiler (in DevTools) measures how often components render and how long each render takes, helping identify performance bottlenecks.", example: "Real-life example: Using the Profiler to discover that a filter component re-renders 50 times per keystroke, then fixing it with useMemo." }
+  ]
+},
+{
+  icon: <FaServer />,
+  title: "Microservices vs Monolith",
+  questions: [
+    { q: "What is a monolithic architecture?", a: "A monolith is a single application where all features (auth, jobs, payments) are built and deployed together. Simple to develop initially but hard to scale and maintain as it grows.", example: "Real-life example: A single Express server that handles users, jobs, applications, and payments all in one codebase." },
+    { q: "What are microservices?", a: "Microservices split an application into small, independent services that each handle one feature and communicate via APIs or message queues. Each service can be deployed, scaled, and updated independently.", example: "Real-life example: Separate Node.js services for Auth, Jobs, Notifications, and Payments — each with its own database and deployment." },
+    { q: "What are the tradeoffs between microservices and monolith?", a: "Monolith is simpler to build and debug but hard to scale. Microservices scale well and allow independent deployment but add complexity in networking, data consistency, and DevOps.", example: "Real-life example: Startups begin with a monolith for speed. As they grow (like Netflix or Uber), they migrate to microservices for independent scaling." }
+  ]
+},
+{
+  icon: <FaCloudUploadAlt />,
+  title: "Deployment and Hosting",
+  questions: [
+    { q: "How do you deploy a MERN app?", a: "Frontend (React) is built with 'npm run build' and deployed to static hosts like Vercel or Netlify. Backend (Node/Express) is deployed to cloud servers like Railway, Render, or AWS EC2.", example: "Real-life example: React build deployed to Vercel, Express API on Render, MongoDB Atlas as cloud database — a fully cloud-hosted MERN app." },
+    { q: "What is a reverse proxy and why is it used?", a: "A reverse proxy (like Nginx) sits in front of the Node.js server, handles SSL termination, serves static files, and distributes load across multiple server instances.", example: "Real-life example: Nginx serves the React build files directly and forwards /api requests to the Node.js server running on port 5000." },
+    { q: "What are environment variables in deployment?", a: "Environment variables store configuration values (DB URLs, API keys, secrets) outside the codebase. Cloud platforms like Vercel and Render let you set them in the dashboard without editing code.", example: "Real-life example: Setting MONGO_URI and JWT_SECRET on Render's environment variables tab instead of hardcoding them in server.js." }
+  ]
+},
+{
+  icon: <FaLock />,
+  title: "Password Security",
+  questions: [
+    { q: "Why should passwords never be stored in plain text?", a: "Plain text passwords are immediately exposed in a data breach. Hashing passwords with bcrypt transforms them into irreversible hashes so even database admins cannot read the original passwords.", example: "Real-life example: The 2012 LinkedIn breach exposed 117 million plain text passwords. Proper hashing would have made them useless to attackers." },
+    { q: "What is bcrypt and how does salting work?", a: "Bcrypt is a password hashing algorithm that automatically adds a random 'salt' to each password before hashing. This ensures that two identical passwords produce different hashes.", example: "Real-life example: Two users with password '123456' get completely different hashes, preventing rainbow table attacks." },
+    { q: "What is the bcrypt cost factor?", a: "The cost factor (work factor) controls how many rounds of hashing are performed. A higher value (like 12) makes hashing slower, increasing security against brute force at the cost of slight login delay.", example: "Real-life example: bcrypt.hash(password, 12) — the '12' means 2^12 = 4096 hashing rounds, making brute force extremely time-consuming." }
+  ]
+},
+{
+  icon: <FaRocket />,
+  title: "GraphQL vs REST",
+  questions: [
+    { q: "What is GraphQL and how is it different from REST?", a: "GraphQL is a query language for APIs where clients request exactly the data they need in a single request. REST uses fixed endpoints that may over-fetch or under-fetch data.", example: "Real-life example: REST GET /users returns all user fields. GraphQL query { user { name email } } returns only name and email." },
+    { q: "What are the advantages of GraphQL?", a: "Single endpoint, no over-fetching or under-fetching, strongly typed schema, self-documenting API, and efficient for mobile clients that need minimal data.", example: "Real-life example: A mobile app fetching job listings requests only title and location, saving bandwidth compared to a REST API returning all 20 fields." },
+    { q: "When should you choose REST over GraphQL?", a: "Choose REST for simple CRUD APIs, public APIs with caching needs, or teams without GraphQL experience. GraphQL shines in complex apps with multiple related data types and varied client needs.", example: "Real-life example: A simple blog API benefits from REST. A complex dashboard showing users, jobs, applications, and stats simultaneously benefits from GraphQL." }
+  ]
+},
 ];
 
   const totalPages = Math.ceil(topics.length / topicsPerPage);
@@ -381,27 +489,41 @@ const topics = [
   }, [currentPage]);
 
   return (
-    <main style={styles.container} ref={topRef}>
+  <>
+  <style>{`
+    @media (max-width: 768px) {
+      .mern-title { font-size: 1.5rem !important; }
+      .mern-subtitle { font-size: 0.88rem !important; }
+      .mern-card-title { font-size: 1.05rem !important; }
+      .mern-question { font-size: 0.88rem !important; }
+      .mern-answer { font-size: 0.83rem !important; line-height: 1.55 !important; }
+      .mern-example { font-size: 0.78rem !important; }
+      .mern-container { padding: 14px !important; }
+      .mern-card { padding: 14px !important; gap: 10px !important; }
+      .mern-page-btn { padding: 6px 10px !important; font-size: 0.82rem !important; }
+    }
+  `}</style>
+  <main style={styles.container} className="mern-container" ref={topRef}>
       <header style={styles.header}>
-        <h1 style={styles.title}>MERN Stack</h1>
-        <p style={styles.subtitle}>
+        <h1 style={styles.title} className="mern-title">MERN Stack</h1>
+        <p style={styles.subtitle} className="mern-subtitle">
           Starter notes for beginners with interview-focused explanations
         </p>
       </header>
 
       <section style={styles.topicsGrid}>
         {paginatedTopics.map((topic, index) => (
-          <article key={index} style={styles.card}>
+          <article key={index} style={styles.card} className="mern-card">
             <div style={styles.cardHeader}>
               <span style={styles.icon}>{topic.icon}</span>
-              <h2 style={styles.cardTitle}>{topic.title}</h2>
+              <h2 style={styles.cardTitle} className="mern-card-title">{topic.title}</h2>
             </div>
 
             {topic.questions.map((item, idx) => (
               <div key={idx} style={styles.qaBlock}>
-                <h3 style={styles.question}>Q. {item.q}</h3>
-                <p style={styles.answer}>{item.a}</p>
-                <p style={styles.example}>
+                <h3 style={styles.question} className="mern-question">Q. {item.q}</h3>
+                <p style={styles.answer} className="mern-answer">{item.a}</p>
+                <p style={styles.example} className="mern-example">
                   <strong>Example:</strong> {item.example}
                 </p>
               </div>
@@ -412,8 +534,7 @@ const topics = [
 
       {/* Pagination */}
       <div style={styles.pagination}>
-        <button
-          style={styles.pageBtn}
+        <button style={styles.pageBtn} className="mern-page-btn"
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((p) => p - 1)}
         >
@@ -444,6 +565,7 @@ const topics = [
         </button>
       </div>
     </main>
+    </>
   );
 };
 

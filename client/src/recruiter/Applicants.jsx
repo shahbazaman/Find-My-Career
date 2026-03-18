@@ -384,7 +384,7 @@ const paginatedApplicants = useMemo(() => {
 
           .search-box input {
             width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            padding: 0.75rem 1rem 0.75rem 3.2rem;
             border: 2px solid #e2e8f0;
             border-radius: 10px;
             font-size: 0.95rem;
@@ -407,6 +407,7 @@ const paginatedApplicants = useMemo(() => {
           transform: translateY(-50%);
           color: #a0aec0;
           font-size: 1.1rem;
+          margin-left: 0.4rem;   /* ← adds breathing room from the left border */
         }
 
         .filter-box {
@@ -936,7 +937,7 @@ const paginatedApplicants = useMemo(() => {
         <div className="controls-panel">
           <div className="controls-row">
             <div className="search-box">
-              <FiSearch className="search-icon ms-4 me-4" />
+              <FiSearch className="search-icon" />
               <input
                 type="text"
                 placeholder="Search by name or job title..."
@@ -945,7 +946,7 @@ const paginatedApplicants = useMemo(() => {
               />
             </div>
             
-            <div className="filter-box me-2">
+            <div className="filter-box">
               <FiFilter className="filter-icon " />
               <select
                 value={statusFilter}
