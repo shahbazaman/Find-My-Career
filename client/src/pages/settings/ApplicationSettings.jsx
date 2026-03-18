@@ -156,7 +156,7 @@ const DeleteResume = async () => {
     </div>
   </div>
 
-  <div className="resume-actions" style={{ display: 'flex', gap: '10px', marginLeft: 'auto' }}>
+  <div className="resume-actions" style={{ display: 'flex', gap: '10px' }}>
     <button
   type="button"
   className="resume-badge-action"
@@ -179,10 +179,8 @@ const DeleteResume = async () => {
 >
   <FaEye /> {resumeUrl ? "View Resume" : "Fetching..."}
 </button>
-<div>
   <button
-    type="button"
-    className="resume-badge-action"
+    type="button" className="resume-badge-action"
     style={{
       cursor: resumeUrl ? "pointer" : "not-allowed",
       backgroundColor: resumeUrl ? "#ef4444" : "#cbd5e1", // Red if exists, gray if empty
@@ -204,7 +202,6 @@ const DeleteResume = async () => {
   >
     <FaTrash /> {resumeUrl ? "Delete" : "No File"}
   </button>
-</div>
   </div>
 </div>
           {/* Stats Section */}
@@ -755,7 +752,7 @@ const DeleteResume = async () => {
         /* Stats Grid */
         .stats-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          grid-template-columns: repeat(3, 1fr);
           gap: 1rem;
           margin-top: 2rem;
           padding-top: 2rem;
@@ -905,6 +902,9 @@ const DeleteResume = async () => {
           animation: slide-right 0.5s ease-out backwards;
         }
         @media (max-width: 640px) {
+        .stats-grid {
+          grid-template-columns: repeat(3, 1fr);
+          }
         .settings-card-content {
           padding: 1.5rem;
         }
