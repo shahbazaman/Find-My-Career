@@ -438,6 +438,51 @@ const topics = [
     { q: "What is the difference between useEffect and useLayoutEffect?", a: "useEffect runs asynchronously after the browser paints. useLayoutEffect runs synchronously after DOM mutations but before the browser paints. Use useLayoutEffect to measure DOM elements or prevent visual flickering.", example: "Real-life example: A tooltip that needs to read an element's position and reposition itself before the user sees it uses useLayoutEffect to avoid a flash of wrong position." }
   ]
 },
+{
+  icon: <FaBrain />,
+  title: "React Server Components",
+  questions: [
+    { q: "What are React Server Components (RSC)?", a: "Server Components render on the server and send HTML to the client with zero JavaScript bundle cost. They can directly access databases and file systems without exposing sensitive logic to the client.", example: "Real-life example: A product listing page that queries the database directly in the component without needing an API route — the query never reaches the browser." },
+    { q: "What is the difference between Server Components and Client Components?", a: "Server Components run only on the server, have no state or event handlers, and reduce bundle size. Client Components use the 'use client' directive, run in the browser, and can use hooks and event listeners.", example: "Real-life example: A static job description is a Server Component. The Apply button with onClick handler is a Client Component." },
+    { q: "What are the benefits of React Server Components?", a: "Smaller JavaScript bundles, faster initial page loads, direct backend data access, improved SEO, and no client-side data fetching waterfalls.", example: "Real-life example: A dashboard that previously needed 5 API calls now fetches all data in one Server Component, eliminating loading spinners." }
+  ]
+},
+{
+  icon: <FaRoute />,
+  title: "Next.js with React",
+  questions: [
+    { q: "What is Next.js and how does it extend React?", a: "Next.js is a React framework that adds file-based routing, SSR, SSG, API routes, and image optimization on top of React. It removes the need to configure webpack, routing, or server setup manually.", example: "Real-life example: Creating a /jobs page by simply adding a jobs.jsx file in the pages folder — no router configuration needed." },
+    { q: "What is the App Router in Next.js 13+?", a: "The App Router uses a new directory structure (app/) with nested layouts, Server Components by default, loading.js, error.js, and page.js files for each route segment.", example: "Real-life example: app/jobs/[id]/page.jsx automatically creates a dynamic job detail page with its own loading and error boundaries." },
+    { q: "What is the difference between pages/ and app/ directory in Next.js?", a: "pages/ is the older Pages Router using getServerSideProps and getStaticProps. app/ is the newer App Router using Server Components, async components, and nested layouts by default.", example: "Real-life example: Migrating from pages/jobs.jsx with getServerSideProps to app/jobs/page.jsx using async/await directly in the component." }
+  ]
+},
+{
+  icon: <FaSync />,
+  title: "React Query (TanStack Query)",
+  questions: [
+    { q: "What is TanStack Query and why use it?", a: "TanStack Query (formerly React Query) is a server state management library. It handles fetching, caching, synchronizing, and updating server data automatically, removing the need for manual useEffect data fetching patterns.", example: "Real-life example: Replacing useEffect + useState + loading + error boilerplate with a single useQuery hook that handles all of it." },
+    { q: "What is the difference between useQuery and useMutation?", a: "useQuery is for fetching/reading data (GET). useMutation is for creating, updating, or deleting data (POST/PUT/DELETE). useMutation also provides onSuccess and onError callbacks.", example: "Real-life example: useQuery to fetch job listings. useMutation to submit a job application and then invalidate the jobs cache on success." },
+    { q: "What is cache invalidation in React Query?", a: "Cache invalidation marks cached data as stale so React Query refetches it on next access. Use queryClient.invalidateQueries() after a mutation to keep UI in sync with the server.", example: "Real-life example: After applying for a job, invalidate the 'my-applications' query so the applications list refetches and shows the new entry." }
+  ]
+},
+{
+  icon: <FaProjectDiagram />,
+  title: "Micro Frontend Architecture",
+  questions: [
+    { q: "What is a Micro Frontend?", a: "Micro Frontend is an architectural pattern where a large frontend application is split into smaller, independently deployable frontend apps, similar to microservices on the backend. Each team owns and deploys their piece independently.", example: "Real-life example: An e-commerce site where the Product team, Cart team, and Checkout team each own and deploy their React app independently." },
+    { q: "How is Module Federation used in React?", a: "Webpack 5 Module Federation allows one React app to dynamically import components from another app at runtime. This enables true micro frontend composition without rebuilding the host app.", example: "Real-life example: The shell app loads the Payments micro-frontend at runtime from a separate URL — updating payments doesn't require redeploying the shell." },
+    { q: "What are the challenges of Micro Frontends?", a: "Shared dependency duplication, consistent styling across teams, cross-app communication, authentication sharing, and increased deployment complexity.", example: "Real-life example: Two teams shipping different React versions causes bundle conflicts — must agree on a shared version through module federation shared config." }
+  ]
+},
+{
+  icon: <FaTools />,
+  title: "React Build Tools",
+  questions: [
+    { q: "What is Vite and why is it preferred over Create React App?", a: "Vite uses native ES modules and esbuild for near-instant dev server startup and Hot Module Replacement (HMR). CRA uses webpack which is significantly slower for large projects.", example: "Real-life example: A large CRA project takes 45 seconds to start. The same project migrated to Vite starts in under 1 second." },
+    { q: "What is tree shaking in the context of React builds?", a: "Tree shaking removes unused code from the final bundle during build time. Modern bundlers like Vite and webpack analyze imports and eliminate dead code, reducing bundle size.", example: "Real-life example: Importing only { format } from 'date-fns' instead of the whole library — tree shaking removes all other date-fns functions from the bundle." },
+    { q: "What is the purpose of environment variables in a React Vite project?", a: "Environment variables store configuration that differs between environments (dev, staging, prod). In Vite, variables prefixed with VITE_ are exposed to the client via import.meta.env.", example: "Real-life example: VITE_API_BASE_URL=https://api.example.com in .env.production and http://localhost:5000 in .env.development — no code changes needed when deploying." }
+  ]
+},
 ];
 
   const totalPages = Math.ceil(topics.length / topicsPerPage);

@@ -371,16 +371,15 @@ const paginatedApplicants = useMemo(() => {
         }
 
         .controls-row {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-            align-items: center;
-          }
+          display: flex;
+          flex-direction: column;  
+          gap: 0.75rem;
+        }
 
         .search-box {
-            width: 100%;
-            position: relative;
-          }
+          width: 100%;
+          position: relative;
+        }
 
           .search-box input {
             width: 100%;
@@ -923,6 +922,18 @@ const paginatedApplicants = useMemo(() => {
             padding: 1rem;
           }
         }
+@media (min-width: 769px) {
+  .mobile-cards {
+    display: none !important;
+  }
+  .table-wrapper {
+    display: block !important;
+  }
+  /* Ensure table cells align properly */
+  tbody td {
+    vertical-align: middle;
+  }
+}
       `}</style>
 
       <div className="applicants-container">
@@ -1049,30 +1060,30 @@ const paginatedApplicants = useMemo(() => {
                           {a.status}
                         </span>
                       </td>
-                      <td style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+                      <td>
                         <button
                           className="btn btn-secondary"
                           style={{ padding: "0.4rem 0.9rem", fontSize: "0.82rem" }}
                           onClick={async () => {
-                          setViewingApplicant(a);
-                          setProfileData(null);
-                          setProfileLoading(true);
-                          try {
-                            const res = await axios.get(
-                              `${import.meta.env.VITE_API_BASE_URL}/profile/${a.userId}`,
-                              { headers: { Authorization: `Bearer ${token}` } }
-                            );
-                            setProfileData(res.data);
-                          } catch {
+                            setViewingApplicant(a);
                             setProfileData(null);
-                          } finally {
-                            setProfileLoading(false);
-                          }
-                        }}
+                            setProfileLoading(true);
+                            try {
+                              const res = await axios.get(
+                                `${import.meta.env.VITE_API_BASE_URL}/profile/${a.userId}`,
+                                { headers: { Authorization: `Bearer ${token}` } }
+                              );
+                              setProfileData(res.data);
+                            } catch {
+                              setProfileData(null);
+                            } finally {
+                              setProfileLoading(false);
+                            }
+                          }}
                         >
                           <FiUser /> View
                         </button>
-                        </td>
+                      </td>
                       <td>
                         <select
                           className="status-select"
@@ -1083,7 +1094,7 @@ const paginatedApplicants = useMemo(() => {
                             <option key={s} value={s}>{s}</option>
                           ))}
                         </select>
-                      </td>
+                      </td>                
                     </tr>
                   ))}
                 </tbody>

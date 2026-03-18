@@ -473,6 +473,42 @@ const topics = [
     { q: "When should you choose REST over GraphQL?", a: "Choose REST for simple CRUD APIs, public APIs with caching needs, or teams without GraphQL experience. GraphQL shines in complex apps with multiple related data types and varied client needs.", example: "Real-life example: A simple blog API benefits from REST. A complex dashboard showing users, jobs, applications, and stats simultaneously benefits from GraphQL." }
   ]
 },
+{
+  icon: <FaNodeJs />,
+  title: "Node.js Package Management",
+  questions: [
+    { q: "What is npm and what is the difference between dependencies and devDependencies?", a: "npm (Node Package Manager) manages JavaScript packages. dependencies are required in production (Express, mongoose). devDependencies are only needed during development (nodemon, jest, eslint).", example: "Real-life example: Express is a dependency. Nodemon (auto-restarts server on file change) is a devDependency since it's not needed in production." },
+    { q: "What is the purpose of package-lock.json?", a: "package-lock.json locks the exact version of every installed package and its sub-dependencies. This ensures all team members and deployment servers install identical package versions.", example: "Real-life example: Without package-lock.json, one developer installs mongoose 7.0.1 while another gets 7.0.3, causing subtle bugs that are hard to reproduce." },
+    { q: "What is the difference between npm install and npm ci?", a: "npm install installs packages and may update package-lock.json. npm ci (clean install) strictly follows package-lock.json without modifying it, making it faster and safer for CI/CD pipelines.", example: "Real-life example: CI/CD pipelines use npm ci to guarantee reproducible builds — the same packages every single time the pipeline runs." }
+  ]
+},
+{
+  icon: <FaDatabase />,
+  title: "MongoDB Performance",
+  questions: [
+    { q: "What is the explain() method in MongoDB?", a: "explain() shows the query execution plan — whether MongoDB used an index or did a full collection scan, how many documents were examined, and how long the query took.", example: "Real-life example: Running db.jobs.find({ location: 'Bangalore' }).explain('executionStats') reveals a COLLSCAN on a million-document collection, prompting you to add an index." },
+    { q: "What are compound indexes in MongoDB?", a: "Compound indexes cover multiple fields in a single index. They are useful when queries filter or sort by multiple fields together, but field order in the index matters.", example: "Real-life example: An index on { status: 1, createdAt: -1 } supports queries like 'find all active jobs sorted by newest' efficiently." },
+    { q: "What is the difference between $lookup and manual references in MongoDB?", a: "$lookup performs a left outer join between two collections in an aggregation pipeline, similar to SQL JOIN. Manual references store IDs and require separate queries, giving more control but less convenience.", example: "Real-life example: $lookup to join applications with job details in a single aggregation, instead of fetching applications then looping to fetch each job separately." }
+  ]
+},
+{
+  icon: <FaShieldAlt />,
+  title: "OAuth and Social Login",
+  questions: [
+    { q: "What is OAuth 2.0?", a: "OAuth 2.0 is an authorization framework that allows users to grant third-party apps limited access to their accounts without sharing passwords. The user authenticates with the provider (Google, GitHub) and the app receives an access token.", example: "Real-life example: 'Sign in with Google' — the user logs into Google, Google sends an authorization code to your backend, and you exchange it for user info." },
+    { q: "What is Passport.js and how is it used in MERN?", a: "Passport.js is a Node.js authentication middleware that supports 500+ strategies including local (email/password), Google OAuth, GitHub, and JWT. It simplifies implementing multiple auth methods.", example: "Real-life example: passport.use(new GoogleStrategy({ clientID, clientSecret, callbackURL }, async (token, _, profile, done) => { /* find or create user */ }))" },
+    { q: "What is the difference between OAuth and JWT?", a: "OAuth is an authorization protocol for delegating access to third-party services. JWT is a token format for transmitting claims between parties. OAuth flows often issue JWTs as access tokens.", example: "Real-life example: Google OAuth gives you a JWT (ID token) containing the user's name and email after they authenticate with Google." }
+  ]
+},
+{
+  icon: <FaRocket />,
+  title: "MERN Interview Patterns",
+  questions: [
+    { q: "How would you design a scalable job portal using MERN?", a: "React frontend with lazy loading, Express REST API with JWT auth, MongoDB with indexed collections for jobs/users/applications, Redis for caching popular jobs, Socket.io for real-time notifications, and deployed via Docker on cloud with CI/CD.", example: "Real-life example: Jobs page loads cached results from Redis in 10ms. Recruiter receives live notification when a candidate applies via Socket.io room." },
+    { q: "What is the N+1 query problem and how do you fix it in MERN?", a: "N+1 happens when you fetch N records then make N additional queries for related data. Fix with MongoDB $lookup aggregation or Mongoose populate to fetch related data in a single query.", example: "Real-life example: Fetching 100 applications then querying each job separately = 101 queries. Using populate or $lookup = 1 query." },
+    { q: "How do you handle file size limits and validation in MERN file uploads?", a: "Set Multer limits option for file size, use fileFilter for allowed MIME types, validate on the frontend before upload, and use cloud storage (S3/Cloudinary) with signed URLs for secure direct uploads.", example: "Real-life example: multer({ limits: { fileSize: 5 * 1024 * 1024 }, fileFilter: (req, file, cb) => cb(null, file.mimetype === 'application/pdf') }) — allows only PDFs under 5MB." }
+  ]
+},
 ];
 
   const totalPages = Math.ceil(topics.length / topicsPerPage);
