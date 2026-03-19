@@ -361,6 +361,30 @@ const paginatedApplicants = useMemo(() => {
           color: #718096;
         }
 
+/* ADD/REPLACE inside @media (max-width: 768px): */
+.controls-panel {
+  padding: 0.9rem;
+  border-radius: 14px;
+}
+
+.controls-row {
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.search-box,
+.filter-box {
+  width: 100%;
+  min-width: unset;
+}
+
+.search-box input,
+.filter-box select {
+  width: 100%;
+  height: 48px;
+  font-size: 0.88rem;
+  box-sizing: border-box;
+}
         /* Table Container */
         .table-container {
           background: white;
