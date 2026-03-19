@@ -122,7 +122,7 @@ export default function SavedJobs() {
               Browse jobs and click the bookmark icon to save them here
             </p>
             <button
-              onClick={() => navigate("/manage")}
+              onClick={() => navigate("/#jobs-section")}
               style={{
                 background: "linear-gradient(135deg, #667eea, #764ba2)",
                 color: "white", border: "none",

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CgWorkAlt } from "react-icons/cg";
@@ -19,6 +19,7 @@ const Cards = () => {
     const navigate = useNavigate();
   const [allCards, setAllCards] = useState([]);
   const [cards, setCards] = useState([]);
+  const cardsRef = useRef(null);
 
   const [filters, setFilters] = useState({
     company: "",
@@ -198,9 +199,12 @@ useEffect(() => {
   };
 
   const handlePageChange = (pageNumber) => {
-    if (pageNumber < 1 || pageNumber > totalPages) return;
-    setCurrentPage(pageNumber);
-  };
+  if (pageNumber < 1 || pageNumber > totalPages) return;
+  setCurrentPage(pageNumber);
+  if (cardsRef.current) {
+    cardsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+};
 
   const token = localStorage.getItem("token");
 
@@ -315,78 +319,84 @@ const toggleApply = async (jobId) => {
       }}
     ><ToastContainer position="top-center" />
       <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
-        {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "30px",
-            flexWrap: "wrap",
-            gap: "15px"
-          }}
-        >
-          <h1
-            style={{
-              color: "white",
-              fontSize: "clamp(24px, 5vw, 36px)",
-              fontWeight: "700",
-              textShadow: "2px 2px 4px rgba(0,0,0,0.2)",
-              margin: 0
-            }}
-          >
-            🚀 Current Openings
-          </h1>
-          <button
-            onClick={() => setIsFilterOpen(!isFilterOpen)}
-            style={{
-              padding: "12px 24px",
-              background: "white",
-              color: "#667eea",
-              border: "none",
-              borderRadius: "50px",
-              cursor: "pointer",
-              fontSize: "15px",
-              fontWeight: "600",
-              boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              transition: "all 0.3s ease"
-            }}
-            onMouseOver={(e) => (e.target.style.transform = "translateY(-2px)")}
-            onMouseOut={(e) => (e.target.style.transform = "translateY(0)")}
-          >
-            <BsFilter size={20} />
-            {isFilterOpen ? "Close Filters" : "Filters"}
-          </button>
-        </div>
-              {/*saved jobs */}
-              <div>
-              <button
-  onClick={() => navigate("/saved-jobs")}
-  style={{
-    padding: "12px 24px",
-    background: "#ffc107",
-    color: "#1a1a1a",
-    border: "none",
-    borderRadius: "50px",
-    cursor: "pointer",
-    fontSize: "15px",
-    fontWeight: "600",
-    boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+{/* Header */}
+<div style={{
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: "30px",
+  flexWrap: "wrap",
+  gap: "15px"
+}}>
+  <h1 style={{
+    color: "white",
+    fontSize: "clamp(24px, 5vw, 36px)",
+    fontWeight: "700",
+    textShadow: "2px 2px 4px rgba(0,0,0,0.2)",
+    margin: 0
+  }}>
+    🚀 Current Openings
+  </h1>
+
+  {/* Both buttons grouped on the right */}
+  <div style={{
     display: "flex",
+    gap: "10px",
     alignItems: "center",
-    gap: "8px",
-    transition: "all 0.3s ease"
-  }}
-  onMouseOver={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
-  onMouseOut={(e) => e.currentTarget.style.transform = "translateY(0)"}
->
-  <BsBookmarkFill size={16} />
-  Saved Jobs
-</button>
+    flexWrap: "wrap"
+  }}>
+    <button
+      onClick={() => navigate("/saved-jobs")}
+      style={{
+        padding: "10px 18px",
+        background: "#ffc107",
+        color: "#1a1a1a",
+        border: "none",
+        borderRadius: "50px",
+        cursor: "pointer",
+        fontSize: "clamp(12px, 2.5vw, 15px)",
+        fontWeight: "600",
+        boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+        display: "flex",
+        alignItems: "center",
+        gap: "7px",
+        transition: "all 0.3s ease",
+        whiteSpace: "nowrap"
+      }}
+      onMouseOver={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
+      onMouseOut={(e) => e.currentTarget.style.transform = "translateY(0)"}
+    >
+      <BsBookmarkFill size={14} />
+      Saved Jobs
+    </button>
+
+    <button
+      onClick={() => setIsFilterOpen(!isFilterOpen)}
+      style={{
+        padding: "10px 18px",
+        background: "white",
+        color: "#667eea",
+        border: "none",
+        borderRadius: "50px",
+        cursor: "pointer",
+        fontSize: "clamp(12px, 2.5vw, 15px)",
+        fontWeight: "600",
+        boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+        display: "flex",
+        alignItems: "center",
+        gap: "7px",
+        transition: "all 0.3s ease",
+        whiteSpace: "nowrap"
+      }}
+      onMouseOver={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
+      onMouseOut={(e) => e.currentTarget.style.transform = "translateY(0)"}
+    >
+      <BsFilter size={18} />
+      {isFilterOpen ? "Close" : "Filters"}
+    </button>
+  </div>
 </div>
+             
         {/* Filter Panel */}
         <div
           style={{
@@ -582,11 +592,14 @@ const toggleApply = async (jobId) => {
 
         {/* Cards Grid */}
         <div
+          ref={cardsRef}
+          id="jobs-section"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
             gap: "25px",
-            marginBottom: "40px"
+            marginBottom: "40px",
+            scrollMarginTop: "90px"  // offset for fixed navbar height
           }}
         >
           {currentCards.map((job) => (
