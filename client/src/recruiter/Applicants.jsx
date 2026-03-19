@@ -381,7 +381,7 @@ const paginatedApplicants = useMemo(() => {
     width: 100%;
     position: relative;
     margin: 0 15px;
-    margin-left: 30px;
+    padding-left: 20px;
   }
 
 

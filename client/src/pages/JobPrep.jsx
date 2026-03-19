@@ -70,18 +70,20 @@ function CourseCard({
 }) {
   const isComplete = status === "Completed";
 
-  const handleMcqOnClick = () => {
-    if (typeof questionsUrl === "function") {
-      questionsUrl(); // internal route (navigate)
-    } else {
-      window.open(questionsUrl, "_blank"); // external link
-    }
-  };
+ const handleMcqOnClick = () => {
+  if (typeof questionsUrl === "function") {
+    window.scrollTo({ top: 0, behavior: "instant" });
+    questionsUrl();
+  } else {
+    window.open(questionsUrl, "_blank");
+  }
+};
 const handleNotesOnClick = () => {
   if (typeof notesUrl === "function") {
-    notesUrl(); // internal route (navigate)
+    window.scrollTo({ top: 0, behavior: "instant" });
+    notesUrl();
   } else {
-    window.open(notesUrl, "_blank"); // external link
+    window.open(notesUrl, "_blank");
   }
 };
 

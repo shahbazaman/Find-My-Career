@@ -154,7 +154,8 @@ const handleViewJob = async (jobId) => {
       `}</style>
 
       <h2 style={{ marginBottom: "20px", color: "#2d3748" }}>
-        My Posted Jobs
+        {/* My Posted Jobs */}   
+          
       </h2>
 
       {loading && <p>Loading...</p>}

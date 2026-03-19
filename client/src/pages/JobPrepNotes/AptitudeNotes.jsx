@@ -895,25 +895,25 @@ const topics = [
   return (
     <main style={styles.container} ref={topRef}>
       <header style={styles.header}>
-        <h1 style={styles.title}>Technical Aptitude</h1>
-        <p style={styles.subtitle}>
+        <h1 style={styles.title} className="apt-title">Technical Aptitude</h1>
+        <p style={styles.subtitle} className="apt-subtitle">
           Starter notes for beginners with interview-focused explanations
         </p>
       </header>
 
       <section style={styles.topicsGrid}>
         {paginatedTopics.map((topic, index) => (
-          <article key={index} style={styles.card}>
+          <article key={index} style={styles.card} className="apt-card">
             <div style={styles.cardHeader}>
-              <span style={styles.icon}>{topic.icon}</span>
-              <h2 style={styles.cardTitle}>{topic.title}</h2>
+              <span style={styles.icon} className="apt-icon">{topic.icon}</span>
+              <h2 style={styles.cardTitle} className="apt-card-title">{topic.title}</h2>
             </div>
 
             {topic.questions.map((item, idx) => (
               <div key={idx} style={styles.qaBlock}>
-                <h3 style={styles.question}>Q. {item.q}</h3>
-                <p style={styles.answer}>{item.a}</p>
-                <p style={styles.example}>
+                <h3 style={styles.question} className="apt-question">Q. {item.q}</h3>
+                <p style={styles.answer} className="apt-answer">{item.a}</p>
+                <p style={styles.example} className="apt-example">
                   <strong>Example:</strong> {item.example}
                 </p>
               </div>
@@ -955,6 +955,18 @@ const topics = [
           Next
         </button>
       </div>
+      <style>{`
+  @media (max-width: 480px) {
+    .apt-title { font-size: 1.5rem !important; font-weight: 700 !important; }
+    .apt-subtitle { font-size: 0.85rem !important; }
+    .apt-card-title { font-size: 1.05rem !important; font-weight: 600 !important; }
+    .apt-question { font-size: 0.88rem !important; font-weight: 600 !important; }
+    .apt-answer { font-size: 0.82rem !important; }
+    .apt-example { font-size: 0.78rem !important; }
+    .apt-icon { font-size: 1.3rem !important; }
+    .apt-card { padding: 14px !important; gap: 10px !important; }
+  }
+`}</style>
     </main>
   );
 };

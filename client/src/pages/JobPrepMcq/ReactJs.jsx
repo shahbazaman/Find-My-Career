@@ -14,7 +14,7 @@ const ReactJs = () => {
   const [currentLevel, setCurrentLevel] = useState(1);
   const [showSummary, setShowSummary] = useState(false);
   useEffect(() => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: "instant" });
 }, []);
 const questions = [
   {

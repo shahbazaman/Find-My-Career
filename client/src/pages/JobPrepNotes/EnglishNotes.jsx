@@ -605,7 +605,87 @@ const EnglishNotes = () => {
       { q: "Why are idioms tested in placement exams?", a: "They test understanding of figurative language and exposure to natural English usage.", example: "Real-life example: 'The ball is in your court' — the decision is yours." },
       { q: "What are common professional idioms to know?", a: "'Think outside the box' (be creative), 'On the same page' (mutual understanding), 'Touch base' (make contact), 'Bite the bullet' (endure difficulty).", example: "Real-life example: 'Let's touch base after the meeting' in a work email." }
     ]
-  },
+  },{
+  icon: <FaLayerGroup />,
+  title: "Degrees of Comparison",
+  questions: [
+    { q: "What are degrees of comparison?", a: "Degrees of comparison describe the level of quality — positive (basic), comparative (between two), and superlative (among three or more).", example: "Real-life example: Good → Better → Best. 'This laptop is better than that one.'" },
+    { q: "How are comparatives and superlatives formed?", a: "Short adjectives add -er/-est. Long adjectives use more/most.", example: "Real-life example: 'More efficient' not 'efficienter'." },
+    { q: "Why are comparison structures important in professional English?", a: "They are used when comparing options, products, or performance in reports, emails, and interviews.", example: "Real-life example: 'React is faster than Angular for this use case.'" }
+  ]
+},
+{
+  icon: <FaSpellCheck />,
+  title: "Spelling and Word Formation",
+  questions: [
+    { q: "Why is correct spelling important in professional life?", a: "Spelling errors reduce credibility in emails, resumes, and reports and create a poor impression.", example: "Real-life example: Writing 'recieve' instead of 'receive' in a formal email." },
+    { q: "What are prefixes and suffixes?", a: "Prefixes are added before a root word to change meaning. Suffixes are added after a root word to change its grammatical function.", example: "Real-life example: 'un-' + 'happy' = unhappy. 'manage' + '-ment' = management." },
+    { q: "How can word formation help in exams?", a: "Knowing roots, prefixes, and suffixes helps guess meanings of unfamiliar words in reading comprehension and vocabulary tests.", example: "Real-life example: 'bio' means life — biology, biography, biodegradable." }
+  ]
+},
+{
+  icon: <FaComments />,
+  title: "Feedback and Criticism",
+  questions: [
+    { q: "How should constructive feedback be given professionally?", a: "Use the sandwich method — start with a positive, give the improvement point, end with encouragement.", example: "Real-life example: 'Your code structure is clean. The error handling needs improvement. Overall a good attempt.'" },
+    { q: "How should you respond to criticism at work?", a: "Listen calmly, acknowledge the feedback, ask clarifying questions if needed, and thank the person.", example: "Real-life example: 'Thank you for pointing that out. I will make sure to improve it.'" },
+    { q: "Why is giving and receiving feedback an important workplace skill?", a: "It promotes growth, improves performance, and maintains healthy team dynamics.", example: "Real-life example: Code reviews and performance appraisals." }
+  ]
+},
+{
+  icon: <FaUserCheck />,
+  title: "Tone and Register",
+  questions: [
+    { q: "What is tone in communication?", a: "Tone is the attitude conveyed through word choice, sentence structure, and style — it can be formal, neutral, assertive, or empathetic.", example: "Real-life example: 'Please ensure timely submission' (professional) vs 'Submit it on time!' (harsh)." },
+    { q: "What is register in English?", a: "Register is the variety of language used for a specific purpose or social setting — academic, professional, or casual.", example: "Real-life example: Using technical register in a project presentation vs casual register with teammates." },
+    { q: "Why does tone matter in emails and interviews?", a: "The wrong tone can make professional communication seem rude, unclear, or unprofessional even when the content is correct.", example: "Real-life example: 'As per my last email' can sound passive-aggressive in workplace context." }
+  ]
+},
+{
+  icon: <FaParagraph />,
+  title: "Report Writing",
+  questions: [
+    { q: "What is a professional report?", a: "A report is a structured document presenting findings, analysis, and recommendations on a specific topic.", example: "Real-life example: Bug report, project status report, or internship report." },
+    { q: "What is the structure of a formal report?", a: "Title → Introduction → Methodology → Findings → Conclusion → Recommendations.", example: "Real-life example: Project completion report submitted to a manager." },
+    { q: "What language is used in report writing?", a: "Formal, objective, and impersonal language. Use passive voice and avoid personal pronouns.", example: "Real-life example: 'The results indicate...' rather than 'I found out that...'" }
+  ]
+},
+{
+  icon: <FaBriefcase />,
+  title: "Resume Language",
+  questions: [
+    { q: "What language should be used in a resume?", a: "Use action verbs, quantified achievements, and concise phrases. Avoid personal pronouns and complete sentences.", example: "Real-life example: 'Developed a REST API reducing response time by 40%' instead of 'I made an API.'" },
+    { q: "What are strong action verbs for resumes?", a: "Developed, Designed, Implemented, Optimized, Led, Collaborated, Analyzed, Delivered.", example: "Real-life example: 'Led a team of 4 to build a MERN stack application.'" },
+    { q: "What are common resume language mistakes?", a: "Using weak verbs like 'helped' or 'did', vague phrases like 'responsible for various tasks', and spelling errors.", example: "Real-life example: 'Assisted in development' → change to 'Developed feature X independently.'" }
+  ]
+},
+{
+  icon: <FaHandshake />,
+  title: "Negotiation Language",
+  questions: [
+    { q: "What is negotiation in professional settings?", a: "Negotiation involves reaching a mutually agreeable outcome through structured communication, compromise, and persuasion.", example: "Real-life example: Salary negotiation or deadline extension discussion." },
+    { q: "What phrases are used in professional negotiation?", a: "'I understand your position...', 'Could we consider...', 'Would it be possible to...', 'I'd be willing to...'", example: "Real-life example: 'I understand the budget constraints. Could we consider a phased delivery instead?'" },
+    { q: "How should freshers approach salary negotiation?", a: "Research market rates, express enthusiasm for the role, and propose a range confidently with justification.", example: "Real-life example: 'Based on my skills and market research, I was expecting a range of ₹5–6 LPA.'" }
+  ]
+},
+{
+  icon: <FaEarListen />,
+  title: "Telephone and Video Call Etiquette",
+  questions: [
+    { q: "What is professional telephone etiquette?", a: "Answer promptly, introduce yourself clearly, speak slowly, listen without interrupting, and end politely.", example: "Real-life example: 'Good morning, this is Arjun from the development team. How may I help you?'" },
+    { q: "What are tips for professional video calls?", a: "Check lighting, mute when not speaking, maintain eye contact with the camera, use a clean background, and dress professionally.", example: "Real-life example: Online interview or client demo call." },
+    { q: "What language phrases are useful during calls?", a: "'Could you please repeat that?', 'I didn't catch that clearly.', 'Let me confirm what we discussed.', 'I'll follow up via email.'", example: "Real-life example: Asking for clarification politely during a standup call." }
+  ]
+},
+{
+  icon: <FaRandom />,
+  title: "Transition Words and Phrases",
+  questions: [
+    { q: "What are transition words?", a: "Transition words connect ideas between sentences and paragraphs to create logical flow in writing and speech.", example: "Real-life example: 'However', 'Therefore', 'In addition', 'As a result', 'On the other hand'." },
+    { q: "How are transition words categorized?", a: "Addition (furthermore, also), Contrast (however, although), Cause-effect (therefore, consequently), Sequence (firstly, finally).", example: "Real-life example: 'The feature was delivered on time. However, minor bugs were found in testing.'" },
+    { q: "Why are transition words important in interviews and writing?", a: "They make answers and writing more structured, logical, and professional — showing organized thinking.", example: "Real-life example: Answering HR questions with 'Firstly... Additionally... Finally...' structure." }
+  ]
+},
 ];
 
   const totalPages = Math.ceil(topics.length / topicsPerPage);
@@ -624,25 +704,25 @@ const EnglishNotes = () => {
   return (
     <main style={styles.container} ref={topRef}>
       <header style={styles.header}>
-        <h1 style={styles.title}>English</h1>
-        <p style={styles.subtitle}>
+        <h1 style={styles.title} className="eng-title">English</h1>
+        <p style={styles.subtitle} className="eng-subtitle">
           Starter notes for beginners with interview-focused explanations
         </p>
       </header>
 
       <section style={styles.topicsGrid}>
         {paginatedTopics.map((topic, index) => (
-          <article key={index} style={styles.card}>
+          <article key={index} style={styles.card} className="eng-card">
             <div style={styles.cardHeader}>
-              <span style={styles.icon}>{topic.icon}</span>
-              <h2 style={styles.cardTitle}>{topic.title}</h2>
+              <span style={styles.icon} className="eng-icon">{topic.icon}</span>
+              <h2 style={styles.cardTitle} className="eng-card-title">{topic.title}</h2>
             </div>
 
             {topic.questions.map((item, idx) => (
               <div key={idx} style={styles.qaBlock}>
-                <h3 style={styles.question}>Q. {item.q}</h3>
-                <p style={styles.answer}>{item.a}</p>
-                <p style={styles.example}>
+                <h3 style={styles.question} className="eng-question">Q. {item.q}</h3>
+                <p style={styles.answer} className="eng-answer">{item.a}</p>
+                <p style={styles.example} className="eng-example">
                   <strong>Example:</strong> {item.example}
                 </p>
               </div>
@@ -684,6 +764,18 @@ const EnglishNotes = () => {
           Next
         </button>
       </div>
+      <style>{`
+  @media (max-width: 480px) {
+    .eng-title { font-size: 1.5rem !important; font-weight: 700 !important; }
+    .eng-subtitle { font-size: 0.85rem !important; }
+    .eng-card { padding: 14px !important; gap: 10px !important; }
+    .eng-card-title { font-size: 1.05rem !important; font-weight: 600 !important; }
+    .eng-icon { font-size: 1.3rem !important; }
+    .eng-question { font-size: 0.88rem !important; font-weight: 600 !important; }
+    .eng-answer { font-size: 0.82rem !important; }
+    .eng-example { font-size: 0.78rem !important; }
+  }
+`}</style>
     </main>
   );
 };

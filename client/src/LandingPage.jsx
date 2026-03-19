@@ -21,7 +21,7 @@ function LandingPage() {
           Create a free account to apply for jobs and unlock full features!
         </div>
         <button
-          onClick={() => { navigate("/signUp"); toast.dismiss(); }}
+          onClick={() => { navigate("/login"); toast.dismiss(); }}
           style={{
             marginTop: "6px",
             background: "linear-gradient(135deg, #060729ff 0%, #0c248dff 100%)",

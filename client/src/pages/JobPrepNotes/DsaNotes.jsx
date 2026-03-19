@@ -480,6 +480,141 @@ const topics = [
       { q: "How do you optimize space complexity?", a: "Use in-place algorithms, iterative instead of recursive solutions, and avoid redundant data copies.", example: "Real-life example: Reversing an array in-place using two pointers instead of a new array." }
     ]
   },
+  {
+  icon: <FaProjectDiagram />,
+  title: "Divide and Conquer",
+  questions: [
+    { q: "What is divide and conquer?", a: "A strategy that divides a problem into smaller subproblems, solves them independently, and combines their results.", example: "Real-life example: Splitting a large task among team members and combining results." },
+    { q: "What are classic divide and conquer algorithms?", a: "Merge Sort, Quick Sort, Binary Search, and Strassen's Matrix Multiplication.", example: "Real-life example: Binary search splitting a sorted list in half each time." },
+    { q: "What is the Master Theorem?", a: "A formula to determine time complexity of divide and conquer recurrences: T(n) = aT(n/b) + f(n).", example: "Real-life example: Calculating Merge Sort complexity T(n) = 2T(n/2) + n → O(n log n)." }
+  ]
+},
+{
+  icon: <FaLayerGroup />,
+  title: "Stack Applications",
+  questions: [
+    { q: "What are real applications of stacks?", a: "Stacks are used in expression evaluation, function call management, undo operations, and browser history.", example: "Real-life example: Ctrl+Z undo in a text editor." },
+    { q: "How are stacks used in expression parsing?", a: "Stacks convert infix expressions to postfix/prefix and evaluate them efficiently.", example: "Real-life example: Calculator parsing 3 + 4 * 2." },
+    { q: "What is a monotonic stack?", a: "A monotonic stack maintains elements in strictly increasing or decreasing order and is used in next greater/smaller element problems.", example: "Real-life example: Finding the next warmer day in temperature data." }
+  ]
+},
+{
+  icon: <FaExchangeAlt />,
+  title: "Queue Variations",
+  questions: [
+    { q: "What is a circular queue?", a: "A circular queue connects the rear back to the front to efficiently reuse memory in a fixed-size queue.", example: "Real-life example: CPU round-robin scheduling." },
+    { q: "What is a deque (Double Ended Queue)?", a: "A deque allows insertion and deletion from both front and rear ends.", example: "Real-life example: Browser back/forward navigation history." },
+    { q: "What is a priority queue vs a simple queue?", a: "A simple queue follows FIFO. A priority queue serves the element with the highest priority first regardless of insertion order.", example: "Real-life example: Emergency room treating critical patients first." }
+  ]
+},
+{
+  icon: <FaSearch />,
+  title: "String Algorithms",
+  questions: [
+    { q: "What is the KMP algorithm?", a: "Knuth-Morris-Pratt searches for a pattern in a string in O(n+m) time using a failure function to avoid redundant comparisons.", example: "Real-life example: Finding a keyword in a large document efficiently." },
+    { q: "What is the Rabin-Karp algorithm?", a: "Rabin-Karp uses hashing to find a pattern in a string, useful for multiple pattern searches.", example: "Real-life example: Plagiarism detection across documents." },
+    { q: "Why are string algorithms important in interviews?", a: "They test understanding of pattern matching, hashing, and sliding window together.", example: "Real-life example: Search engine text indexing." }
+  ]
+},
+{
+  icon: <FaSitemap />,
+  title: "Topological Sort",
+  questions: [
+    { q: "What is topological sort?", a: "Topological sort orders vertices of a Directed Acyclic Graph (DAG) such that every directed edge goes from earlier to later in the order.", example: "Real-life example: Course prerequisites — complete A before B before C." },
+    { q: "What algorithms are used for topological sort?", a: "Kahn's Algorithm (BFS-based) and DFS-based topological sort.", example: "Real-life example: Build system determining which files to compile first." },
+    { q: "What problems use topological sort?", a: "Task scheduling, dependency resolution, course scheduling, and build systems.", example: "Real-life example: npm package dependency installation order." }
+  ]
+},
+{
+  icon: <FaTree />,
+  title: "Balanced Trees (AVL & Red-Black)",
+  questions: [
+    { q: "What is an AVL tree?", a: "An AVL tree is a self-balancing BST where the height difference between left and right subtrees of any node is at most 1.", example: "Real-life example: Database indexing requiring guaranteed O(log n) operations." },
+    { q: "What is a Red-Black tree?", a: "A Red-Black tree is a self-balancing BST with color properties ensuring the tree remains approximately balanced.", example: "Real-life example: Java TreeMap and C++ std::map are implemented using Red-Black trees." },
+    { q: "Why are balanced trees preferred over plain BST?", a: "Plain BSTs can degrade to O(n) in worst case. Balanced trees guarantee O(log n) for all operations.", example: "Real-life example: Sorted data insertion causing skewed BST." }
+  ]
+},
+{
+  icon: <FaCubes />,
+  title: "Segment Tree",
+  questions: [
+    { q: "What is a segment tree?", a: "A segment tree is a binary tree used for storing intervals or segments and allows efficient range queries and point updates.", example: "Real-life example: Finding the minimum temperature in a date range." },
+    { q: "What operations does a segment tree support?", a: "Range sum query, range minimum/maximum query, and point updates — all in O(log n) time.", example: "Real-life example: Stock price range queries." },
+    { q: "What is a lazy propagation in segment trees?", a: "Lazy propagation delays updates to child nodes until needed, improving range update efficiency to O(log n).", example: "Real-life example: Updating all employees' salaries in a department range." }
+  ]
+},
+{
+  icon: <FaRedo />,
+  title: "Disjoint Set Union (DSU)",
+  questions: [
+    { q: "What is a Disjoint Set Union (DSU)?", a: "DSU is a data structure that tracks a partition of elements into non-overlapping sets and supports fast union and find operations.", example: "Real-life example: Determining if two people are in the same friend group." },
+    { q: "What is path compression in DSU?", a: "Path compression flattens the tree structure during find operations, making future finds nearly O(1).", example: "Real-life example: Optimizing repeated friendship lookups." },
+    { q: "Where is DSU used?", a: "DSU is used in Kruskal's MST algorithm, cycle detection in undirected graphs, and network connectivity problems.", example: "Real-life example: Checking if adding a road creates a cycle in a road network." }
+  ]
+},
+{
+  icon: <FaKey />,
+  title: "Shortest Path Algorithms",
+  questions: [
+    { q: "What is Dijkstra's algorithm?", a: "Dijkstra's finds the shortest path from a source to all vertices in a graph with non-negative weights using a priority queue.", example: "Real-life example: Google Maps finding the fastest route." },
+    { q: "What is the Bellman-Ford algorithm?", a: "Bellman-Ford finds shortest paths even with negative weight edges and can detect negative weight cycles.", example: "Real-life example: Currency exchange rate arbitrage detection." },
+    { q: "What is Floyd-Warshall algorithm?", a: "Floyd-Warshall finds shortest paths between all pairs of vertices in O(V³) time.", example: "Real-life example: Finding shortest distances between all city pairs." }
+  ]
+},
+{
+  icon: <FaSortAmountUp />,
+  title: "Counting Sort & Radix Sort",
+  questions: [
+    { q: "What is counting sort?", a: "Counting sort counts occurrences of each element and uses these counts to place elements in sorted order. It works in O(n+k) where k is the value range.", example: "Real-life example: Sorting exam scores between 0 and 100." },
+    { q: "What is radix sort?", a: "Radix sort sorts numbers digit by digit from least significant to most significant using counting sort as a subroutine.", example: "Real-life example: Sorting a list of phone numbers." },
+    { q: "When are these sorting algorithms preferred?", a: "When the range of values is small (counting sort) or when sorting large integers/strings (radix sort) — both avoid O(n log n) comparison overhead.", example: "Real-life example: Sorting fixed-length student ID numbers." }
+  ]
+},
+{
+  icon: <FaBug />,
+  title: "Minimum Spanning Tree (MST)",
+  questions: [
+    { q: "What is a Minimum Spanning Tree?", a: "An MST is a subset of edges in a weighted graph that connects all vertices with minimum total edge weight and no cycles.", example: "Real-life example: Laying minimum cable to connect all offices in a building." },
+    { q: "What is Kruskal's algorithm?", a: "Kruskal's sorts all edges by weight and greedily adds the smallest edge that doesn't form a cycle, using DSU.", example: "Real-life example: Building cheapest road network connecting all cities." },
+    { q: "What is Prim's algorithm?", a: "Prim's starts from any vertex and greedily grows the MST by adding the cheapest edge connecting the current tree to a new vertex.", example: "Real-life example: Expanding a network one connection at a time." }
+  ]
+},
+{
+  icon: <FaCompressArrowsAlt />,
+  title: "Amortized Analysis",
+  questions: [
+    { q: "What is amortized analysis?", a: "Amortized analysis calculates the average time per operation over a sequence of operations, even if some individual operations are expensive.", example: "Real-life example: Dynamic array doubling — occasional O(n) resize is cheap when spread over n insertions." },
+    { q: "What is the aggregate method?", a: "The aggregate method computes total cost for n operations and divides by n to get amortized cost per operation.", example: "Real-life example: Stack with multipop — total pops ≤ total pushes → O(1) amortized." },
+    { q: "Where is amortized analysis used?", a: "Used to analyze dynamic arrays, splay trees, hash table resizing, and Union-Find with path compression.", example: "Real-life example: Java ArrayList add() operation analysis." }
+  ]
+},
+{
+  icon: <FaLayerGroup />,
+  title: "Fenwick Tree (BIT)",
+  questions: [
+    { q: "What is a Fenwick Tree?", a: "A Fenwick Tree (Binary Indexed Tree) is a data structure that efficiently supports prefix sum queries and point updates in O(log n).", example: "Real-life example: Running total of daily sales with the ability to update any day's value." },
+    { q: "How is BIT different from a segment tree?", a: "BIT is simpler to implement and uses less memory but supports fewer operations. Segment trees are more flexible.", example: "Real-life example: BIT for simple prefix sums, segment tree for range min/max." },
+    { q: "Where is Fenwick Tree used?", a: "Used in competitive programming for range sum queries, counting inversions in an array, and order statistics.", example: "Real-life example: Counting the number of smaller elements to the right of each array element." }
+  ]
+},
+{
+  icon: <FaProjectDiagram />,
+  title: "N-ary Trees and Tries",
+  questions: [
+    { q: "What is an N-ary tree?", a: "An N-ary tree allows each node to have at most N children, generalizing binary trees.", example: "Real-life example: File system folders where each folder can have many subfolders." },
+    { q: "How do N-ary trees relate to binary trees?", a: "Any N-ary tree can be converted to a binary tree using the left-child right-sibling representation.", example: "Real-life example: Converting a multi-child org chart to binary form." },
+    { q: "How is a Trie a special case of N-ary tree?", a: "A Trie is an N-ary tree where each node has up to 26 children (for alphabet characters) and paths from root spell out words.", example: "Real-life example: Building a dictionary where each level represents a character position." }
+  ]
+},
+{
+  icon: <FaCubes />,
+  title: "Matrix Problems",
+  questions: [
+    { q: "What are common matrix problems in DSA?", a: "Rotating a matrix, spiral order traversal, searching in a sorted matrix, and island counting using BFS/DFS.", example: "Real-life example: Rotating an image 90 degrees in image processing." },
+    { q: "How is BFS used for island counting?", a: "Each unvisited land cell starts a BFS, marking all connected land cells as visited. Count equals number of BFS starts.", example: "Real-life example: Counting separate landmasses on a map grid." },
+    { q: "What is dynamic programming on matrices?", a: "DP on matrices solves problems like minimum path sum, unique paths, and longest path by filling a 2D table.", example: "Real-life example: Finding cheapest route from top-left to bottom-right of a grid." }
+  ]
+},
 ];
 
   const totalPages = Math.ceil(topics.length / topicsPerPage);

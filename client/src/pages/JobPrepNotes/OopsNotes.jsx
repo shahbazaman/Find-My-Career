@@ -595,7 +595,114 @@ const topics = [
       { q: "How do you create an immutable class?", a: "Make all fields private and final, provide only a constructor (no setters), and ensure no methods modify state or return mutable references.", example: "Real-life example: A Money class with private final amount and currency — safe to share across threads without synchronization." },
       { q: "Why are immutable objects preferred in concurrent applications?", a: "Immutable objects are inherently thread-safe because their state never changes — no synchronization is needed, reducing bugs and complexity.", example: "Real-life example: Sharing a configuration object across multiple threads without locks." }
     ]
-  },
+  },{
+  icon: <FaLayerGroup />,
+  title: "Method Hiding vs Overriding",
+  questions: [
+    { q: "What is method hiding?", a: "Method hiding occurs when a static method in a child class has the same signature as a static method in the parent class. The child method hides the parent method rather than overriding it.", example: "Real-life example: Calling Parent.show() always calls the parent static version even when using a child reference." },
+    { q: "How is method hiding different from method overriding?", a: "Overriding uses runtime polymorphism (dynamic dispatch). Method hiding is resolved at compile time based on the reference type, not the object type.", example: "Real-life example: Parent ref = new Child() → ref.staticMethod() calls Parent's version (hiding), but ref.instanceMethod() calls Child's version (overriding)." },
+    { q: "Why is method hiding considered a design smell?", a: "It creates confusion because behavior depends on reference type, not actual object — making code harder to predict and maintain.", example: "Real-life example: Code review catching unexpected behavior when static methods are 'overridden'." }
+  ]
+},
+{
+  icon: <FaCogs />,
+  title: "Copy Constructor",
+  questions: [
+    { q: "What is a copy constructor?", a: "A copy constructor creates a new object as a copy of an existing object. It is used when you need an independent duplicate of an object.", example: "Real-life example: Creating a backup of a user profile object before making changes." },
+    { q: "What is the difference between copy constructor and assignment operator?", a: "Copy constructor creates a new object. Assignment operator copies values into an already existing object.", example: "Real-life example: Person p2(p1) uses copy constructor. p2 = p1 uses assignment operator." },
+    { q: "When is a copy constructor automatically called?", a: "When an object is passed by value to a function, returned by value from a function, or initialized with another object.", example: "Real-life example: Passing a Config object to a function that modifies it — the original is protected." }
+  ]
+},
+{
+  icon: <FaEyeSlash />,
+  title: "Virtual Functions and VTable",
+  questions: [
+    { q: "What is a virtual function?", a: "A virtual function is a function declared in a base class that can be overridden in derived classes. It enables runtime polymorphism through dynamic dispatch.", example: "Real-life example: A Shape base class with virtual draw() — Circle and Rectangle each override it with their own drawing logic." },
+    { q: "What is a vtable (virtual table)?", a: "A vtable is a lookup table maintained by the compiler for each class with virtual functions. It stores pointers to the actual function implementations.", example: "Real-life example: When you call shape->draw(), the compiler looks up the vtable to find and call the correct draw() for the actual object type." },
+    { q: "What is a pure virtual function?", a: "A pure virtual function has no implementation in the base class (declared with = 0) and forces derived classes to provide an implementation.", example: "Real-life example: virtual void draw() = 0 in Shape makes Shape abstract — you cannot create a Shape object directly." }
+  ]
+},
+{
+  icon: <FaProjectDiagram />,
+  title: "Multiple Inheritance and Diamond Problem",
+  questions: [
+    { q: "What is multiple inheritance?", a: "Multiple inheritance allows a class to inherit from more than one parent class, gaining features of all parent classes.", example: "Real-life example: A FlyingCar class inheriting from both Car and Aircraft." },
+    { q: "What is the diamond problem?", a: "The diamond problem occurs when a class inherits from two classes that both inherit from the same base class, causing ambiguity about which base class implementation to use.", example: "Real-life example: D inherits from B and C, both inherit from A — D.method() is ambiguous if A.method() is not overridden." },
+    { q: "How is the diamond problem solved?", a: "In C++, virtual inheritance is used. In Java, the problem is avoided by not allowing multiple class inheritance — only multiple interface implementation.", example: "Real-life example: Java uses interfaces to achieve multiple inheritance safely without the diamond problem." }
+  ]
+},
+{
+  icon: <FaRecycle />,
+  title: "Destructor and Finalization",
+  questions: [
+    { q: "What is a destructor?", a: "A destructor is a special method called automatically when an object is destroyed. It is used to release resources like file handles or memory.", example: "Real-life example: A DatabaseConnection class destructor closing the connection when the object goes out of scope." },
+    { q: "What is the difference between destructor and garbage collection?", a: "Destructors (C++) are deterministic — called at a predictable time. Garbage collection (Java) is non-deterministic — the JVM decides when to free memory.", example: "Real-life example: C++ RAII pattern guarantees cleanup. Java's finalize() method is deprecated because timing was unreliable." },
+    { q: "What is the RAII pattern?", a: "Resource Acquisition Is Initialization — resources are tied to object lifetime. Acquired in constructor, released in destructor automatically.", example: "Real-life example: C++ smart pointers (unique_ptr) automatically delete memory when they go out of scope." }
+  ]
+},
+{
+  icon: <FaSitemap />,
+  title: "Mixin and Traits",
+  questions: [
+    { q: "What is a mixin?", a: "A mixin is a class that provides methods to other classes without being a parent class. It adds reusable behavior without full inheritance.", example: "Real-life example: A Serializable mixin adding toJSON() and fromJSON() to any class that includes it." },
+    { q: "How are mixins different from inheritance?", a: "Inheritance represents an 'is-a' relationship. Mixins represent a 'can-do' relationship — adding capabilities without implying a type hierarchy.", example: "Real-life example: A Bird is an Animal (inheritance). A Bird can-fly using a Flyable mixin." },
+    { q: "What are traits in OOP?", a: "Traits are similar to mixins — reusable sets of methods that can be included in multiple classes. PHP and Scala use traits explicitly.", example: "Real-life example: PHP Trait Timestampable adding created_at and updated_at tracking to any model class." }
+  ]
+},
+{
+  icon: <FaTools />,
+  title: "Refactoring OOP Code",
+  questions: [
+    { q: "What is refactoring?", a: "Refactoring is improving the internal structure of code without changing its external behavior — making it cleaner, more readable, and maintainable.", example: "Real-life example: Extracting a repeated validation block into a private method called validateInput()." },
+    { q: "What are common OOP refactoring techniques?", a: "Extract Class (split large class), Extract Method (split long method), Replace Conditional with Polymorphism, Move Method, and Rename for clarity.", example: "Real-life example: A 500-line God Class split into UserService, UserRepository, and UserValidator." },
+    { q: "How does refactoring relate to SOLID principles?", a: "Refactoring is often the process of moving code towards SOLID compliance — reducing violations of SRP, OCP, and other principles over time.", example: "Real-life example: Breaking a class that both saves data AND sends emails into two classes following SRP." }
+  ]
+},
+{
+  icon: <FaMemory />,
+  title: "Object Serialization",
+  questions: [
+    { q: "What is object serialization?", a: "Serialization converts an object's state into a format (like JSON or binary) that can be stored or transmitted, and deserialization restores it.", example: "Real-life example: Saving a user session object to a database or sending it over a REST API as JSON." },
+    { q: "Why is serialization important in OOP?", a: "It enables objects to persist beyond program execution, be transmitted over networks, and be reconstructed on the receiving end.", example: "Real-life example: A shopping cart object serialized to JSON stored in localStorage or sent to a backend." },
+    { q: "What are common serialization formats?", a: "JSON (human-readable, widely used in web), XML (verbose, legacy systems), Protocol Buffers (fast, compact, used by Google), and Java's native binary serialization.", example: "Real-life example: REST APIs use JSON. gRPC uses Protocol Buffers for high-performance communication." }
+  ]
+},
+{
+  icon: <FaShieldAlt />,
+  title: "Object-Oriented Testing",
+  questions: [
+    { q: "What is unit testing in OOP?", a: "Unit testing verifies that individual methods and classes work correctly in isolation. Each test focuses on one behavior of one class.", example: "Real-life example: Testing that calculateTax() returns the correct value for different salary inputs." },
+    { q: "What is mocking in OOP testing?", a: "Mocking replaces real dependencies (like databases or APIs) with fake objects that simulate expected behavior during testing.", example: "Real-life example: Mocking a PaymentGateway in tests so no real charges occur while testing checkout logic." },
+    { q: "How does good OOP design improve testability?", a: "Low coupling, dependency injection, and single responsibility make classes easy to test in isolation without needing real infrastructure.", example: "Real-life example: Injecting a mock EmailService into UserService during tests instead of sending real emails." }
+  ]
+},
+{
+  icon: <FaNetworkWired />,
+  title: "Event-Driven OOP",
+  questions: [
+    { q: "What is event-driven programming in OOP?", a: "Event-driven OOP uses objects that emit events and other objects that listen and respond to them, decoupling producers from consumers.", example: "Real-life example: A Button object emitting a 'click' event, and a FormHandler object listening to that event." },
+    { q: "What is the Observer pattern?", a: "The Observer pattern defines a one-to-many dependency — when one object changes state, all its observers are notified automatically.", example: "Real-life example: A Stock object notifying all registered StockAlertListeners when price changes." },
+    { q: "How does event-driven design improve scalability?", a: "It decouples components so they can be developed, deployed, and scaled independently without tight dependencies.", example: "Real-life example: A microservice publishing an 'OrderPlaced' event — InventoryService and EmailService both listen and react independently." }
+  ]
+},
+{
+  icon: <FaCubes />,
+  title: "Prototype-Based OOP",
+  questions: [
+    { q: "What is prototype-based OOP?", a: "In prototype-based OOP, objects inherit directly from other objects rather than from classes. JavaScript is the most well-known prototype-based language.", example: "Real-life example: In JavaScript, every object has a prototype chain — Dog.__proto__ points to Animal, inheriting its methods." },
+    { q: "How is prototype-based OOP different from class-based OOP?", a: "Class-based OOP uses class blueprints to create objects. Prototype-based OOP clones and extends existing objects directly.", example: "Real-life example: JavaScript ES6 class syntax is syntactic sugar over prototype chains — the underlying mechanism is still prototype-based." },
+    { q: "What is the prototype chain?", a: "The prototype chain is the lookup chain followed when accessing a property — if not found on the object, JavaScript looks up its prototype, then prototype's prototype, until null.", example: "Real-life example: dog.toString() — not on dog, look at Dog.prototype, not there, look at Object.prototype — found toString() there." }
+  ]
+},
+{
+  icon: <FaExchangeAlt />,
+  title: "Covariance and Contravariance",
+  questions: [
+    { q: "What is covariance in OOP?", a: "Covariance means a method in a subclass can return a more specific type than declared in the parent class (return type narrows down).", example: "Real-life example: Parent returns Animal, child overrides to return Dog — allowed because Dog is an Animal." },
+    { q: "What is contravariance?", a: "Contravariance means a method in a subclass can accept a more general parameter type than declared in the parent class (parameter type widens).", example: "Real-life example: Parent method takes Dog parameter, subclass overrides to take Animal — it can handle more types." },
+    { q: "Why do covariance and contravariance matter in generics?", a: "They determine whether generic types can be substituted safely. Java uses ? extends T (covariance) and ? super T (contravariance) wildcards.", example: "Real-life example: List<? extends Animal> is covariant — you can read Animals from it. List<? super Dog> is contravariant — you can add Dogs to it." }
+  ]
+},
 ];
 
 
@@ -615,25 +722,25 @@ const topics = [
   return (
     <main style={styles.container} ref={topRef}>
       <header style={styles.header}>
-        <h1 style={styles.title}>Object Oriented Programming</h1>
-        <p style={styles.subtitle}>
+        <h1 style={styles.title} className="oops-title">Object Oriented Programming</h1>
+        <p style={styles.subtitle} className="oops-subtitle">
           Starter notes for beginners with interview-focused explanations
         </p>
       </header>
 
       <section style={styles.topicsGrid}>
         {paginatedTopics.map((topic, index) => (
-          <article key={index} style={styles.card}>
+          <article key={index} style={styles.card} className="oops-card">
             <div style={styles.cardHeader}>
-              <span style={styles.icon}>{topic.icon}</span>
+              <span style={styles.icon} className="oops-icon">{topic.icon}</span>
               <h2 style={styles.cardTitle}>{topic.title}</h2>
             </div>
 
             {topic.questions.map((item, idx) => (
               <div key={idx} style={styles.qaBlock}>
-                <h3 style={styles.question}>Q. {item.q}</h3>
-                <p style={styles.answer}>{item.a}</p>
-                <p style={styles.example}>
+                <h3 style={styles.question} className="oops-question">Q. {item.q}</h3>
+                <p style={styles.answer} className="oops-answer">{item.a}</p>
+                <p style={styles.example} className="oops-example">
                   <strong>Example:</strong> {item.example}
                 </p>
               </div>
@@ -675,6 +782,18 @@ const topics = [
           Next
         </button>
       </div>
+      <style>{`
+  @media (max-width: 480px) {
+    .oops-title { font-size: 1.5rem !important; font-weight: 700 !important; }
+    .oops-subtitle { font-size: 0.85rem !important; }
+    .oops-card { padding: 14px !important; gap: 10px !important; }
+    .oops-card-title { font-size: 1.05rem !important; font-weight: 600 !important; }
+    .oops-icon { font-size: 1.3rem !important; }
+    .oops-question { font-size: 0.88rem !important; font-weight: 600 !important; }
+    .oops-answer { font-size: 0.82rem !important; }
+    .oops-example { font-size: 0.78rem !important; }
+  }
+`}</style>
     </main>
   );
 };
