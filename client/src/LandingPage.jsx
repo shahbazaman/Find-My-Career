@@ -1,13 +1,51 @@
 import { FaRocket, FaBriefcase, FaCheckCircle, FaBuilding, FaCalendarDay } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import axios from "axios";
 
 function LandingPage() {
   const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const role = storedUser?.role || "guest";
+  useEffect(() => {
+  if (role !== "guest") return;
 
+  const timer = setTimeout(() => {
+    toast.info(
+      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+        <div style={{ fontWeight: "700", fontSize: "14px" }}>
+          🚀 You're browsing as a guest
+        </div>
+        <div style={{ fontSize: "13px", color: "#555" }}>
+          Create a free account to apply for jobs and unlock full features!
+        </div>
+        <button
+          onClick={() => { navigate("/signUp"); toast.dismiss(); }}
+          style={{
+            marginTop: "6px",
+            background: "linear-gradient(135deg, #060729ff 0%, #0c248dff 100%)",
+            color: "white", border: "none",
+            padding: "7px 16px", borderRadius: "8px",
+            cursor: "pointer", fontWeight: "600",
+            fontSize: "13px", width: "fit-content"
+          }}
+        >
+          Create Account →
+        </button>
+      </div>,
+      {
+        position: "bottom-right",
+        autoClose: 8000,
+        toastId: "guest-prompt",  
+        closeOnClick: false,
+        pauseOnHover: true,
+      }
+    );
+  }, 6000);
+
+  return () => clearTimeout(timer);
+}, []); // ← runs once on mount
   console.log("ROLE STATE >>>", `"${role}"`, typeof role);
 
   const scrollToJobs = () => {

@@ -769,15 +769,14 @@ const toggleApply = async (jobId) => {
       display: "flex", 
       gap: "8px", 
       alignItems: "center",
-      /* Ensures buttons don't stretch vertically on mobile */
       height: "fit-content" 
     }}>
       <button
-        onClick={() => { window.scrollTo({ top: 0, behavior: "smooth" }); navigate(`/jobs/${job._id}`);}}
-        style={{
-          padding: "6px 14px", // Reduced padding for better mobile fit
-          fontSize: "12px",    // Slightly smaller text
-          height: "36px",      // Fixed height prevents stretching
+          onClick={() => {window.scrollTo({ top: 0, behavior: "instant" }); navigate(`/jobs/${job._id}`);}}
+          style={{
+          padding: "6px 14px", 
+          fontSize: "12px",    
+          height: "36px",      
           borderRadius: "10px",
           border: "none",
           cursor: "pointer",
