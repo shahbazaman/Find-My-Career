@@ -380,7 +380,9 @@ const paginatedApplicants = useMemo(() => {
   .search-box {
     width: 100%;
     position: relative;
+    margin: 0 15px;
   }
+
 
   .search-box input {
     width: 100%;
@@ -415,6 +417,7 @@ const paginatedApplicants = useMemo(() => {
     color: #a0aec0;
     font-size: 1rem;
     pointer-events: none;
+    margin: 0 5px;
   }
 
   .filter-box {
