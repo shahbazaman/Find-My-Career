@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   FaCheckCircle,
   FaArrowRight,
@@ -681,7 +681,9 @@ const DSA = () => {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [currentLevel, setCurrentLevel] = useState(1);
   const [showSummary, setShowSummary] = useState(false);
-
+  useEffect(() => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}, []);
   const currentLevelQuestions = useMemo(() => {
     const start = (currentLevel - 1) * QUESTIONS_PER_LEVEL;
     return questions.slice(start, start + QUESTIONS_PER_LEVEL);

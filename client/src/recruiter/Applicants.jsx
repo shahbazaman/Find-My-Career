@@ -361,88 +361,6 @@ const paginatedApplicants = useMemo(() => {
           color: #718096;
         }
 
-        /* Controls Panel */
-        .controls-panel {
-          background: white;
-          padding: 0.85rem;
-          border-radius: 12px;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-          margin-bottom: 1rem;
-        }
-
-        .controls-row {
-          display: flex;
-          flex-direction: column;  
-          gap: 0.75rem;
-        }
-
-        .search-box {
-          width: 100%;
-          position: relative;
-        }
-
-          .search-box input {
-            width: 100%;
-            padding: 0.75rem 1rem 0.75rem 3.2rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-            background: #f7fafc;
-            box-sizing: border-box;
-          }
-
-        .search-box input:focus {
-          outline: none;
-          border-color: #667eea;
-          background: white;
-          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .search-icon {
-          position: absolute;
-          left: 1rem;
-          top: 50%;
-          transform: translateY(-50%);
-          color: #a0aec0;
-          font-size: 1.1rem;
-          margin-left: 0.4rem;   /* ← adds breathing room from the left border */
-        }
-
-        .filter-box {
-          width: 100%;
-          position: relative;
-        }
-
-       .filter-box select {
-          width: 100%;
-          padding: 0.75rem 1rem 0.75rem 2.75rem;
-          border: 2px solid #e2e8f0;
-          border-radius: 10px;
-          font-size: 0.95rem;
-          background: #f7fafc;
-          cursor: pointer;
-          transition: all 0.2s;
-          box-sizing: border-box;
-        }
-
-        .filter-box select:focus {
-          outline: none;
-          border-color: #667eea;
-          background: white;
-          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .filter-icon {
-          position: absolute;
-          left: 1rem;
-          top: 50%;
-          transform: translateY(-50%);
-          color: #a0aec0;
-          font-size: 1.1rem;
-          pointer-events: none;
-        }
-
         /* Table Container */
         .table-container {
           background: white;
@@ -689,6 +607,30 @@ const paginatedApplicants = useMemo(() => {
         }
 
         @media (max-width: 768px) {
+        /* ADD/REPLACE inside @media (max-width: 768px): */
+.controls-panel {
+  padding: 0.9rem;
+  border-radius: 14px;
+}
+
+.controls-row {
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.search-box,
+.filter-box {
+  width: 100%;
+  min-width: unset;
+}
+
+.search-box input,
+.filter-box select {
+  width: 100%;
+  height: 48px;
+  font-size: 0.88rem;
+  box-sizing: border-box;
+}
           .applicants-container {
             padding: 0.85rem;
           }
