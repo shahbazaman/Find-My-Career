@@ -204,7 +204,7 @@ const DeleteResume = async () => {
   </button>
   </div>
 </div>
-          {/* Stats Section */}
+          {/* Stats Section
           <div className="stats-grid fade-in" style={{animationDelay: '0.5s'}}>
   <div className="stat-card">
     <div className="stat-number">{stats.total}</div>
@@ -218,7 +218,7 @@ const DeleteResume = async () => {
     <div className="stat-number">{stats.interviews}</div>
     <div className="stat-label">Interviews</div>
   </div>
-</div>
+</div> */}
         </div>
 
       </div>

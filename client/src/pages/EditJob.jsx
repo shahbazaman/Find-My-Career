@@ -121,12 +121,25 @@ navigate("/");
 
   return (
     <Container
-      fluid
-      className="px-3 py-5 min-vh-100 d-flex align-items-center"
-      style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}
-    ><ToastContainer position="top-center" />
+  fluid
+  className="px-3 py-5 min-vh-100 d-flex align-items-center justify-content-center"
+  style={{
+  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100vw",
+  height: "100vh",
+  overflowY: "auto",
+  zIndex: 1000,
+  display: "flex",
+  alignItems: "flex-start",
+  justifyContent: "center"
+}}
+>
+  <ToastContainer position="top-center" />
       <Row className="justify-content-center w-100">
-        <Col xs={12} lg={10} xl={8}>
+        <Col xs={12} md={10} lg={8} xl={7} className="mx-auto">
           <Form onSubmit={handleSubmit}>
             <div
               style={{
