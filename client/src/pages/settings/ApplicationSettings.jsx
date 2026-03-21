@@ -453,8 +453,9 @@ const DeleteResume = async () => {
         }
 
         .settings-card-content {
-          padding: 2rem;
-        }
+  padding: 2rem;
+  padding-bottom: 0.5rem;
+}
 
         /* Resume Status */
         /* Update these specific sections in your <style> tag */
@@ -470,7 +471,7 @@ const DeleteResume = async () => {
   flex-wrap: wrap;          
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   gap: 1rem;
 }
 
@@ -750,14 +751,15 @@ const DeleteResume = async () => {
         }
 
         /* Stats Grid */
-        .stats-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 1rem;
-          margin-top: 2rem;
-          padding-top: 2rem;
-          border-top: 1px solid #f1f5f9;
-        }
+       .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-top: 1px solid #f1f5f9;
+}
 
         .stat-card {
           padding: 1.5rem;
@@ -928,9 +930,10 @@ const DeleteResume = async () => {
           align-items: flex-start;
         }
 
-        .resume-actions {
+       .resume-actions {
           width: 100%;
           justify-content: flex-start;
+          flex-wrap: wrap;
         }
       }
       `}</style>
