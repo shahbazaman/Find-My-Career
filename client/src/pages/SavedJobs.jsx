@@ -15,7 +15,9 @@ export default function SavedJobs() {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "instant" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
     fetchSavedJobs();
   }, []);
 
