@@ -125,16 +125,11 @@ navigate("/");
   className="px-3 py-5 min-vh-100 d-flex align-items-center justify-content-center"
   style={{
   background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-  position: "fixed",
-  top: 0,
-  left: 0,
+  minHeight: "100vh",
   width: "100vw",
-  height: "100vh",
-  overflowY: "auto",
-  zIndex: 1000,
-  display: "flex",
-  alignItems: "flex-start",
-  justifyContent: "center"
+  marginLeft: "calc(-50vw + 50%)",
+  paddingTop: "2rem",
+  paddingBottom: "2rem",
 }}
 >
   <ToastContainer position="top-center" />
