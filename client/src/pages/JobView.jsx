@@ -47,6 +47,8 @@ const JobView = () => {
   }, [jobId]);
 useEffect(() => {
   window.scrollTo({ top: 0, behavior: "instant" });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
 }, []);
   /* ================= APPLY HANDLER (matches Cards.jsx) ================= */
   const handleApply = async () => {
