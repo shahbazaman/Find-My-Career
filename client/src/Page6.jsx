@@ -7,11 +7,17 @@ export default function Page6() {
 
   useEffect(() => {
     setIsVisible(true);
+    document.body.style.background = "linear-gradient(135deg, #060729ff 0%, #0c248dff 100%)";
+    document.body.style.minHeight = "100vh";
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.body.style.background = "";
+      document.body.style.minHeight = "";
+    };
   }, []);
 
   const [appliedJobs, setAppliedJobs] = useState([]);
@@ -51,10 +57,10 @@ export default function Page6() {
   ];
 
   const statusColors = {
-    Applied: "#3b82f6",
-    Interview: "#f59e0b",
-    Rejected: "#ef4444",
-    Offer: "#10b981",
+    Applied: "#1d4ed8",
+    Interview: "#b45309",
+    Rejected: "#b91c1c",
+    Offer: "#047857",
   };
 
   const stats = [
