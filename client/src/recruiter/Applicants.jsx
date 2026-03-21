@@ -693,27 +693,35 @@ const paginatedApplicants = useMemo(() => {
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
   }
 
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-  }
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+  overflow: hidden;
+}
 
-  .card-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
+.card-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
 
-  .card-name {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
+.card-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
   .card-body {
     display: flex;
