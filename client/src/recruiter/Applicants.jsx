@@ -1067,9 +1067,9 @@ const paginatedApplicants = useMemo(() => {
           </div>
           {/* Status badge top-right */}
           <span className={`status-badge ${getStatusClass(a.status)}`}
-            style={{ fontSize: "0.72rem", padding: "0.3rem 0.7rem" }}>
+            style={{ fontSize: "0.68rem", padding: "0.25rem 0.5rem", flexShrink: 0, maxWidth: "42%", overflow: "hidden", textOverflow: "ellipsis" }}>
             {getStatusIcon(a.status)}
-            {a.status}
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.status}</span>
           </span>
         </div>
 
