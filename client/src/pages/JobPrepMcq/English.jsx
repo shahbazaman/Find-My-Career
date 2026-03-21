@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import {
   FaCheckCircle,
   FaArrowRight,
@@ -13,9 +13,23 @@ const English = () => {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [currentLevel, setCurrentLevel] = useState(1);
   const [showSummary, setShowSummary] = useState(false);
-  useEffect(() => {
+  const topRef = useRef(null);
+
+useEffect(() => {
   window.scrollTo({ top: 0, behavior: "instant" });
-}, []);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+
+  let el = topRef.current?.parentElement;
+  while (el) {
+    if (el.scrollTop > 0) el.scrollTop = 0;
+    el = el.parentElement;
+  }
+
+  if (topRef.current) {
+    topRef.current.scrollIntoView({ behavior: "instant", block: "start" });
+  }
+}, [currentLevel]);
 
 const questions = [
   {
@@ -556,7 +570,7 @@ const questions = [
   };
 
   return (
-    <div className="quiz-wrapper">
+    <div className="quiz-wrapper" ref={topRef}>
       <div className="quiz-header">
         <h2>📘 English Grammar MCQ – Level {currentLevel}</h2>
         <p>
