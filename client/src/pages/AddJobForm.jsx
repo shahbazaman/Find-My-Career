@@ -115,11 +115,11 @@ const handleSubmit = async (e) => {
 
 
   return (
-    <Container fluid className="px-3 py-5 d-flex align-items-center" style={{ 
+    <div style={{ width: "100%", overflowX: "hidden" }}>
+   <Container fluid className="px-3 py-5 d-flex align-items-center" style={{ 
   background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
   minHeight: "100vh",
-  width: "100vw",
-  marginLeft: "calc(-50vw + 50%)",
+  width: "100%",
   paddingTop: "2rem",
   paddingBottom: "2rem",
 }}>
@@ -630,6 +630,7 @@ const handleSubmit = async (e) => {
         </Col>
       </Row>
     </Container>
+    </div>
   );
 };
 
