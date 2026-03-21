@@ -377,13 +377,17 @@ const paginatedApplicants = useMemo(() => {
     gap: 0.75rem;
   }
 
+  // .search-box {
+  //   width: 102%;
+  //   position: relative;
+  //   margin: 0 15px;
+  //   padding-left: -80px;
+  //   margin-left: -10px;
+  // }
   .search-box {
-    width: 102%;
-    position: relative;
-    margin: 0 15px;
-    padding-left: -80px;
-    margin-left: -10px;
-  }
+  width: 100%;
+  position: relative;
+}
 
 
   .search-box input {
@@ -526,15 +530,19 @@ const paginatedApplicants = useMemo(() => {
 
   /* Status Badge */
   .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    white-space: nowrap;
-  }
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
 
   .status-applied   { background: #ebf8ff; color: #2c5282; }
   .status-shortlisted { background: #fef5e7; color: #d97706; }
@@ -804,18 +812,21 @@ const paginatedApplicants = useMemo(() => {
     }
 
     .search-box,
-    .filter-box {
-      width: 100%;
-      min-width: unset;
-    }
+.filter-box {
+  width: 100%;
+  min-width: unset;
+  margin: 0;
+  padding: 0;
+}
 
-    .search-box input,
-    .filter-box select {
-      width: 100%;
-      height: 48px;
-      font-size: 0.88rem;
-      box-sizing: border-box;
-    }
+.search-box input,
+.filter-box select {
+  width: 100%;
+  height: 48px;
+  font-size: 0.88rem;
+  box-sizing: border-box;
+  padding: 0 1rem 0 2.8rem;
+}
 
     .action-buttons {
       flex-direction: column;
