@@ -695,22 +695,18 @@ const paginatedApplicants = useMemo(() => {
 
 .card-header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: flex-start;
   margin-bottom: 1rem;
   gap: 0.5rem;
-  overflow: hidden;
 }
 
 .card-checkbox {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
+  width: 100%;
 }
-
 .card-name {
   font-size: 0.95rem;
   font-weight: 700;
@@ -1067,10 +1063,10 @@ const paginatedApplicants = useMemo(() => {
           </div>
           {/* Status badge top-right */}
           <span className={`status-badge ${getStatusClass(a.status)}`}
-            style={{ fontSize: "0.68rem", padding: "0.25rem 0.5rem", flexShrink: 0, maxWidth: "42%", overflow: "hidden", textOverflow: "ellipsis" }}>
-            {getStatusIcon(a.status)}
-            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.status}</span>
-          </span>
+  style={{ fontSize: "0.72rem", padding: "0.3rem 0.7rem", alignSelf: "flex-start" }}>
+  {getStatusIcon(a.status)}
+  {a.status}
+</span>
         </div>
 
         {/* Card Body */}
