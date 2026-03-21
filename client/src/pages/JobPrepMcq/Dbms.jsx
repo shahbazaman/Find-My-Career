@@ -546,8 +546,6 @@ useEffect(() => {
       ],
       correctAnswer: "localStorage persists; sessionStorage clears on tab close"
     },
-
-    // ── LEVEL 4 (Q61–80): Advanced ──
     {
       id: 61,
       question: "What is hoisting in JavaScript?",

@@ -413,7 +413,7 @@ const paginatedApplicants = useMemo(() => {
 
   .search-icon {
     position: absolute;
-    left: 1.1rem;
+    left: 1.5rem;
     top: 50%;
     transform: translateY(-50%);
     color: #a0aec0;
@@ -870,7 +870,7 @@ const paginatedApplicants = useMemo(() => {
               <FiSearch className="search-icon" />
               <input
                 type="text"
-                placeholder="Search by name or job title..."
+                placeholder="Search by name or job title ..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
