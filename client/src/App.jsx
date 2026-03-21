@@ -122,10 +122,9 @@ const Layout = () => {
         {/* ================= RECRUITER ================= */}
         <Route path="/recruiter" element={<RecruiterLayout />}>
           <Route index element={<RecruiterDashboard />} />
-          <Route path="dashboard" element={<RecruiterDashboard />} />
-          <Route path="add-job" element={<AddJobForm />} />
+          <Route path="dashboard" element={<RecruiterDashboard />} />          
         </Route>
-
+        <Route path="/recruiter/add-job" element={<AddJobForm />} />
         {/* ================= SETTINGS ================= */}
         <Route path="/settings" element={<SettingsLayout />}>
           <Route path="account" element={<AccountSettings />} />
