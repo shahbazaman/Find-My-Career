@@ -1,14 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const JobView = () => {
-  const { jobId } = useParams();
-  const [job, setJob] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { jobId }  = useParams();
+  const navigate   = useNavigate();
+  const [job,      setJob]      = useState(null);
+  const [loading,  setLoading]  = useState(true);
   const [applying, setApplying] = useState(false);
-  const [applied, setApplied] = useState(false);
+  const [applied,  setApplied]  = useState(false);
+  const [hasResume, setHasResume] = useState(false);
+
+  /* ================= CHECK RESUME (same as Cards.jsx) ================= */
+  useEffect(() => {
+    const checkResume = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const userId  = payload.id || payload._id;
+
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/profile/${userId}`
+        );
+        setHasResume(!!res.data?.resumeUrl);
+      } catch (err) {
+        console.error("Failed to check resume", err);
+      }
+    };
+
+    checkResume();
+  }, []);
 
   /* ================= FETCH JOB + CHECK IF ALREADY APPLIED ================= */
   useEffect(() => {
@@ -16,13 +41,11 @@ const JobView = () => {
       try {
         const token = localStorage.getItem("token");
 
-        // Fetch job details
         const jobRes = await axios.get(
           `${import.meta.env.VITE_API_BASE_URL}/jobs/${jobId}`
         );
         setJob(jobRes.data);
 
-        // Check if already applied (same as Cards.jsx approach)
         if (token) {
           const appliedRes = await axios.get(
             `${import.meta.env.VITE_API_BASE_URL}/applications/my`,
@@ -45,12 +68,14 @@ const JobView = () => {
 
     fetchJob();
   }, [jobId]);
-useEffect(() => {
-  window.scrollTo({ top: 0, behavior: "instant" });
-  document.documentElement.scrollTop = 0;
-  document.body.scrollTop = 0;
-}, []);
-  /* ================= APPLY HANDLER (matches Cards.jsx) ================= */
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, []);
+
+  /* ================= APPLY HANDLER (with resume check) ================= */
   const handleApply = async () => {
     const token = localStorage.getItem("token");
 
@@ -60,6 +85,41 @@ useEffect(() => {
     }
 
     if (applied) return;
+
+    // ✅ Resume check — same toast style as Cards.jsx
+    if (!hasResume) {
+      toast.warning(
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <span style={{ fontSize: "22px" }}>📄</span>
+          <div>
+            <div style={{ fontWeight: "700", marginBottom: "4px" }}>Resume Required</div>
+            <div style={{ fontSize: "13px", marginBottom: "8px" }}>
+              Please upload your resume before applying.
+            </div>
+            <button
+              onClick={() => { navigate("/profile"); toast.dismiss(); }}
+              style={{
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                color: "white",
+                border: "none",
+                padding: "6px 16px",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontWeight: "600",
+                fontSize: "13px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px"
+              }}
+            >
+              📤 Upload Resume
+            </button>
+          </div>
+        </div>,
+        { autoClose: 6000, position: "top-center" }
+      );
+      return;
+    }
 
     try {
       setApplying(true);
@@ -114,6 +174,7 @@ useEffect(() => {
   /* ================= RENDER ================= */
   return (
     <div style={{ minHeight: "100vh", background: "#f5f7fb", padding: "40px 20px" }}>
+      <ToastContainer position="top-center" />
       <div style={{
         maxWidth: "900px", margin: "0 auto",
         background: "#ffffff", padding: "36px",
@@ -261,7 +322,9 @@ useEffect(() => {
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = (job.status === "closed" || applied) ? "none" : "0 8px 25px rgba(102,126,234,0.4)";
+              e.currentTarget.style.boxShadow = (job.status === "closed" || applied)
+                ? "none"
+                : "0 8px 25px rgba(102,126,234,0.4)";
             }}
           >
             {job.status === "closed"

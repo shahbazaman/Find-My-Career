@@ -191,7 +191,7 @@ const Page3 = () => {
 
               <Button
                 variant="light" size="lg"
-                onClick={() => navigate("/jobPrep")}
+                onClick={() => { window.scrollTo({ top: 0, behavior: "instant" }); navigate("/jobPrep"); }}
                 style={{
                   color: "#667eea", border: "none", padding: "15px 38px",
                   fontSize: "clamp(14px, 2.5vw, 16px)", fontWeight: "700",
@@ -281,7 +281,7 @@ const Page3 = () => {
                         {/* Two buttons: Notes + MCQs */}
                         <div style={{ position: "relative", zIndex: 2, marginTop: "24px", flexShrink: 0, display: "flex", gap: "10px" }}>
                           <button
-                            onClick={() => navigate(slide.notesPath)}
+                            onClick={() => { window.scrollTo({ top: 0, behavior: "instant" }); navigate(slide.notesPath); }}
                             style={{
                               flex: 1, padding: "13px 0",
                               background: "rgba(255,255,255,0.95)", color: "#333",
@@ -296,7 +296,7 @@ const Page3 = () => {
                             📖 Notes
                           </button>
                           <button
-                            onClick={() => navigate(slide.mcqPath)}
+                            onClick={() => { window.scrollTo({ top: 0, behavior: "instant" }); navigate(slide.mcqPath); }}
                             style={{
                               flex: 1, padding: "13px 0",
                               background: "rgba(0,0,0,0.25)", color: "white",

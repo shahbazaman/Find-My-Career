@@ -54,7 +54,7 @@ import DSANotes from "./pages/JobPrepNotes/DsaNotes"
 import "./css/App.css";
 import UploadResume from "./pages/UploadResume";
 import SavedJobs from "./pages/SavedJobs";
-/* Hide NavigationBar on /admin routes */
+import ScrollToTop from "./components/ScrollToTop";
 const Layout = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
@@ -62,6 +62,7 @@ const Layout = () => {
   return (
     <>
       {!isAdminRoute && <NavigationBar />}
+      <ScrollToTop />   {/* ✅ ADD HERE */}
       <ToastContainer position="top-center" autoClose={3000} />
       <Routes>
         {/* ADMIN ROUTES */}

@@ -12,7 +12,8 @@ export default function JobList() {
   const [loading, setLoading]   = useState(true);
   const [search, setSearch]     = useState("");
   const [saved, setSaved]       = useState({});
-
+  const [currentPage, setCurrentPage]   = useState(1);
+  const CARDS_PER_PAGE = 9;
   const [searchParams, setSearchParams] = useSearchParams();
   const titleFilter = searchParams.get("title") || "";
   const navigate    = useNavigate();
@@ -36,7 +37,15 @@ export default function JobList() {
     e.stopPropagation();
     setSaved((prev) => ({ ...prev, [jobId]: !prev[jobId] }));
   };
+// Reset to page 1 whenever jobs list changes
+useEffect(() => { setCurrentPage(1); }, [jobs]);
 
+const totalPages     = Math.ceil(jobs.length / CARDS_PER_PAGE);
+const showPagination = jobs.length > CARDS_PER_PAGE;
+const paginatedJobs  = jobs.slice(
+  (currentPage - 1) * CARDS_PER_PAGE,
+  currentPage * CARDS_PER_PAGE
+);
   return (
     <Container className="mt-4 mb-5">
 
@@ -94,7 +103,7 @@ export default function JobList() {
         </div>
       ) : (
         <Row className="g-4">
-          {jobs.map((job) => (
+          {paginatedJobs.map((job) => (
             <Col key={job._id} xs={12} md={6} lg={4}>
               <Card
                 className="h-100 border-0"
@@ -251,6 +260,56 @@ export default function JobList() {
           ))}
         </Row>
       )}
+        {/* ── Pagination ── */}
+{showPagination && (
+  <div className="d-flex justify-content-center align-items-center gap-2 mt-4 flex-wrap">
+    <button
+      onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+      disabled={currentPage === 1}
+      style={{
+        padding: "10px 18px", border: "none", borderRadius: "12px",
+        background: currentPage === 1 ? "#e9ecef" : "white",
+        color: currentPage === 1 ? "#adb5bd" : "#667eea",
+        cursor: currentPage === 1 ? "not-allowed" : "pointer",
+        fontWeight: "600", boxShadow: currentPage === 1 ? "none" : "0 4px 15px rgba(0,0,0,0.1)"
+      }}
+    >
+      ← Prev
+    </button>
+
+    {[...Array(totalPages)].map((_, i) => (
+      <button
+        key={i + 1}
+        onClick={() => setCurrentPage(i + 1)}
+        style={{
+          padding: "10px 15px", border: "none", borderRadius: "12px",
+          background: currentPage === i + 1
+            ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+            : "white",
+          color: currentPage === i + 1 ? "white" : "#667eea",
+          fontWeight: "600", cursor: "pointer", minWidth: "44px",
+          boxShadow: "0 4px 15px rgba(0,0,0,0.08)"
+        }}
+      >
+        {i + 1}
+      </button>
+    ))}
+
+    <button
+      onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+      disabled={currentPage === totalPages}
+      style={{
+        padding: "10px 18px", border: "none", borderRadius: "12px",
+        background: currentPage === totalPages ? "#e9ecef" : "white",
+        color: currentPage === totalPages ? "#adb5bd" : "#667eea",
+        cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+        fontWeight: "600", boxShadow: currentPage === totalPages ? "none" : "0 4px 15px rgba(0,0,0,0.1)"
+      }}
+    >
+      Next →
+    </button>
+  </div>
+)}
     </Container>
   );
 }
