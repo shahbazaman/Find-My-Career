@@ -21,6 +21,14 @@ const handleBack = () => {
   const from = location.state?.from || "/jobPrep";
   navigate(from);
 };
+const getMotivation = (correct, total) => {
+  const pct = Math.round((correct / total) * 100);
+  if (pct === 100) return { emoji: "🏆", title: "Perfect Score!",  msg: "Absolutely flawless! You're a genius. Top companies are lucky to have you!", color: "#f59e0b" };
+  if (pct >= 80)  return { emoji: "🌟", title: "Excellent Work!", msg: "Outstanding performance! You're well prepared for any aptitude round.",      color: "#10b981" };
+  if (pct >= 60)  return { emoji: "💪", title: "Good Job!",       msg: "Solid effort! A little more practice and you'll ace every exam.",             color: "#3b82f6" };
+  if (pct >= 40)  return { emoji: "📚", title: "Keep Going!",     msg: "You're on the right track. Review the topics and try again — you've got this!", color: "#8b5cf6" };
+  return           { emoji: "🔥", title: "Don't Give Up!",         msg: "Every expert was once a beginner. Study hard and come back stronger!",        color: "#ef4444" };
+};
 useEffect(() => {
   window.scrollTo({ top: 0, behavior: "instant" });
   document.documentElement.scrollTop = 0;
@@ -752,46 +760,94 @@ const questions = [
 </div>
 
       {/* ===================== MODAL ===================== */}
-      {showSummary && (
-        <div className="modal-overlay">
-          <div className="modal-card">
-            <FaCheckCircle className="modal-icon" />
-            <h3>Level {currentLevel} Completed</h3>
+ {showSummary && (() => {
+        const pct = Math.round((levelScore.correct / QUESTIONS_PER_LEVEL) * 100);
+        const mot = getMotivation(levelScore.correct, QUESTIONS_PER_LEVEL);
+        const isFinalLevel = currentLevel === TOTAL_LEVELS;
+        return (
+          <div className="modal-overlay">
+            <div className="modal-card" style={{ maxWidth: "460px" }}>
 
-            <p className="modal-score">
-  Attempted: <b>{levelScore.attempted}</b> / {QUESTIONS_PER_LEVEL}
-  <br />
-  Correct: <b>{levelScore.correct}</b>
-</p>
+              <div style={{
+                background: `linear-gradient(135deg, ${mot.color}, ${mot.color}cc)`,
+                margin: "-30px -26px 20px -26px",
+                padding: "28px 26px 22px",
+                borderRadius: "24px 24px 0 0",
+                textAlign: "center"
+              }}>
+                <div style={{ fontSize: "64px", lineHeight: 1 }}>{mot.emoji}</div>
+                <h2 style={{ color: "white", margin: "10px 0 4px", fontWeight: "800", fontSize: "1.6rem" }}>
+                  {mot.title}
+                </h2>
+                <p style={{ color: "rgba(255,255,255,0.9)", margin: 0, fontSize: "0.95rem" }}>
+                  {mot.msg}
+                </p>
+              </div>
 
-            <div className="modal-actions">
-              <button
-                className="modal-btn home"
-                onClick={() => window.location.href = "/jobPrep"}
-              >
-                <FaHome /> Home
-              </button>
+              <div style={{ textAlign: "center", margin: "10px 0 18px" }}>
+                <div style={{
+                  display: "inline-flex", flexDirection: "column",
+                  alignItems: "center", justifyContent: "center",
+                  width: "110px", height: "110px", borderRadius: "50%",
+                  border: `6px solid ${mot.color}`,
+                  boxShadow: `0 0 0 4px ${mot.color}22`
+                }}>
+                  <span style={{ fontSize: "2rem", fontWeight: "900", color: mot.color }}>{pct}%</span>
+                  <span style={{ fontSize: "0.72rem", color: "#6b7280", fontWeight: "600" }}>SCORE</span>
+                </div>
+              </div>
 
-              <button
-                className="modal-btn next"
-                onClick={() => {
-                  setShowSummary(false);
-                  setCurrentLevel((prev) => prev + 1);
-                }}
-              >
-                Next Level <FaArrowRight />
+              <div style={{
+                display: "flex", justifyContent: "center", gap: "24px",
+                background: "#f9fafb", borderRadius: "14px",
+                padding: "14px", marginBottom: "22px"
+              }}>
+                {[
+                  { label: "Attempted", val: levelScore.attempted, color: "#3b82f6" },
+                  { label: "Correct",   val: levelScore.correct,   color: "#10b981" },
+                  { label: "Wrong",     val: levelScore.wrong,     color: "#ef4444" }
+                ].map(s => (
+                  <div key={s.label} style={{ textAlign: "center" }}>
+                    <div style={{ fontSize: "1.5rem", fontWeight: "800", color: s.color }}>{s.val}</div>
+                    <div style={{ fontSize: "0.75rem", color: "#6b7280", fontWeight: "600" }}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              <p style={{ textAlign: "center", color: "#6b7280", fontSize: "0.88rem", marginBottom: "20px" }}>
+                Level {currentLevel} of {TOTAL_LEVELS} completed
+              </p>
+
+              <div className="modal-actions">
+                <button className="modal-btn home" onClick={() => window.location.href = "/jobPrep"}>
+                  <FaHome /> Home
+                </button>
+                {!isFinalLevel ? (
+                  <button
+                    className="modal-btn next"
+                    style={{ background: mot.color }}
+                    onClick={() => { setShowSummary(false); setCurrentLevel(p => p + 1); }}
+                  >
+                    Next Level <FaArrowRight />
+                  </button>
+                ) : (
+                  <button
+                    className="modal-btn next"
+                    style={{ background: mot.color }}
+                    onClick={() => window.location.href = "/jobPrep"}
+                  >
+                    Finish 🎉
+                  </button>
+                )}
+              </div>
+
+              <button className="modal-close" onClick={() => setShowSummary(false)}>
+                <FaTimesCircle />
               </button>
             </div>
-
-            <button
-              className="modal-close"
-              onClick={() => setShowSummary(false)}
-            >
-              <FaTimesCircle />
-            </button>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       <style>{`
 /* ===================== GLOBAL ===================== */
