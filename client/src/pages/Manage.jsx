@@ -223,8 +223,30 @@ const fetchProfile = async () => {
                 <p>🕓 {candidate.timezone}</p>
               </div>
 
-              {/* 🔴 DELETE ACCOUNT */}
-              <div style={{ marginTop: "25px" }}>
+              {/* ✅ COMPLETE PROFILE BUTTON — only show if not 100% */}
+{progressPercent < 100 && (
+  <div style={{ marginTop: "25px" }}>
+    <button
+      onClick={() => navigate("/profile")}
+      style={{
+        width: "100%",
+        padding: "12px",
+        borderRadius: "10px",
+        border: "none",
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        color: "white",
+        fontWeight: "600",
+        cursor: "pointer",
+        marginBottom: "10px"
+      }}
+    >
+      ✏️ Complete Profile
+    </button>
+  </div>
+)}
+
+{/* 🔴 DELETE ACCOUNT */}
+<div style={{ marginTop: "25px" }}>
                 <button
                   onClick={handleDeleteAccount}
                   style={{
