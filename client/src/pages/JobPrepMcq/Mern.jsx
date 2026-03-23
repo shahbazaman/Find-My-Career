@@ -5,7 +5,7 @@ import {
   FaHome,
   FaTimesCircle
 } from "react-icons/fa";
-
+import { useNavigate, useLocation } from "react-router-dom";
 const QUESTIONS_PER_LEVEL = 20;
 const TOTAL_LEVELS = 4;
 
@@ -14,7 +14,13 @@ const Mern = () => {
   const [currentLevel, setCurrentLevel] = useState(1);
   const [showSummary, setShowSummary] = useState(false);
   const topRef = useRef(null);
+  const navigate  = useNavigate();
+const location  = useLocation();
 
+const handleBack = () => {
+  const from = location.state?.from || "/jobPrep";
+  navigate(from);
+};
 useEffect(() => {
   window.scrollTo({ top: 0, behavior: "instant" });
   document.documentElement.scrollTop = 0;
@@ -690,6 +696,22 @@ const questions = [
   return (
     <div className="quiz-wrapper" ref={topRef}>
       <div className="quiz-header">
+        <button
+    onClick={handleBack}
+    style={{
+      background: "rgba(255,255,255,0.2)",
+      border: "1.5px solid rgba(255,255,255,0.5)",
+      color: "white",
+      padding: "7px 18px",
+      borderRadius: "20px",
+      fontWeight: "600",
+      cursor: "pointer",
+      marginBottom: "14px",
+      fontSize: "14px"
+    }}
+  >
+    ← Back
+  </button>
         <h2>📘 MERN Stack MCQ – Level {currentLevel}</h2>
         <p>
           Level {currentLevel} of {TOTAL_LEVELS} • {QUESTIONS_PER_LEVEL} Questions

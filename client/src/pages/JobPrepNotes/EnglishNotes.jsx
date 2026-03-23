@@ -27,11 +27,19 @@ import {
 } from "react-icons/fa6";
 import { FaExchangeAlt } from "react-icons/fa";
 import React, { useState, useEffect , useRef} from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const EnglishNotes = () => {
   const topicsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);
   const topRef = useRef(null);
+    const navigate  = useNavigate();
+const location  = useLocation();
+
+const handleBack = () => {
+  const from = location.state?.from || "/jobPrep";
+  navigate(from);
+};
   const topics = [
   {
     icon: <FaLanguage />,
@@ -704,6 +712,22 @@ const EnglishNotes = () => {
   return (
     <main style={styles.container} ref={topRef}>
       <header style={styles.header}>
+        <button
+    onClick={handleBack}
+    style={{
+      background: "#4f46e5",
+      border: "none",
+      color: "white",
+      padding: "7px 18px",
+      borderRadius: "20px",
+      fontWeight: "600",
+      cursor: "pointer",
+      marginBottom: "14px",
+      fontSize: "14px"
+    }}
+  >
+    ← Back
+  </button>
         <h1 style={styles.title} className="eng-title">English</h1>
         <p style={styles.subtitle} className="eng-subtitle">
           Starter notes for beginners with interview-focused explanations

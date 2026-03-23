@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect,useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   FaCheckCircle,
   FaArrowRight,
@@ -14,7 +15,13 @@ const Aptitude = () => {
   const [currentLevel, setCurrentLevel] = useState(1);
   const [showSummary, setShowSummary] = useState(false);
   const topRef = useRef(null);
+const navigate  = useNavigate();
+const location  = useLocation();
 
+const handleBack = () => {
+  const from = location.state?.from || "/jobPrep";
+  navigate(from);
+};
 useEffect(() => {
   window.scrollTo({ top: 0, behavior: "instant" });
   document.documentElement.scrollTop = 0;
@@ -568,11 +575,27 @@ useEffect(() => {
   return (
     <div className="quiz-wrapper" ref={topRef}>
       <div className="quiz-header">
-        <h2>📘 Technical Aptitude MCQ – Level {currentLevel}</h2>
-        <p>
-          Level {currentLevel} of {TOTAL_LEVELS} • {QUESTIONS_PER_LEVEL} Questions
-        </p>
-      </div>
+  <button
+    onClick={handleBack}
+    style={{
+      background: "rgba(255,255,255,0.2)",
+      border: "1.5px solid rgba(255,255,255,0.5)",
+      color: "white",
+      padding: "7px 18px",
+      borderRadius: "20px",
+      fontWeight: "600",
+      cursor: "pointer",
+      marginBottom: "14px",
+      fontSize: "14px"
+    }}
+  >
+    ← Back
+  </button>
+  <h2>📘 Technical Aptitude MCQ – Level {currentLevel}</h2>
+  <p>
+    Level {currentLevel} of {TOTAL_LEVELS} • {QUESTIONS_PER_LEVEL} Questions
+  </p>
+</div>
 
       {currentLevelQuestions.map((q) => (
         <div key={q.id} className="question-card">

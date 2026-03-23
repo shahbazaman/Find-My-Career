@@ -19,15 +19,24 @@ import {
   FaCodeBranch
 } from "react-icons/fa";
 import { 
-  FaVial,         // Testing
-  FaDocker,       // DevOps/Containers
-  FaRocket,       // Performance/Deployment
-  FaSearchDollar  // SEO & Web Vitals
+  FaVial,         
+  FaDocker,       
+  FaRocket,       
+  FaSearchDollar  
 } from "react-icons/fa";
+import { useNavigate, useLocation } from "react-router-dom";
+
 const MernNotes = () => {
   const topicsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);
   const topRef = useRef(null);
+  const navigate  = useNavigate();
+const location  = useLocation();
+
+const handleBack = () => {
+  const from = location.state?.from || "/jobPrep";
+  navigate(from);
+};
 const topics = [
   {
     icon: <FaLayerGroup />,
@@ -541,6 +550,22 @@ const topics = [
   `}</style>
   <main style={styles.container} className="mern-container" ref={topRef}>
       <header style={styles.header}>
+        <button
+    onClick={handleBack}
+    style={{
+      background: "#4f46e5",
+      border: "none",
+      color: "white",
+      padding: "7px 18px",
+      borderRadius: "20px",
+      fontWeight: "600",
+      cursor: "pointer",
+      marginBottom: "14px",
+      fontSize: "14px"
+    }}
+  >
+    ← Back
+  </button>
         <h1 style={styles.title} className="mern-title">MERN Stack</h1>
         <p style={styles.subtitle} className="mern-subtitle">
           Starter notes for beginners with interview-focused explanations
