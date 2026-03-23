@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect,useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+ import { useNavigate } from "react-router-dom";
 import {
   FaCheckCircle,
   FaArrowRight,
@@ -16,11 +16,10 @@ const Aptitude = () => {
   const [showSummary, setShowSummary] = useState(false);
   const topRef = useRef(null);
 const navigate  = useNavigate();
-const location  = useLocation();
+ 
 
 const handleBack = () => {
-  const from = location.state?.from || "/jobPrep";
-  navigate(from);
+  navigate(-1);
 };
 // ADD THIS after handleBack function:
 const getMotivation = (correct, total) => {

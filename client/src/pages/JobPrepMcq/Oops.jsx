@@ -5,7 +5,7 @@ import {
   FaHome,
   FaTimesCircle
 } from "react-icons/fa";
-import { useNavigate, useLocation } from "react-router-dom";
+ import { useNavigate } from "react-router-dom";
 const QUESTIONS_PER_LEVEL = 20;
 const TOTAL_LEVELS = 4;
 
@@ -15,11 +15,10 @@ const Oops = () => {
   const [showSummary, setShowSummary] = useState(false);
   const topRef = useRef(null);
   const navigate  = useNavigate();
-const location  = useLocation();
+ 
 
 const handleBack = () => {
-  const from = location.state?.from || "/jobPrep";
-  navigate(from);
+  navigate(-1);
 };
 const getMotivation = (correct, total) => {
   const pct = Math.round((correct / total) * 100);

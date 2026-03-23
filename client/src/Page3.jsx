@@ -281,7 +281,7 @@ const Page3 = () => {
                         {/* Two buttons: Notes + MCQs */}
                         <div style={{ position: "relative", zIndex: 2, marginTop: "24px", flexShrink: 0, display: "flex", gap: "10px" }}>
                           <button
-                            onClick={() => { navigate(slide.notesPath, { state: { from: "/jobPrep" } }); }}
+                            onClick={() => navigate(slide.notesPath)}
                             style={{
                               flex: 1, padding: "13px 0",
                               background: "rgba(255,255,255,0.95)", color: "#333",
@@ -296,7 +296,7 @@ const Page3 = () => {
                             📖 Notes
                           </button>
                           <button
-                            onClick={() => { navigate(slide.mcqPath, { state: { from: "/jobPrep" } }); }}
+                            onClick={() => navigate(slide.mcqPath)}
                             style={{
                               flex: 1, padding: "13px 0",
                               background: "rgba(0,0,0,0.25)", color: "white",

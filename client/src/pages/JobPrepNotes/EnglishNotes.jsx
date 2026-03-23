@@ -27,18 +27,17 @@ import {
 } from "react-icons/fa6";
 import { FaExchangeAlt } from "react-icons/fa";
 import React, { useState, useEffect , useRef} from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+ import { useNavigate } from "react-router-dom";
 
 const EnglishNotes = () => {
   const topicsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);
   const topRef = useRef(null);
     const navigate  = useNavigate();
-const location  = useLocation();
+ 
 
 const handleBack = () => {
-  const from = location.state?.from || "/jobPrep";
-  navigate(from);
+  navigate(-1);
 };
   const topics = [
   {
