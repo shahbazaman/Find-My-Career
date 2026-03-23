@@ -386,6 +386,30 @@ const toggleApply = async (jobId) => {
 >
   ✨ Recommended Jobs
 </button>
+    <button
+      onClick={() => navigate("/saved-jobs")}
+      style={{
+        padding: "10px 18px",
+        background: "#ffc107",
+        color: "#1a1a1a",
+        border: "none",
+        borderRadius: "50px",
+        cursor: "pointer",
+        fontSize: "clamp(12px, 2.5vw, 15px)",
+        fontWeight: "600",
+        boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+        display: "flex",
+        alignItems: "center",
+        gap: "7px",
+        transition: "all 0.3s ease",
+        whiteSpace: "nowrap"
+      }}
+      onMouseOver={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
+      onMouseOut={(e) => e.currentTarget.style.transform = "translateY(0)"}
+    >
+      <BsBookmarkFill size={14} />
+      Saved Jobs
+    </button>
 
     <button
       onClick={() => setIsFilterOpen(!isFilterOpen)}
