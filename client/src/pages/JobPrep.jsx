@@ -92,7 +92,9 @@ const handleNotesOnClick = () => {
       className="border-0 shadow-sm rounded-4 p-3 course-card-hover"
       style={{
         borderLeft: isComplete ? "6px solid #198754" : "6px solid #0d6efd",
+        cursor: "pointer"
       }}
+      onClick={handleNotesOnClick}
     >
       <div className="d-flex align-items-center gap-3">
         <div

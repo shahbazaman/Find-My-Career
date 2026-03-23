@@ -10,7 +10,7 @@ export default function ApplicationSettings() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [currentResume, setCurrentResume] = useState("Software_Engineer_Resume_2024.pdf");
+  const [currentResume, setCurrentResume] = useState("");
 const userData = localStorage.getItem("user");
 const userId = userData ? JSON.parse(userData).id : null;
   const [resumeUrl, setResumeUrl] = useState("");

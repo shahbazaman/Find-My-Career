@@ -11,7 +11,7 @@ import {
   Building,
   X
 } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 const JobPreferences = () => {
   const [preferences, setPreferences] = useState({
     roles: "",
@@ -48,12 +48,28 @@ const JobPreferences = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Job Preferences:", preferences);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const token = localStorage.getItem("token");
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    const userId = payload.id || payload._id;
+
+    await fetch(`${import.meta.env.VITE_API_BASE_URL}/preferences/${userId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(preferences)
+    });
+
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
-  };
+  } catch (err) {
+    console.error("Failed to save preferences", err);
+  }
+};
 
   const jobRoles = [
     "Select a role...",

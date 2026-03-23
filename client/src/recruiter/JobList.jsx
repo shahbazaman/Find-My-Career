@@ -15,21 +15,25 @@ export default function JobList() {
   const [currentPage, setCurrentPage]   = useState(1);
   const CARDS_PER_PAGE = 9;
   const [searchParams, setSearchParams] = useSearchParams();
-  const titleFilter = searchParams.get("title") || "";
+  const titleFilter    = searchParams.get("title")    || "";
+const locationFilter = searchParams.get("location") || "";
+const skillsFilter   = searchParams.get("skills")   || "";
   const navigate    = useNavigate();
 
   useEffect(() => {
     setLoading(true);
     const params = {};
-    if (titleFilter) params.title  = titleFilter;
-    if (search)      params.search = search;
+    if (titleFilter)    params.title    = titleFilter;
+    if (locationFilter) params.location = locationFilter;
+    if (skillsFilter)   params.skills   = skillsFilter;
+    if (search)         params.search   = search;
 
     axios
       .get(`${import.meta.env.VITE_API_BASE_URL}/jobs`, { params })
       .then((res) => setJobs(res.data.jobs || []))
       .catch((err) => console.error("JobList fetch error:", err))
       .finally(() => setLoading(false));
-  }, [titleFilter, search]);
+  }, [titleFilter, locationFilter, skillsFilter, search]);
 
   const clearFilter = () => setSearchParams({});
 

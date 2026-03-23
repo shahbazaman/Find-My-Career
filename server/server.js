@@ -70,7 +70,7 @@ import adminUserRoutes from "./routes/adminUserRoutes.js";
 import interviewRoutes from "./routes/interviewRoutes.js";
 import emailTestRoutes from "./routes/emailTestRoutes.js";
 import savedJobRoutes from "./routes/savedJobRoutes.js";
-
+import preferenceRoutes from "./routes/preferences.js";
 app.use("/api", emailTestRoutes);
 app.use("/api/admin", adminUserRoutes);
 app.use("/api/queries", queryRoutes);
@@ -87,6 +87,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/interviews", interviewRoutes);
 app.use("/api/saved-jobs", savedJobRoutes);
+app.use("/api/preferences", preferenceRoutes);
 /* ===================== CRON ===================== */
 jobAutoClose();
 
