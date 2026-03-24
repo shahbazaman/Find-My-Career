@@ -6,7 +6,8 @@ import {
   FaBriefcase, FaMapMarkerAlt, FaBuilding,
   FaTimes, FaClock, FaBookmark, FaRegBookmark
 } from "react-icons/fa";
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function JobList() {
   const [jobs, setJobs]         = useState([]);
   const [loading, setLoading]   = useState(true);
@@ -56,13 +57,62 @@ useEffect(() => {
   };
   fetchApplied();
 }, []);
-  const toggleSave = (e, jobId) => {
-    e.stopPropagation();
+  const toggleSave = async (e, jobId) => {
+  e.stopPropagation();
+  const token = localStorage.getItem("token");
+  if (!token) { toast.warning("Please login to save jobs"); return; }
+
+  const isSaved = saved[jobId];
+
+  // Optimistic update
+  setSaved((prev) => ({ ...prev, [jobId]: !prev[jobId] }));
+
+  try {
+    if (isSaved) {
+      await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/saved-jobs/${jobId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.info("Job removed from saved");
+    } else {
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/saved-jobs/${jobId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Job saved! ✨");
+    }
+  } catch (err) {
+    // Revert on failure
     setSaved((prev) => ({ ...prev, [jobId]: !prev[jobId] }));
-  };
+    toast.error(err?.response?.data?.message || "Failed to update saved jobs");
+  }
+};
 // Reset to page 1 whenever jobs list changes
 useEffect(() => { setCurrentPage(1); }, [jobs]);
-
+useEffect(() => {
+  const fetchSaved = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/saved-jobs`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (Array.isArray(res.data)) {
+        const savedMap = {};
+        res.data.forEach(s => {
+          const id = s.job?._id || s.job;
+          if (id) savedMap[id] = true;
+        });
+        setSaved(savedMap);
+      }
+    } catch (err) {
+      console.error("Failed to fetch saved jobs", err);
+    }
+  };
+  fetchSaved();
+}, []);
 const totalPages     = Math.ceil(jobs.length / CARDS_PER_PAGE);
 const showPagination = jobs.length > CARDS_PER_PAGE;
 const paginatedJobs  = jobs.slice(
@@ -71,33 +121,50 @@ const paginatedJobs  = jobs.slice(
 );
   return (
     <Container className="mt-4 mb-5">
+  <ToastContainer position="top-center" />
 
       {/* ── Header ── */}
       <div className="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-        <div>
-          <h2 className="fw-bold mb-0">
-            {titleFilter ? (
-              <>Jobs for <span style={{ color: "#764ba2" }}>{titleFilter}</span></>
-            ) : (
-              "All Jobs"
-            )}
-          </h2>
-          {!loading && (
-            <small className="text-muted">
-              {jobs.length} job{jobs.length !== 1 ? "s" : ""} found
-            </small>
-          )}
-        </div>
-        {titleFilter && (
-          <Button
-            variant="outline-secondary" size="sm"
-            className="rounded-pill d-flex align-items-center gap-2"
-            onClick={clearFilter}
-          >
-            <FaTimes size={11} /> Clear filter
-          </Button>
-        )}
-      </div>
+  <div>
+    <h2 className="fw-bold mb-0">
+      {titleFilter ? (
+        <>Jobs for <span style={{ color: "#764ba2" }}>{titleFilter}</span></>
+      ) : (
+        "All Jobs"
+      )}
+    </h2>
+    {!loading && (
+      <small className="text-muted">
+        {jobs.length} job{jobs.length !== 1 ? "s" : ""} found
+      </small>
+    )}
+  </div>
+
+  <div className="d-flex align-items-center gap-2 flex-wrap">
+    {titleFilter && (
+      <Button
+        variant="outline-secondary" size="sm"
+        className="rounded-pill d-flex align-items-center gap-2"
+        onClick={clearFilter}
+      >
+        <FaTimes size={11} /> Clear filter
+      </Button>
+    )}
+    <button
+      onClick={() => navigate("/job-preference")}
+      style={{
+        display: "flex", alignItems: "center", gap: "0.5rem",
+        padding: "8px 16px", borderRadius: "50px",
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        color: "white", border: "none", fontWeight: 600,
+        fontSize: "0.85rem", cursor: "pointer", whiteSpace: "nowrap",
+        boxShadow: "0 4px 12px rgba(102,126,234,0.3)"
+      }}
+    >
+      ⚙️ Preference Settings
+    </button>
+  </div>
+</div>
 
       {/* ── Search bar ── */}
       {!titleFilter && (
