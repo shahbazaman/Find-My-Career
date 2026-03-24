@@ -70,7 +70,8 @@ function CourseCard({
 }) {
   const isComplete = status === "Completed";
 
- const handleMcqOnClick = () => {
+ const handleMcqOnClick = (e) => {
+  e.stopPropagation();  // ← ADD THIS
   if (typeof questionsUrl === "function") {
     window.scrollTo({ top: 0, behavior: "instant" });
     questionsUrl();
@@ -156,7 +157,7 @@ const handleNotesOnClick = () => {
               size="sm"
               variant="outline-secondary"
               className="rounded-pill px-3 fw-bold"
-              onClick={handleMcqOnClick}
+              onClick={(e) => handleMcqOnClick(e)}
             >
               <FiBookOpen /> MCQs
             </Button>
@@ -306,7 +307,7 @@ function CourseCard({ title, hours, progress, status, icon, notesUrl, questionsU
             <Button size="sm" variant="primary" className="rounded-pill px-3 fw-bold" onClick={handleNotesOnClick}>
               <MdOutlinePlayCircle /> Notes
             </Button>
-            <Button size="sm" variant="outline-secondary" className="rounded-pill px-3 fw-bold" onClick={handleMcqOnClick}>
+            <Button size="sm" variant="outline-secondary" className="rounded-pill px-3 fw-bold" onClick={(e) => handleMcqOnClick(e)}>
               <FiBookOpen />MCQs
             </Button>
           </div>
