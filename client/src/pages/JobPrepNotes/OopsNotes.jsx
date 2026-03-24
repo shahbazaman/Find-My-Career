@@ -34,7 +34,7 @@ const OopsNotes = () => {
  
 
 const handleBack = () => {
-  navigate(-1);
+  navigate("/jobPrep");
 };
 const topics = [
   {

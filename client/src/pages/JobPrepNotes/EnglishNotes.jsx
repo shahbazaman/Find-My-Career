@@ -37,7 +37,7 @@ const EnglishNotes = () => {
  
 
 const handleBack = () => {
-  navigate(-1);
+  navigate("/jobPrep");
 };
   const topics = [
   {

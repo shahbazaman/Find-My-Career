@@ -18,7 +18,7 @@ const Mern = () => {
  
 
 const handleBack = () => {
-  navigate(-1);
+  navigate("/jobPrep");
 };
 const getMotivation = (correct, total) => {
   const pct = Math.round((correct / total) * 100);

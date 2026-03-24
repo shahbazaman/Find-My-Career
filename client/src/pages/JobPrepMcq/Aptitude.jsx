@@ -19,7 +19,7 @@ const navigate  = useNavigate();
  
 
 const handleBack = () => {
-  navigate(-1);
+  navigate("/jobPrep");
 };
 // ADD THIS after handleBack function:
 const getMotivation = (correct, total) => {

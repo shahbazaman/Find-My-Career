@@ -183,7 +183,21 @@ useEffect(() => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
+const filterInputRefs = useRef([]);
 
+const handleFilterKeyDown = (e, index) => {
+  if (e.key === "Enter") {
+    setIsFilterOpen(false);
+  } else if (e.key === "ArrowDown") {
+    e.preventDefault();
+    const next = filterInputRefs.current[index + 1];
+    if (next) next.focus();
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    const prev = filterInputRefs.current[index - 1];
+    if (prev) prev.focus();
+  }
+};
   const clearFilters = () => {
     setFilters({
       company: "",
@@ -513,13 +527,15 @@ const toggleApply = async (jobId) => {
               { name: "experience", placeholder: "📊 Experience (e.g., 2-4)" },
               { name: "location", placeholder: "📍 Location" },
               { name: "date", placeholder: "📅 Date (YYYY-MM-DD)" }
-            ].map((field) => (
+            ].map((field, index) => (
               <input
                 key={field.name}
                 name={field.name}
                 placeholder={field.placeholder}
                 value={filters[field.name]}
                 onChange={handleFilterChange}
+                ref={(el) => (filterInputRefs.current[index] = el)}
+                onKeyDown={(e) => handleFilterKeyDown(e, index)}
                 style={{
                   padding: "12px 15px",
                   border: "2px solid #e9ecef",
@@ -530,7 +546,6 @@ const toggleApply = async (jobId) => {
                 }}
                 onFocus={(e) => (e.target.style.borderColor = "#667eea")}
                 onBlur={(e) => (e.target.style.borderColor = "#e9ecef")}
-                onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
               />
             ))}
 
