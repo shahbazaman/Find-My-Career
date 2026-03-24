@@ -1,11 +1,176 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import { BsUpload, BsCheckCircleFill, BsBriefcase, BsGeoAlt, BsCurrencyDollar, BsCalendar } from "react-icons/bs";
+import { BsUpload, BsCheckCircleFill, BsBriefcase, BsGeoAlt, BsCurrencyDollar } from "react-icons/bs";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+/* ================= CUSTOM DATE PICKER ================= */
+const MONTHS = [
+  "Jan","Feb","Mar","Apr","May","Jun",
+  "Jul","Aug","Sep","Oct","Nov","Dec"
+];
 
+const navBtn = {
+  background: "none", border: "none", cursor: "pointer",
+  fontSize: "20px", color: "#555", padding: "0 6px", lineHeight: 1
+};
+
+function CustomDatePicker({ value, onChange, name }) {
+  const [open, setOpen] = useState(false);
+  const [viewYear, setViewYear] = useState(new Date().getFullYear());
+  const [viewMonth, setViewMonth] = useState(new Date().getMonth());
+  const [mode, setMode] = useState("day");
+  const ref = useRef(null);
+
+  const selected = value ? new Date(value + "T00:00:00") : null;
+
+  useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) { setOpen(false); setMode("day"); } };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  useEffect(() => {
+    if (selected) { setViewYear(selected.getFullYear()); setViewMonth(selected.getMonth()); }
+  }, [value]);
+
+  const fire = (y, m, d) => {
+    onChange({ target: { name, value: `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}` } });
+    setOpen(false); setMode("day");
+  };
+
+  const daysInMonth = (m, y) => new Date(y, m + 1, 0).getDate();
+  const firstDay    = new Date(viewYear, viewMonth, 1).getDay();
+  const totalDays   = daysInMonth(viewMonth, viewYear);
+  const cells = [];
+  for (let i = 0; i < firstDay; i++) cells.push(null);
+  for (let d = 1; d <= totalDays; d++) cells.push(d);
+
+  const isSelected = (d) => selected && selected.getFullYear()===viewYear && selected.getMonth()===viewMonth && selected.getDate()===d;
+  const isToday    = (d) => { const t=new Date(); return t.getFullYear()===viewYear && t.getMonth()===viewMonth && t.getDate()===d; };
+  const displayValue = selected ? `${selected.getDate()} ${MONTHS[selected.getMonth()]} ${selected.getFullYear()}` : "";
+  const startYear = Math.floor(viewYear / 12) * 12;
+  const yearGrid  = Array.from({ length: 12 }, (_, i) => startYear + i);
+
+  return (
+    <div ref={ref} style={{ position: "relative", display: "inline-block", width: "100%" }}>
+      <div onClick={() => { setOpen(o => !o); setMode("day"); }}
+        style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
+          padding:"10px 14px", border:"2px solid #e9ecef", borderRadius:"12px",
+          background:"white", cursor:"pointer", fontSize:"15px",
+          color: displayValue ? "#333" : "#aaa", userSelect:"none",
+          transition:"border-color 0.3s ease" }}
+        onMouseEnter={e => e.currentTarget.style.borderColor="#667eea"}
+        onMouseLeave={e => e.currentTarget.style.borderColor= open ? "#667eea" : "#e9ecef"}
+      >
+        <span>{displayValue || "Select deadline date"}</span>
+        <span style={{ fontSize:"16px" }}>📅</span>
+      </div>
+
+      {open && (
+        <div style={{ position:"absolute", top:"calc(100% + 6px)", left:0, zIndex:9999,
+          background:"white", border:"1px solid #e0e0e0", borderRadius:"12px",
+          boxShadow:"0 8px 24px rgba(0,0,0,0.12)", padding:"16px", width:"280px" }}>
+
+          {/* Header */}
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"12px" }}>
+            <button onClick={() => {
+              if (mode==="day")   { viewMonth===0 ? (setViewMonth(11),setViewYear(y=>y-1)) : setViewMonth(m=>m-1); }
+              if (mode==="month") setViewYear(y=>y-1);
+              if (mode==="year")  setViewYear(y=>y-12);
+            }} style={navBtn}>‹</button>
+
+            <div style={{ display:"flex", gap:"6px" }}>
+              <span onClick={() => setMode(m => m==="month" ? "day" : "month")}
+                style={{ fontWeight:600, fontSize:"14px", color:"#667eea", cursor:"pointer",
+                  padding:"2px 8px", borderRadius:"6px", background: mode==="month" ? "#ede9fe" : "transparent" }}>
+                {MONTHS[viewMonth]}
+              </span>
+              <span onClick={() => setMode(m => m==="year" ? "day" : "year")}
+                style={{ fontWeight:600, fontSize:"14px", color:"#667eea", cursor:"pointer",
+                  padding:"2px 8px", borderRadius:"6px", background: mode==="year" ? "#ede9fe" : "transparent" }}>
+                {mode==="year" ? `${startYear}–${startYear+11}` : viewYear}
+              </span>
+            </div>
+
+            <button onClick={() => {
+              if (mode==="day")   { viewMonth===11 ? (setViewMonth(0),setViewYear(y=>y+1)) : setViewMonth(m=>m+1); }
+              if (mode==="month") setViewYear(y=>y+1);
+              if (mode==="year")  setViewYear(y=>y+12);
+            }} style={navBtn}>›</button>
+          </div>
+
+          {/* Month Picker */}
+          {mode==="month" && (
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"6px" }}>
+              {MONTHS.map((m, i) => (
+                <div key={m} onClick={() => { setViewMonth(i); setMode("day"); }}
+                  style={{ textAlign:"center", padding:"8px 4px", borderRadius:"8px", cursor:"pointer", fontSize:"13px",
+                    fontWeight: i===viewMonth ? 700 : 400,
+                    background: i===viewMonth ? "#667eea" : "#f8f9fa",
+                    color: i===viewMonth ? "white" : "#333" }}
+                  onMouseEnter={e=>{ if(i!==viewMonth) e.currentTarget.style.background="#eef2ff"; }}
+                  onMouseLeave={e=>{ if(i!==viewMonth) e.currentTarget.style.background="#f8f9fa"; }}>
+                  {m}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Year Picker */}
+          {mode==="year" && (
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"6px" }}>
+              {yearGrid.map(y => (
+                <div key={y} onClick={() => { setViewYear(y); setMode("month"); }}
+                  style={{ textAlign:"center", padding:"8px 4px", borderRadius:"8px", cursor:"pointer", fontSize:"13px",
+                    fontWeight: y===viewYear ? 700 : 400,
+                    background: y===viewYear ? "#667eea" : "#f8f9fa",
+                    color: y===viewYear ? "white" : "#333" }}
+                  onMouseEnter={e=>{ if(y!==viewYear) e.currentTarget.style.background="#eef2ff"; }}
+                  onMouseLeave={e=>{ if(y!==viewYear) e.currentTarget.style.background="#f8f9fa"; }}>
+                  {y}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Day Grid */}
+          {mode==="day" && (<>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", marginBottom:"6px" }}>
+              {["Su","Mo","Tu","We","Th","Fr","Sa"].map(d => (
+                <div key={d} style={{ textAlign:"center", fontSize:"11px", fontWeight:600, color:"#999", padding:"4px 0" }}>{d}</div>
+              ))}
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:"2px" }}>
+              {cells.map((d, i) => (
+                <div key={i} onClick={() => d && fire(viewYear, viewMonth, d)}
+                  style={{ textAlign:"center", padding:"7px 0", fontSize:"13px", borderRadius:"50%",
+                    cursor: d ? "pointer" : "default",
+                    background: d && isSelected(d) ? "#667eea" : "transparent",
+                    color: d && isSelected(d) ? "white" : d && isToday(d) ? "#667eea" : d ? "#333" : "transparent",
+                    fontWeight: d && (isSelected(d)||isToday(d)) ? 700 : 400,
+                    border: d && isToday(d) && !isSelected(d) ? "1px solid #667eea" : "1px solid transparent",
+                    transition:"background 0.15s" }}
+                  onMouseEnter={e=>{ if(d&&!isSelected(d)) e.currentTarget.style.background="#f0f0f0"; }}
+                  onMouseLeave={e=>{ if(d&&!isSelected(d)) e.currentTarget.style.background="transparent"; }}>
+                  {d||""}
+                </div>
+              ))}
+            </div>
+          </>)}
+
+          {selected && (
+            <div onClick={() => { onChange({ target:{name,value:""} }); setOpen(false); setMode("day"); }}
+              style={{ marginTop:"10px", textAlign:"center", fontSize:"12px", color:"#999", cursor:"pointer" }}>
+              ✕ Clear
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 const AddJobForm = () => {
   const [formData, setFormData] = useState({
     companyName: "",
@@ -311,31 +476,17 @@ const handleSubmit = async (e) => {
                 </Col>
 
                 <Col xs={12} md={6}>
-                  <Form.Group>
-                    <Form.Label className="fw-semibold text-muted mb-2">
-                      Application Deadline <span style={{ color: "#ef4444" }}>*</span>
-                    </Form.Label>
-                    <div className="position-relative">
-                      <BsCalendar 
-                        className="position-absolute top-50 start-0 translate-middle-y ms-3" 
-                        style={{ color: "#667eea", fontSize: "18px", zIndex: 3 }}
-                      />
-                      <Form.Control
-                        type="date"
-                        name="deadline"
-                        value={formData.deadline}
-                        onChange={handleChange}
-                        required
-                        className="ps-5"
-                        style={{
-                          border: "2px solid #e9ecef",
-                          borderRadius: "12px",
-                          fontSize: "clamp(14px, 2.8vw, 15px)"
-                        }}
-                      />
-                    </div>
-                  </Form.Group>
-                </Col>
+  <Form.Group>
+    <Form.Label className="fw-semibold text-muted mb-2">
+      Application Deadline <span style={{ color: "#ef4444" }}>*</span>
+    </Form.Label>
+    <CustomDatePicker
+      name="deadline"
+      value={formData.deadline}
+      onChange={handleChange}
+    />
+  </Form.Group>
+</Col>
               </Row>
 
               {/* Salary Range */}
