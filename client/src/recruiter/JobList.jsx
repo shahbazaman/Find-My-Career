@@ -269,19 +269,7 @@ const paginatedJobs  = jobs.slice(
                         }}
                       >
                         {appliedJobs.has(job._id) ? "✓ Applied" : "Apply"}
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={(e) => { e.stopPropagation(); navigate(`/jobs/${job._id}`); }}
-                        style={{
-                          background: "linear-gradient(135deg, #667eea, #764ba2)",
-                          border: "none", borderRadius: "10px",
-                          fontWeight: "600", padding: "6px 16px",
-                          fontSize: "0.82rem"
-                        }}
-                      >
-                        Apply
-                      </Button>
+                      </Button>                    
                     </div>
                   </div>
 

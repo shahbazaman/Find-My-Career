@@ -39,149 +39,155 @@ const formatDate = (date) => {
 
 /* ================= CUSTOM DATE PICKER ================= */
 const MONTHS = [
-  "January","February","March","April","May","June",
-  "July","August","September","October","November","December"
+  "Jan","Feb","Mar","Apr","May","Jun",
+  "Jul","Aug","Sep","Oct","Nov","Dec"
 ];
 
 function CustomDatePicker({ value, onChange, name }) {
-  // value is "YYYY-MM-DD" or ""
-  const parsed = value ? value.split("-") : ["", "", ""];
-  const [year,  setYear]  = useState(parsed[0] || "");
-  const [month, setMonth] = useState(parsed[1] ? parseInt(parsed[1], 10) : "");
-  const [day,   setDay]   = useState(parsed[2] ? parseInt(parsed[2], 10) : "");
+  const [open, setOpen] = useState(false);
+  const [viewYear, setViewYear] = useState(new Date().getFullYear());
+  const [viewMonth, setViewMonth] = useState(new Date().getMonth());
+  const ref = useRef(null);
 
-  // Sync internal state when value prop changes externally (e.g. on profile load)
+  const selected = value ? new Date(value + "T00:00:00") : null;
+
+  // Close on outside click
   useEffect(() => {
-    if (value) {
-      const parts = value.split("-");
-      setYear(parts[0] || "");
-      setMonth(parts[1] ? parseInt(parts[1], 10) : "");
-      setDay(parts[2]   ? parseInt(parts[2], 10) : "");
-    } else {
-      setYear(""); setMonth(""); setDay("");
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  // Sync view when value changes externally
+  useEffect(() => {
+    if (selected) {
+      setViewYear(selected.getFullYear());
+      setViewMonth(selected.getMonth());
     }
   }, [value]);
 
-  const daysInMonth = (m, y) => {
-    if (!m || !y) return 31;
-    return new Date(y, m, 0).getDate();
+  const fire = (y, m, d) => {
+    const mm = String(m + 1).padStart(2, "0");
+    const dd = String(d).padStart(2, "0");
+    onChange({ target: { name, value: `${y}-${mm}-${dd}` } });
+    setOpen(false);
   };
 
-  const maxDay    = daysInMonth(month, year);
-  const dayOptions = Array.from({ length: maxDay }, (_, i) => i + 1);
+  const daysInMonth = (m, y) => new Date(y, m + 1, 0).getDate();
+  const firstDay    = new Date(viewYear, viewMonth, 1).getDay();
+  const totalDays   = daysInMonth(viewMonth, viewYear);
 
-  // Year options: 1940 → current year
-  const currentYear = new Date().getFullYear();
-  const yearOptions = Array.from(
-  { length: 30 },
-  (_, i) => currentYear - i
-);
+  const displayValue = selected
+    ? `${selected.getDate()} ${MONTHS[selected.getMonth()]} ${selected.getFullYear()}`
+    : "";
 
-  const fireChange = (y, m, d) => {
-    if (y && m && d) {
-      const mm = String(m).padStart(2, "0");
-      const dd = String(d).padStart(2, "0");
-      onChange({ target: { name, value: `${y}-${mm}-${dd}` } });
-    } else {
-      onChange({ target: { name, value: "" } });
-    }
+  const prevMonth = () => {
+    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
+    else setViewMonth(m => m - 1);
+  };
+  const nextMonth = () => {
+    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
+    else setViewMonth(m => m + 1);
   };
 
-  const handleYear = (e) => {
-    const y = e.target.value;
-    setYear(y);
-    fireChange(y, month, day);
-  };
+  const cells = [];
+  for (let i = 0; i < firstDay; i++) cells.push(null);
+  for (let d = 1; d <= totalDays; d++) cells.push(d);
 
-  const handleMonth = (e) => {
-    const m = e.target.value ? parseInt(e.target.value, 10) : "";
-    setMonth(m);
-    const maxD      = daysInMonth(m, year);
-    const clampedDay = day > maxD ? maxD : day;
-    if (day > maxD) setDay(maxD);
-    fireChange(year, m, clampedDay);
-  };
+  const isSelected = (d) =>
+    selected &&
+    selected.getFullYear() === viewYear &&
+    selected.getMonth()    === viewMonth &&
+    selected.getDate()     === d;
 
-  const handleDay = (e) => {
-    const d = e.target.value ? parseInt(e.target.value, 10) : "";
-    setDay(d);
-    fireChange(year, month, d);
-  };
-
-  const selectStyle = {
-    padding: "7px 10px",
-    border: "1px solid #ced4da",
-    borderRadius: "6px",
-    fontSize: "14px",
-    background: "white",
-    cursor: "pointer",
-    outline: "none",
-    color: "#333",
-    flex: 1,
-    minWidth: 0,
-    appearance: "auto"
-  };
-
-  const inputStyle = {
-    padding: "7px 10px",
-    border: "1px solid #ced4da",
-    borderRadius: "6px",
-    fontSize: "14px",
-    background: "white",
-    color: "#333",
-    outline: "none"
+  const isToday = (d) => {
+    const t = new Date();
+    return t.getFullYear() === viewYear && t.getMonth() === viewMonth && t.getDate() === d;
   };
 
   return (
-    <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
-
-      {/* Month — dropdown (only 12 items, fine as-is) */}
-      <select
-        value={month}
-        onChange={handleMonth}
-        style={{ ...inputStyle, flex: 1, minWidth: "110px", cursor: "pointer" }}
+    <div ref={ref} style={{ position: "relative", display: "inline-block", width: "100%" }}>
+      {/* Input trigger */}
+      <div
+        onClick={() => setOpen(o => !o)}
+        style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "8px 12px", border: "1px solid #ced4da", borderRadius: "8px",
+          background: "white", cursor: "pointer", fontSize: "14px", color: displayValue ? "#333" : "#aaa",
+          userSelect: "none"
+        }}
       >
-        <option value="">Month</option>
-        {MONTHS.map((m, i) => (
-          <option key={m} value={i + 1}>{m}</option>
-        ))}
-      </select>
+        <span>{displayValue || "Select date"}</span>
+        <span style={{ fontSize: "16px" }}>📅</span>
+      </div>
 
-      {/* Day — number input instead of 31-item dropdown */}
-      <input
-        type="number"
-        min="1"
-        max={maxDay}
-        placeholder="DD"
-        value={day}
-        onChange={(e) => {
-          const d = e.target.value ? parseInt(e.target.value, 10) : "";
-          if (d === "" || (d >= 1 && d <= maxDay)) {
-            setDay(d);
-            fireChange(year, month, d);
-          }
-        }}
-        style={{ ...inputStyle, width: "70px", textAlign: "center" }}
-      />
+      {/* Calendar dropdown */}
+      {open && (
+        <div style={{
+          position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 9999,
+          background: "white", border: "1px solid #e0e0e0", borderRadius: "12px",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.12)", padding: "16px", width: "280px"
+        }}>
+          {/* Header */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
+            <button onClick={prevMonth} style={navBtn}>‹</button>
+            <span style={{ fontWeight: 600, fontSize: "15px", color: "#333" }}>
+              {MONTHS[viewMonth]} {viewYear}
+            </span>
+            <button onClick={nextMonth} style={navBtn}>›</button>
+          </div>
 
-      {/* Year — number input instead of 85-item dropdown */}
-      <input
-        type="number"
-        min="1940"
-        max={new Date().getFullYear()}
-        placeholder="YYYY"
-        value={year}
-        onChange={(e) => {
-          const y = e.target.value;
-          setYear(y);
-          if (y.length === 4) fireChange(y, month, day);
-        }}
-        style={{ ...inputStyle, width: "90px", textAlign: "center" }}
-      />
+          {/* Day labels */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", marginBottom: "6px" }}>
+            {["Su","Mo","Tu","We","Th","Fr","Sa"].map(d => (
+              <div key={d} style={{ textAlign: "center", fontSize: "11px", fontWeight: 600, color: "#999", padding: "4px 0" }}>
+                {d}
+              </div>
+            ))}
+          </div>
 
+          {/* Day cells */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "2px" }}>
+            {cells.map((d, i) => (
+              <div
+                key={i}
+                onClick={() => d && fire(viewYear, viewMonth, d)}
+                style={{
+                  textAlign: "center", padding: "7px 0", fontSize: "13px",
+                  borderRadius: "50%", cursor: d ? "pointer" : "default",
+                  background: d && isSelected(d) ? "#4f46e5" : "transparent",
+                  color: d && isSelected(d) ? "white" : d && isToday(d) ? "#4f46e5" : d ? "#333" : "transparent",
+                  fontWeight: d && (isSelected(d) || isToday(d)) ? 700 : 400,
+                  border: d && isToday(d) && !isSelected(d) ? "1px solid #4f46e5" : "1px solid transparent",
+                  transition: "background 0.15s"
+                }}
+                onMouseEnter={e => { if (d && !isSelected(d)) e.currentTarget.style.background = "#f0f0f0"; }}
+                onMouseLeave={e => { if (d && !isSelected(d)) e.currentTarget.style.background = "transparent"; }}
+              >
+                {d || ""}
+              </div>
+            ))}
+          </div>
+
+          {/* Clear */}
+          {selected && (
+            <div
+              onClick={() => { onChange({ target: { name, value: "" } }); setOpen(false); }}
+              style={{ marginTop: "10px", textAlign: "center", fontSize: "12px", color: "#999", cursor: "pointer" }}
+            >
+              ✕ Clear
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
+
+const navBtn = {
+  background: "none", border: "none", cursor: "pointer",
+  fontSize: "20px", color: "#555", padding: "0 6px", lineHeight: 1
+};
 
 /* ================= FIELD CONFIG ================= */
 const fieldConfig = {

@@ -55,6 +55,7 @@ import "./css/App.css";
 import UploadResume from "./pages/UploadResume";
 import SavedJobs from "./pages/SavedJobs";
 import ScrollToTop from "./components/ScrollToTop";
+import JobPreferences from "./pages/settings/JobPreferences";
 const Layout = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
@@ -83,6 +84,7 @@ const Layout = () => {
         <Route path="/dsaNotes" element={<DSANotes />} />
         <Route path="/upload-resume" element={<UploadResume />} />
         <Route path="/saved-jobs" element={<SavedJobs />} />
+        <Route path="/job-preference" element={<JobPreferences/>} />
 <Route path="/dsa" element={<DSAMcq />} />
 
 <Route path="/aptitudeNotes" element={<AptitudeNotes />} />

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 const JobPreferences = () => {
+  const navigate = useNavigate();
   const [preferences, setPreferences] = useState({
     roles: "",
     locations: "",
@@ -97,18 +98,35 @@ const handleSubmit = async (e) => {
   return (
     <div className="job-pref-container mt-5">
       {/* Header */}
-      <div className="settings-header fade-in">
-        <div className="header-icon-wrapper">
-          <div className="header-icon-glow"></div>
-          <div className="header-icon">
-            <Briefcase className="w-6 h-6" />
-          </div>
-        </div>
-        <div>
-          <h2 className="settings-title">Job Preferences</h2>
-          <p className="settings-subtitle">Tell us what you're looking for and we'll match you with the perfect opportunities</p>
-        </div>
+<div className="settings-header fade-in" style={{ justifyContent: "space-between" }}>
+  <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+    <div className="header-icon-wrapper">
+      <div className="header-icon-glow"></div>
+      <div className="header-icon">
+        <Briefcase className="w-6 h-6" />
       </div>
+    </div>
+    <div>
+      <h2 className="settings-title">Job Preferences</h2>
+      <p className="settings-subtitle">Tell us what you're looking for and we'll match you with the perfect opportunities</p>
+    </div>
+  </div>
+
+  {/* Preference Settings Button */}
+  <button
+    onClick={() => navigate("/job-preference")}
+    style={{
+      display: "flex", alignItems: "center", gap: "0.5rem",
+      padding: "0.6rem 1.2rem", borderRadius: "0.75rem",
+      background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+      color: "white", border: "none", fontWeight: 600,
+      fontSize: "0.875rem", cursor: "pointer", whiteSpace: "nowrap",
+      boxShadow: "0 4px 12px rgba(99,102,241,0.3)"
+    }}
+  >
+    ⚙️ Preference Settings
+  </button>
+</div>
 
       {/* Main Form Card */}
       <div className="settings-card fade-in-up">
