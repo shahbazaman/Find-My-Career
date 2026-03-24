@@ -11,134 +11,153 @@ function CustomDatePicker({ value, onChange, name }) {
   const [open, setOpen] = useState(false);
   const [viewYear, setViewYear] = useState(new Date().getFullYear());
   const [viewMonth, setViewMonth] = useState(new Date().getMonth());
+  const [mode, setMode] = useState("day"); // "day" | "month" | "year"
   const ref = useRef(null);
 
   const selected = value ? new Date(value + "T00:00:00") : null;
 
-  // Close on outside click
   useEffect(() => {
-    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) { setOpen(false); setMode("day"); } };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // Sync view when value changes externally
   useEffect(() => {
-    if (selected) {
-      setViewYear(selected.getFullYear());
-      setViewMonth(selected.getMonth());
-    }
+    if (selected) { setViewYear(selected.getFullYear()); setViewMonth(selected.getMonth()); }
   }, [value]);
 
   const fire = (y, m, d) => {
-    const mm = String(m + 1).padStart(2, "0");
-    const dd = String(d).padStart(2, "0");
-    onChange({ target: { name, value: `${y}-${mm}-${dd}` } });
-    setOpen(false);
+    onChange({ target: { name, value: `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}` } });
+    setOpen(false); setMode("day");
   };
 
   const daysInMonth = (m, y) => new Date(y, m + 1, 0).getDate();
   const firstDay    = new Date(viewYear, viewMonth, 1).getDay();
   const totalDays   = daysInMonth(viewMonth, viewYear);
-
-  const displayValue = selected
-    ? `${selected.getDate()} ${MONTHS[selected.getMonth()]} ${selected.getFullYear()}`
-    : "";
-
-  const prevMonth = () => {
-    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
-    else setViewMonth(m => m - 1);
-  };
-  const nextMonth = () => {
-    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
-    else setViewMonth(m => m + 1);
-  };
-
   const cells = [];
   for (let i = 0; i < firstDay; i++) cells.push(null);
   for (let d = 1; d <= totalDays; d++) cells.push(d);
 
-  const isSelected = (d) =>
-    selected &&
-    selected.getFullYear() === viewYear &&
-    selected.getMonth()    === viewMonth &&
-    selected.getDate()     === d;
+  const isSelected = (d) => selected && selected.getFullYear()===viewYear && selected.getMonth()===viewMonth && selected.getDate()===d;
+  const isToday    = (d) => { const t=new Date(); return t.getFullYear()===viewYear && t.getMonth()===viewMonth && t.getDate()===d; };
 
-  const isToday = (d) => {
-    const t = new Date();
-    return t.getFullYear() === viewYear && t.getMonth() === viewMonth && t.getDate() === d;
-  };
+  const displayValue = selected ? `${selected.getDate()} ${MONTHS[selected.getMonth()]} ${selected.getFullYear()}` : "";
+
+  // Year grid: show 12 years centered around viewYear
+  const startYear = Math.floor(viewYear / 12) * 12;
+  const yearGrid  = Array.from({ length: 12 }, (_, i) => startYear + i);
 
   return (
     <div ref={ref} style={{ position: "relative", display: "inline-block", width: "100%" }}>
-      {/* Input trigger */}
-      <div
-        onClick={() => setOpen(o => !o)}
-        style={{
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "8px 12px", border: "1px solid #ced4da", borderRadius: "8px",
-          background: "white", cursor: "pointer", fontSize: "14px", color: displayValue ? "#333" : "#aaa",
-          userSelect: "none"
-        }}
-      >
+      {/* Trigger */}
+      <div onClick={() => { setOpen(o => !o); setMode("day"); }}
+        style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
+          padding:"8px 12px", border:"1px solid #ced4da", borderRadius:"8px",
+          background:"white", cursor:"pointer", fontSize:"14px",
+          color: displayValue ? "#333" : "#aaa", userSelect:"none" }}>
         <span>{displayValue || "Select date"}</span>
-        <span style={{ fontSize: "16px" }}>📅</span>
+        <span style={{ fontSize:"16px" }}>📅</span>
       </div>
 
-      {/* Calendar dropdown */}
       {open && (
-        <div style={{
-          position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 9999,
-          background: "white", border: "1px solid #e0e0e0", borderRadius: "12px",
-          boxShadow: "0 8px 24px rgba(0,0,0,0.12)", padding: "16px", width: "280px"
-        }}>
-          {/* Header */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
-            <button onClick={prevMonth} style={navBtn}>‹</button>
-            <span style={{ fontWeight: 600, fontSize: "15px", color: "#333" }}>
-              {MONTHS[viewMonth]} {viewYear}
-            </span>
-            <button onClick={nextMonth} style={navBtn}>›</button>
+        <div style={{ position:"absolute", top:"calc(100% + 6px)", left:0, zIndex:9999,
+          background:"white", border:"1px solid #e0e0e0", borderRadius:"12px",
+          boxShadow:"0 8px 24px rgba(0,0,0,0.12)", padding:"16px", width:"280px" }}>
+
+          {/* ── Header ── */}
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"12px" }}>
+            {/* Prev */}
+            <button onClick={() => {
+              if (mode==="day")  { viewMonth===0 ? (setViewMonth(11),setViewYear(y=>y-1)) : setViewMonth(m=>m-1); }
+              if (mode==="month") setViewYear(y=>y-1);
+              if (mode==="year")  setViewYear(y=>y-12);
+            }} style={navBtn}>‹</button>
+
+            {/* Title — clickable to switch mode */}
+            <div style={{ display:"flex", gap:"6px" }}>
+              <span onClick={() => setMode(m => m==="month" ? "day" : "month")}
+                style={{ fontWeight:600, fontSize:"14px", color:"#4f46e5", cursor:"pointer",
+                  padding:"2px 8px", borderRadius:"6px", background: mode==="month"?"#eef2ff":"transparent" }}>
+                {MONTHS[viewMonth]}
+              </span>
+              <span onClick={() => setMode(m => m==="year" ? "day" : "year")}
+                style={{ fontWeight:600, fontSize:"14px", color:"#4f46e5", cursor:"pointer",
+                  padding:"2px 8px", borderRadius:"6px", background: mode==="year"?"#eef2ff":"transparent" }}>
+                {mode==="year" ? `${startYear}–${startYear+11}` : viewYear}
+              </span>
+            </div>
+
+            {/* Next */}
+            <button onClick={() => {
+              if (mode==="day")  { viewMonth===11 ? (setViewMonth(0),setViewYear(y=>y+1)) : setViewMonth(m=>m+1); }
+              if (mode==="month") setViewYear(y=>y+1);
+              if (mode==="year")  setViewYear(y=>y+12);
+            }} style={navBtn}>›</button>
           </div>
 
-          {/* Day labels */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", marginBottom: "6px" }}>
-            {["Su","Mo","Tu","We","Th","Fr","Sa"].map(d => (
-              <div key={d} style={{ textAlign: "center", fontSize: "11px", fontWeight: 600, color: "#999", padding: "4px 0" }}>
-                {d}
-              </div>
-            ))}
-          </div>
+          {/* ── MONTH PICKER ── */}
+          {mode==="month" && (
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"6px" }}>
+              {MONTHS.map((m, i) => (
+                <div key={m} onClick={() => { setViewMonth(i); setMode("day"); }}
+                  style={{ textAlign:"center", padding:"8px 4px", borderRadius:"8px", cursor:"pointer", fontSize:"13px",
+                    fontWeight: i===viewMonth ? 700 : 400,
+                    background: i===viewMonth ? "#4f46e5" : "#f8f9fa",
+                    color: i===viewMonth ? "white" : "#333" }}
+                  onMouseEnter={e=>{ if(i!==viewMonth) e.currentTarget.style.background="#eef2ff"; }}
+                  onMouseLeave={e=>{ if(i!==viewMonth) e.currentTarget.style.background="#f8f9fa"; }}>
+                  {m}
+                </div>
+              ))}
+            </div>
+          )}
 
-          {/* Day cells */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "2px" }}>
-            {cells.map((d, i) => (
-              <div
-                key={i}
-                onClick={() => d && fire(viewYear, viewMonth, d)}
-                style={{
-                  textAlign: "center", padding: "7px 0", fontSize: "13px",
-                  borderRadius: "50%", cursor: d ? "pointer" : "default",
-                  background: d && isSelected(d) ? "#4f46e5" : "transparent",
-                  color: d && isSelected(d) ? "white" : d && isToday(d) ? "#4f46e5" : d ? "#333" : "transparent",
-                  fontWeight: d && (isSelected(d) || isToday(d)) ? 700 : 400,
-                  border: d && isToday(d) && !isSelected(d) ? "1px solid #4f46e5" : "1px solid transparent",
-                  transition: "background 0.15s"
-                }}
-                onMouseEnter={e => { if (d && !isSelected(d)) e.currentTarget.style.background = "#f0f0f0"; }}
-                onMouseLeave={e => { if (d && !isSelected(d)) e.currentTarget.style.background = "transparent"; }}
-              >
-                {d || ""}
-              </div>
-            ))}
-          </div>
+          {/* ── YEAR PICKER ── */}
+          {mode==="year" && (
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"6px" }}>
+              {yearGrid.map(y => (
+                <div key={y} onClick={() => { setViewYear(y); setMode("month"); }}
+                  style={{ textAlign:"center", padding:"8px 4px", borderRadius:"8px", cursor:"pointer", fontSize:"13px",
+                    fontWeight: y===viewYear ? 700 : 400,
+                    background: y===viewYear ? "#4f46e5" : "#f8f9fa",
+                    color: y===viewYear ? "white" : "#333" }}
+                  onMouseEnter={e=>{ if(y!==viewYear) e.currentTarget.style.background="#eef2ff"; }}
+                  onMouseLeave={e=>{ if(y!==viewYear) e.currentTarget.style.background="#f8f9fa"; }}>
+                  {y}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* ── DAY GRID ── */}
+          {mode==="day" && (<>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", marginBottom:"6px" }}>
+              {["Su","Mo","Tu","We","Th","Fr","Sa"].map(d => (
+                <div key={d} style={{ textAlign:"center", fontSize:"11px", fontWeight:600, color:"#999", padding:"4px 0" }}>{d}</div>
+              ))}
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:"2px" }}>
+              {cells.map((d, i) => (
+                <div key={i} onClick={() => d && fire(viewYear, viewMonth, d)}
+                  style={{ textAlign:"center", padding:"7px 0", fontSize:"13px", borderRadius:"50%",
+                    cursor: d ? "pointer" : "default",
+                    background: d && isSelected(d) ? "#4f46e5" : "transparent",
+                    color: d && isSelected(d) ? "white" : d && isToday(d) ? "#4f46e5" : d ? "#333" : "transparent",
+                    fontWeight: d && (isSelected(d)||isToday(d)) ? 700 : 400,
+                    border: d && isToday(d) && !isSelected(d) ? "1px solid #4f46e5" : "1px solid transparent",
+                    transition:"background 0.15s" }}
+                  onMouseEnter={e=>{ if(d&&!isSelected(d)) e.currentTarget.style.background="#f0f0f0"; }}
+                  onMouseLeave={e=>{ if(d&&!isSelected(d)) e.currentTarget.style.background="transparent"; }}>
+                  {d||""}
+                </div>
+              ))}
+            </div>
+          </>)}
 
           {/* Clear */}
           {selected && (
-            <div
-              onClick={() => { onChange({ target: { name, value: "" } }); setOpen(false); }}
-              style={{ marginTop: "10px", textAlign: "center", fontSize: "12px", color: "#999", cursor: "pointer" }}
-            >
+            <div onClick={() => { onChange({ target:{name,value:""} }); setOpen(false); setMode("day"); }}
+              style={{ marginTop:"10px", textAlign:"center", fontSize:"12px", color:"#999", cursor:"pointer" }}>
               ✕ Clear
             </div>
           )}
