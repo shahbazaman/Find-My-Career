@@ -12,6 +12,7 @@ export default function JobList() {
   const [loading, setLoading]   = useState(true);
   const [search, setSearch]     = useState("");
   const [saved, setSaved]       = useState({});
+  const [appliedJobs, setAppliedJobs] = useState(new Set());
   const [currentPage, setCurrentPage]   = useState(1);
   const CARDS_PER_PAGE = 9;
   const [searchParams, setSearchParams] = useSearchParams();
@@ -36,7 +37,25 @@ const skillsFilter   = searchParams.get("skills")   || "";
   }, [titleFilter, locationFilter, skillsFilter, search]);
 
   const clearFilter = () => setSearchParams({});
-
+useEffect(() => {
+  const fetchApplied = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/applications/my`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (Array.isArray(res.data)) {
+        const ids = new Set(res.data.map(app => app.job?._id || app.job));
+        setAppliedJobs(ids);
+      }
+    } catch (err) {
+      console.error("Failed to fetch applied jobs", err);
+    }
+  };
+  fetchApplied();
+}, []);
   const toggleSave = (e, jobId) => {
     e.stopPropagation();
     setSaved((prev) => ({ ...prev, [jobId]: !prev[jobId] }));
@@ -233,15 +252,23 @@ const paginatedJobs  = jobs.slice(
 
                     <div className="d-flex gap-2">
                       <Button
-                        size="sm"
-                        onClick={(e) => { e.stopPropagation(); navigate(`/jobs/${job._id}`); }}
+                          size="sm"
+                          disabled={appliedJobs.has(job._id)}
+                          onClick={(e) => {
+                          e.stopPropagation();
+                          if (!appliedJobs.has(job._id)) navigate(`/jobs/${job._id}`);
+                        }}
                         style={{
-                          background: "#4f46e5", border: "none",
-                          borderRadius: "10px", fontWeight: "600",
-                          padding: "6px 16px", fontSize: "0.82rem"
+                          background: appliedJobs.has(job._id)
+                            ? "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)"
+                            : "linear-gradient(135deg, #667eea, #764ba2)",
+                          border: "none", borderRadius: "10px",
+                          fontWeight: "600", padding: "6px 16px",
+                          fontSize: "0.82rem",
+                          cursor: appliedJobs.has(job._id) ? "not-allowed" : "pointer"
                         }}
                       >
-                        View
+                        {appliedJobs.has(job._id) ? "✓ Applied" : "Apply"}
                       </Button>
                       <Button
                         size="sm"

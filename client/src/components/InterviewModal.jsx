@@ -28,7 +28,10 @@ function CustomDatePicker({ value, onChange, name }) {
   const maxDay      = daysInMonth(month, year);
   const dayOptions  = Array.from({ length: maxDay }, (_, i) => i + 1);
   const currentYear = new Date().getFullYear();
-  const yearOptions = Array.from({ length: currentYear - 1939 }, (_, i) => currentYear - i);
+  const yearOptions = Array.from(
+  { length: 30 },
+  (_, i) => currentYear - i
+);
 
   const fireChange = (y, m, d) => {
     if (y && m && d) {
@@ -76,28 +79,63 @@ function CustomDatePicker({ value, onChange, name }) {
     minWidth: 0
   };
 
+  const inputStyle = {
+    padding: "7px 10px",
+    border: "1px solid #ced4da",
+    borderRadius: "6px",
+    fontSize: "14px",
+    background: "white",
+    color: "#333",
+    outline: "none"
+  };
+
   return (
-    <div style={{ display: "flex", gap: "8px", marginBottom: "0.5rem" }}>
-      <select value={month} onChange={handleMonth} style={sel}>
+    <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+
+      {/* Month — dropdown (only 12 items, fine as-is) */}
+      <select
+        value={month}
+        onChange={handleMonth}
+        style={{ ...inputStyle, flex: 1, minWidth: "110px", cursor: "pointer" }}
+      >
         <option value="">Month</option>
         {MONTHS.map((m, i) => (
           <option key={m} value={i + 1}>{m}</option>
         ))}
       </select>
 
-      <select value={day} onChange={handleDay} style={{ ...sel, maxWidth: "80px" }}>
-        <option value="">Day</option>
-        {dayOptions.map((d) => (
-          <option key={d} value={d}>{d}</option>
-        ))}
-      </select>
+      {/* Day — number input instead of 31-item dropdown */}
+      <input
+        type="number"
+        min="1"
+        max={maxDay}
+        placeholder="DD"
+        value={day}
+        onChange={(e) => {
+          const d = e.target.value ? parseInt(e.target.value, 10) : "";
+          if (d === "" || (d >= 1 && d <= maxDay)) {
+            setDay(d);
+            fireChange(year, month, d);
+          }
+        }}
+        style={{ ...inputStyle, width: "70px", textAlign: "center" }}
+      />
 
-      <select value={year} onChange={handleYear} style={{ ...sel, maxWidth: "100px" }}>
-        <option value="">Year</option>
-        {yearOptions.map((y) => (
-          <option key={y} value={y}>{y}</option>
-        ))}
-      </select>
+      {/* Year — number input instead of 85-item dropdown */}
+      <input
+        type="number"
+        min="1940"
+        max={new Date().getFullYear()}
+        placeholder="YYYY"
+        value={year}
+        onChange={(e) => {
+          const y = e.target.value;
+          setYear(y);
+          if (y.length === 4) fireChange(y, month, day);
+        }}
+        style={{ ...inputStyle, width: "90px", textAlign: "center" }}
+      />
+
     </div>
   );
 }
