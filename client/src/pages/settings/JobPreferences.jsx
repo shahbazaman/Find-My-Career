@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Briefcase,
   MapPin,
@@ -12,6 +12,7 @@ import {
   X
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
 const JobPreferences = () => {
   const [preferences, setPreferences] = useState({
     roles: "",
@@ -47,7 +48,40 @@ const JobPreferences = () => {
       availability: "Immediate"
     });
   };
+// Load saved preferences on mount
+useEffect(() => {
+  const loadPreferences = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const userId = payload.id || payload._id;
 
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/preferences/${userId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (!res.ok) return;
+      const data = await res.json();
+
+      // Only fill fields that exist in the response
+      setPreferences(prev => ({
+        ...prev,
+        roles:           data.roles           || prev.roles,
+        locations:       data.locations       || prev.locations,
+        jobType:         data.jobType         || prev.jobType,
+        workMode:        data.workMode        || prev.workMode,
+        experienceLevel: data.experienceLevel || prev.experienceLevel,
+        expectedSalary:  data.expectedSalary  || prev.expectedSalary,
+        skills:          data.skills          || prev.skills,
+        availability:    data.availability    || prev.availability,
+      }));
+    } catch (err) {
+      console.error("Failed to load preferences", err);
+    }
+  };
+  loadPreferences();
+}, []);
 const handleSubmit = async (e) => {
   e.preventDefault();
   try {
