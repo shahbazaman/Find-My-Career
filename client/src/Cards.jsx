@@ -734,7 +734,7 @@ const toggleApply = async (jobId) => {
               >
                 {(() => {
                   const words = job.skills?.split(" ") || [];
-                  if (words.length <= 10) return job.skills;
+                  if (words.length <= 25) return job.skills;
                   const preview = words.slice(0, 10).join(" ").trim();
                   return (
                     <>

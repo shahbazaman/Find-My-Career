@@ -122,7 +122,17 @@ const paginatedJobs  = jobs.slice(
   return (
     <Container className="mt-4 mb-5">
   <ToastContainer position="top-center" />
-
+    <style>{`
+  @media (max-width: 576px) {
+    h2 { font-size: 1.2rem !important; }
+    .card-company   { font-size: 0.82rem !important; }
+    .card-title-pill { font-size: 0.75rem !important; }
+    .card-req        { font-size: 0.75rem !important; }
+    .card-chip       { font-size: 0.7rem  !important; }
+    .card-badge      { font-size: 0.68rem !important; }
+    .apply-btn       { font-size: 0.72rem !important; padding: 5px 10px !important; }
+  }
+`}</style>
       {/* ── Header ── */}
       <div className="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
   <div>
@@ -230,7 +240,7 @@ const paginatedJobs  = jobs.slice(
                   {/* ── Row 1: company + bookmark ── */}
                   <div className="d-flex justify-content-between align-items-start">
                     <div>
-                      <p style={{
+                      <p className="card-company" style={{
                         margin: 0, fontWeight: "700", fontSize: "1rem",
                         color: "#4f46e5"
                       }}>
@@ -255,7 +265,7 @@ const paginatedJobs  = jobs.slice(
 
                   {/* ── Row 2: job title pill ── */}
                   <div>
-                    <span style={{
+                    <span className="card-title-pill" style={{
                       display: "inline-block",
                       background: "#f3f4f6",
                       color: "#374151",
@@ -270,7 +280,7 @@ const paginatedJobs  = jobs.slice(
 
                   {/* ── Row 3: requirements snippet ── */}
                   {job.requirements && (
-                    <p style={{
+                    <p className="card-req" style={{
                       margin: 0, fontSize: "0.85rem",
                       color: "#6b7280",
                       display: "-webkit-box",
@@ -285,18 +295,18 @@ const paginatedJobs  = jobs.slice(
                   {/* ── Row 4: salary | experience | location chips ── */}
                   <div className="d-flex flex-wrap gap-2">
                     {job.salary && (
-                      <span style={chipStyle}>
+                      <span className="card-chip" style={chipStyle}>
                         ₹ {job.salary}
                       </span>
                     )}
                     {job.experience && (
-                      <span style={chipStyle}>
+                      <span className="card-chip" style={chipStyle}>
                         <FaClock size={11} style={{ marginRight: "4px" }} />
                         {job.experience}
                       </span>
                     )}
                     {job.location && (
-                      <span style={chipStyle}>
+                      <span className="card-chip" style={chipStyle}>
                         <FaMapMarkerAlt size={11} style={{ marginRight: "4px" }} />
                         {job.location}
                       </span>
@@ -308,7 +318,7 @@ const paginatedJobs  = jobs.slice(
                     style={{ borderTop: "1px solid #f3f4f6" }}>
 
                     {job.jobType ? (
-                      <span style={{
+                      <span className="card-badge" style={{
                         fontSize: "0.78rem", fontWeight: "600",
                         color: "#764ba2", background: "#f5f3ff",
                         borderRadius: "8px", padding: "4px 10px"
@@ -319,6 +329,7 @@ const paginatedJobs  = jobs.slice(
 
                     <div className="d-flex gap-2">
                       <Button
+                          className="apply-btn"
                           size="sm"
                           disabled={appliedJobs.has(job._id)}
                           onClick={(e) => {
