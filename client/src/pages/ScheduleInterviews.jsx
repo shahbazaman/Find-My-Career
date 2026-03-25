@@ -412,26 +412,42 @@ const payload = {
     />
   </div>
   <div>
-    <label style={styles.label}><FiClock /> Interview Time</label>
-    <input 
-  type="time" 
-  name="time" 
-  style={{ 
-    ...styles.input,
+  <label style={styles.label}><FiClock /> Interview Time</label>
+  <div style={{
+    position: "relative",
+    width: "100%",
     height: "46px",
-    minHeight: "46px",
-    maxHeight: "46px",
-    lineHeight: "normal",
-    appearance: "none",
-    WebkitAppearance: "none",
-    padding: "0 0.75rem",
-  }} 
-  required 
-  onChange={handleChange} 
-/>
+    borderRadius: "8px",
+    border: "1px solid #e2e8f0",
+    background: "white",
+    boxSizing: "border-box",
+    overflow: "hidden",
+    display: "flex",
+    alignItems: "center",
+  }}>
+    <input
+      type="time"
+      name="time"
+      required
+      onChange={handleChange}
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        border: "none",
+        outline: "none",
+        background: "transparent",
+        padding: "0 0.75rem",
+        fontSize: "1rem",
+        boxSizing: "border-box",
+        cursor: "pointer",
+      }}
+    />
   </div>
 </div>
-{/* , display: "block", width: "100%", minWidth: 0 */}
+</div>
         <div style={styles.inputGroup}>
           <div>
             <label style={styles.label}><FiVideo /> Interview Mode</label>
