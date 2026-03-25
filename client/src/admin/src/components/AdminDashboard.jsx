@@ -88,8 +88,14 @@ const handleSetActiveMenu = (menu) => {
   const [queries, setQueries] = useState([]);
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState("");
-  const totalQueryPages = Math.ceil(queries.length / QUERIES_PER_PAGE);
-  const paginatedQueries = queries.slice(
+  const [queryRoleFilter, setQueryRoleFilter] = useState("all");
+  const filteredQueries = queryRoleFilter === "all"
+  ? queries
+  : queries.filter((q) => q.role === queryRoleFilter);
+
+  const totalQueryPages = Math.ceil(filteredQueries.length / QUERIES_PER_PAGE);
+
+  const paginatedQueries = filteredQueries.slice(
     (queryPage - 1) * QUERIES_PER_PAGE,
     queryPage * QUERIES_PER_PAGE,
   );
@@ -136,7 +142,7 @@ const labelStyle = {
 };
   useEffect(() => {
     setQueryPage(1);
-  }, [queries.length]);
+  }, [queries.length, queryRoleFilter]);
   useEffect(() => setJobPage(1), [jobsData.length]);
   useEffect(() => setRecruiterPage(1), [recruiters.length]);
   useEffect(() => setJobSeekerPage(1), [filteredJobSeekers.length]);
@@ -676,8 +682,36 @@ const handleDeleteJob = (jobId) => {
                 <p>Overview of your admin panel</p>
               </div>
               <div className="stat-card stat-card-visible">
-                <h2 className="text1 ms-4">User Queries</h2>
-                {queries.length === 0 ? (
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", padding: "0 16px 16px" }}>
+                  <h2 className="text1" style={{ margin: 0 }}>User Queries</h2>
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    {["all", "job seekers", "recruiters", "guest"].map((role) => (
+                      <button
+                        key={role}
+                        onClick={() => { setQueryRoleFilter(role); setQueryPage(1); }}
+                        style={{
+                          padding: "6px 14px",
+                          borderRadius: "20px",
+                          border: "none",
+                          cursor: "pointer",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          transition: "all 0.2s",
+                          background: queryRoleFilter === role
+                            ? role === "recruiters" ? "#0d6efd"
+                            : role === "job seekers" ? "#28a745"
+                            : role === "guest" ? "#6c757d"
+                            : "#667eea"
+                            : "#f1f5f9",
+                          color: queryRoleFilter === role ? "white" : "#64748b",
+                        }}
+                      >
+                        {role === "all" ? "All" : role === "job seekers" ? "Job Seekers" : role === "recruiters" ? "Recruiters" : "Guest"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {filteredQueries.length === 0 ? (
                   <p style={{ opacity: 0.6 }}>No queries received yet.</p>
                 ) : (
                   <div className="table-responsive">
@@ -701,7 +735,7 @@ const handleDeleteJob = (jobId) => {
                             }}
                           >
                             <td data-label="Name">{q.name}</td>
-                            <td data-label="Email">{q.email}</td>
+                            <td data-label="Email">{q.email}</td>                            
                             <td data-label="Subject">{q.subject}</td>
                             <td data-label="Message">{q.message}</td>
                             <td data-label="Action">

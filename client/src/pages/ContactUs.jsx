@@ -14,6 +14,7 @@ const ContactUs = () => {
   });
   const [submitted, setSubmitted] = useState(false);
   const userId = getUserId();
+  const userRole = JSON.parse(localStorage.getItem("user") || "{}")?.role || "guest";
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,7 +28,10 @@ const ContactUs = () => {
     }
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/queries/user/${userId}`, formData);
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/queries/user/${userId}`, {
+        ...formData,
+        role: userRole,
+      });
       setSubmitted(true);
       setTimeout(() => {
         setSubmitted(false);

@@ -28,6 +28,10 @@ const querySchema = new mongoose.Schema(
       required: true,
       trim: true
     },
+role: {
+  type: String,
+  default: "guest"
+},
     reply: {
       type: String,
       default: ""

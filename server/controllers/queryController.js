@@ -8,7 +8,7 @@ import Notification from "../models/notificationModel.js";
 export const createQuery = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { name, email, subject, message } = req.body;
+    const { name, email, subject, message, role } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid userId" });
@@ -19,7 +19,7 @@ export const createQuery = async (req, res) => {
       name,
       email,
       subject,
-      message
+      message, role
     });
 
     // 🔔 Notify user (confirmation)

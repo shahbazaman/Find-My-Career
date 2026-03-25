@@ -114,7 +114,7 @@ const fetchCompany = async () => {
           <img
             src={company.logo || "https://via.placeholder.com/90"}
             alt="company-logo"
-            style={{ width: 90, height: 90, borderRadius: 18, objectFit: "cover" }}
+            style={{ width: 90, height: 90, borderRadius: 18, objectFit: "contain", background: "rgba(255,255,255,0.08)", padding: "6px" }}
           />
           <div>
             <h2 style={{ color: "white", margin: 0 }}>{company.companyName}</h2>
