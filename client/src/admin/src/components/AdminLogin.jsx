@@ -1,5 +1,5 @@
   import React, { useEffect, useState } from "react";
-  import { ToastContainer, toast } from "react-toastify";
+  import { toast } from "react-toastify";
   import "react-toastify/dist/ReactToastify.css";
   import { 
     FiMail, 
@@ -121,20 +121,7 @@ useEffect(() => {
     };
 
     return (
-      <div className="admin-login-container">
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-        />
-        
+      <div className="admin-login-container">        
         <div className="login-background">
           <div className="gradient-orb orb-1"></div>
           <div className="gradient-orb orb-2"></div>

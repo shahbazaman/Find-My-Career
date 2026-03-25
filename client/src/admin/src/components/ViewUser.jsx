@@ -10,7 +10,7 @@ import {
   FaShieldAlt, 
   FaLink 
 } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const ViewUser = () => {
@@ -240,7 +240,6 @@ const ViewUser = () => {
           </div>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };
