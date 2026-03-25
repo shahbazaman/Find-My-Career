@@ -181,13 +181,17 @@ const NavigationBar = () => {
             <Nav.Link as={Link} to="/" className="nav-link-custom">
               Home
             </Nav.Link>
-            <Nav.Link href="/#jobs-section" className="nav-link-custom">
-              Jobs
-            </Nav.Link>
+            {role !== "recruiters" && (
+              <Nav.Link href="/#jobs-section" className="nav-link-custom">
+                Jobs
+              </Nav.Link>
+            )}
             <Nav.Link href="/companies" className="nav-link-custom">
               Companies
             </Nav.Link>
-            <Nav.Link href="/jobPrep">Job Prep</Nav.Link>
+            {role !== "recruiters" && (
+              <Nav.Link href="/jobPrep">Job Prep</Nav.Link>
+            )}
             <Nav.Link href="/contactUs">Contact Us</Nav.Link>
           </Nav>
 
