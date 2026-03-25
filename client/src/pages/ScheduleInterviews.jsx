@@ -414,12 +414,21 @@ const payload = {
   <div>
     <label style={styles.label}><FiClock /> Interview Time</label>
     <input 
-      type="time" 
-      name="time" 
-      style={{ ...styles.input }} 
-      required 
-      onChange={handleChange} 
-    />
+  type="time" 
+  name="time" 
+  style={{ 
+    ...styles.input,
+    height: "46px",
+    minHeight: "46px",
+    maxHeight: "46px",
+    lineHeight: "normal",
+    appearance: "none",
+    WebkitAppearance: "none",
+    padding: "0 0.75rem",
+  }} 
+  required 
+  onChange={handleChange} 
+/>
   </div>
 </div>
 {/* , display: "block", width: "100%", minWidth: 0 */}
