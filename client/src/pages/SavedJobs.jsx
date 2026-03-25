@@ -3,16 +3,33 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { BsBookmarkFill, BsArrowLeft } from "react-icons/bs";
 import { CgWorkAlt } from "react-icons/cg";
 import { BiRupee } from "react-icons/bi";
 import { IoLocationOutline } from "react-icons/io5";
-
+import { BsBookmarkFill, BsArrowLeft, BsStar, BsStarFill } from "react-icons/bs";
 export default function SavedJobs() {
   const navigate = useNavigate();
   const [savedJobs, setSavedJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
+  const [hasResume, setHasResume] = useState(false);
+
+  useEffect(() => {
+    const checkResume = async () => {
+      try {
+        if (!token) return;
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const userId = payload.id || payload._id;
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/profile/${userId}`
+        );
+        setHasResume(!!res.data?.resumeUrl);
+      } catch (err) {
+        console.error("Failed to check resume", err);
+      }
+    };
+    checkResume();
+  }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -27,7 +44,12 @@ export default function SavedJobs() {
         `${import.meta.env.VITE_API_BASE_URL}/saved-jobs`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setSavedJobs(Array.isArray(res.data) ? res.data : []);
+      const withMeta = (Array.isArray(res.data) ? res.data : []).map(s => ({
+  ...s,
+  applied: false,
+  rating: (Math.random() * (5 - 3.5) + 3.5).toFixed(1)
+}));
+setSavedJobs(withMeta);
     } catch (err) {
       toast.error("Failed to load saved jobs");
     } finally {
@@ -47,7 +69,59 @@ export default function SavedJobs() {
       toast.error("Failed to remove job");
     }
   };
+  const toggleApply = async (jobId) => {
+  if (!hasResume) {
+    toast.warning(
+      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <span style={{ fontSize: "22px" }}>📄</span>
+        <div>
+          <div style={{ fontWeight: "700", marginBottom: "4px" }}>Resume Required</div>
+          <div style={{ fontSize: "13px", marginBottom: "8px" }}>Please upload your resume before applying.</div>
+          <button
+            onClick={() => { navigate("/upload-resume"); toast.dismiss(); }}
+            style={{
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              color: "white", border: "none", padding: "6px 16px",
+              borderRadius: "8px", cursor: "pointer", fontWeight: "600",
+              fontSize: "13px", display: "flex", alignItems: "center", gap: "6px"
+            }}
+          >
+            📤 Upload Resume
+          </button>
+        </div>
+      </div>,
+      { autoClose: 6000, position: "top-center" }
+    );
+    return;
+  }
+  try {
+    await axios.post(
+      `${import.meta.env.VITE_API_BASE_URL}/applications/${jobId}`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    setSavedJobs(prev =>
+      prev.map(s => s.job?._id === jobId ? { ...s, applied: true } : s)
+    );
+    toast.success("Applied successfully! 🎉");
+  } catch (err) {
+    toast.error(err?.response?.data?.message || "Failed to apply");
+  }
+};
 
+const renderStarBadge = (rating) => {
+  const fullStars = Math.floor(rating);
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+      {[...Array(5)].map((_, i) => (
+        <span key={i} style={{ color: i < fullStars ? "#ffc107" : "#e4e5e9", fontSize: "13px" }}>
+          {i < fullStars ? <BsStarFill /> : <BsStar />}
+        </span>
+      ))}
+      <span style={{ fontSize: "12px", fontWeight: 600, color: "#495057" }}>{rating}</span>
+    </div>
+  );
+};
   return (
     <div style={{
       minHeight: "100vh",
@@ -145,7 +219,8 @@ export default function SavedJobs() {
             gridTemplateColumns: "repeat(auto-fill, minmax(clamp(280px, 30vw, 340px), 1fr))",
             gap: "20px"
           }}>
-            {savedJobs.map(({ job }) => {
+            {savedJobs.map((s) => {
+              const job = s.job;
               if (!job) return null;
               return (
                 <div key={job._id} style={{
@@ -166,100 +241,107 @@ export default function SavedJobs() {
                     borderRadius: "0 0 0 80px"
                   }} />
 
-                  {/* Company + Title */}
-                  <h3 style={{
-                    color: "#667eea", fontSize: "18px",
-                    fontWeight: "700", marginBottom: "8px"
-                  }}>
-                    {job.companyName}
-                  </h3>
-                  <span style={{
-                    display: "inline-block",
-                    padding: "5px 12px",
-                    background: "linear-gradient(135deg, #667eea15, #764ba215)",
-                    borderRadius: "20px", fontSize: "13px",
-                    fontWeight: "600", color: "#667eea",
-                    border: "1px solid #667eea30",
-                    marginBottom: "14px"
-                  }}>
-                    {job.jobTitle}
-                  </span>
+{/* Company + Title */}
+<h3 style={{ color: "#667eea", fontSize: "18px", fontWeight: "700", marginBottom: "8px" }}>
+  {job.companyName}
+</h3>
+<span style={{
+  display: "inline-block", padding: "5px 12px",
+  background: "linear-gradient(135deg, #667eea15, #764ba215)",
+  borderRadius: "20px", fontSize: "13px", fontWeight: "600",
+  color: "#667eea", border: "1px solid #667eea30", marginBottom: "14px"
+}}>
+  {job.jobTitle}
+</span>
 
-                  {/* Details */}
-                  <div style={{
-                    display: "flex", flexWrap: "wrap",
-                    gap: "8px", marginBottom: "16px"
-                  }}>
-                    {job.salaryMin > 0 && (
-                      <div style={{
-                        display: "flex", alignItems: "center",
-                        gap: "4px", background: "#f8f9fa",
-                        padding: "5px 10px", borderRadius: "8px",
-                        fontSize: "12px", color: "#495057"
-                      }}>
-                        <BiRupee size={14} color="#667eea" />
-                        <span style={{ fontWeight: "600" }}>
-                          {job.salaryMin}₹ - {job.salaryMax}₹
-                        </span>
-                      </div>
-                    )}
-                    <div style={{
-                      display: "flex", alignItems: "center",
-                      gap: "4px", background: "#f8f9fa",
-                      padding: "5px 10px", borderRadius: "8px",
-                      fontSize: "12px", color: "#495057"
-                    }}>
-                      <CgWorkAlt size={14} color="#667eea" />
-                      <span style={{ fontWeight: "600" }}>
-                        {job.experienceMin}-{job.experienceMax} yrs
-                      </span>
-                    </div>
-                    <div style={{
-                      display: "flex", alignItems: "center",
-                      gap: "4px", background: "#f8f9fa",
-                      padding: "5px 10px", borderRadius: "8px",
-                      fontSize: "12px", color: "#495057"
-                    }}>
-                      <IoLocationOutline size={14} color="#667eea" />
-                      <span style={{ fontWeight: "600" }}>{job.location}</span>
-                    </div>
-                  </div>
+{/* Skills with read more */}
+{job.requirements && (
+  <p style={{ fontSize: "13px", color: "#6c757d", marginBottom: "14px", lineHeight: "1.6" }}>
+    {(() => {
+      const words = job.requirements.split(" ");
+      if (words.length <= 10) return job.requirements;
+      return (
+        <>
+          {words.slice(0, 10).join(" ")}
+          <span
+            onClick={() => { window.scrollTo({ top: 0, behavior: "instant" }); navigate(`/jobs/${job._id}`); }}
+            style={{ color: "#667eea", fontWeight: "600", cursor: "pointer", marginLeft: "4px" }}
+          >
+            ...read more
+          </span>
+        </>
+      );
+    })()}
+  </p>
+)}
 
-                  {/* Action Buttons */}
-                  <div style={{
-                    borderTop: "1px solid #e9ecef",
-                    paddingTop: "14px",
-                    display: "flex", gap: "8px"
-                  }}>
-                    <button
-                      onClick={() => { window.scrollTo({ top: 0 }); navigate(`/jobs/${job._id}`); }}
-                      style={{
-                        flex: 1, padding: "9px",
-                        background: "linear-gradient(135deg, #0d6efd, #2563eb)",
-                        color: "white", border: "none",
-                        borderRadius: "10px", cursor: "pointer",
-                        fontWeight: "600", fontSize: "13px"
-                      }}
-                    >
-                      View Job
-                    </button>
-                    <button
-                      onClick={() => handleUnsave(job._id)}
-                      style={{
-                        width: "38px", height: "38px",
-                        border: "2px solid #ffc107",
-                        borderRadius: "10px", cursor: "pointer",
-                        background: "#fff8e1", color: "#ffc107",
-                        display: "flex", alignItems: "center",
-                        justifyContent: "center", fontSize: "16px",
-                        transition: "all 0.2s", flexShrink: 0
-                      }}
-                      title="Remove from saved"
-                    >
-                      <BsBookmarkFill />
-                    </button>
-                  </div>
-                </div>
+{/* Details chips */}
+<div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
+  {job.salaryMin > 0 && (
+    <div style={{ display: "flex", alignItems: "center", gap: "4px", background: "#f8f9fa", padding: "5px 10px", borderRadius: "8px", fontSize: "12px", color: "#495057" }}>
+      <BiRupee size={14} color="#667eea" />
+      <span style={{ fontWeight: "600" }}>{job.salaryMin}₹ - {job.salaryMax}₹</span>
+    </div>
+  )}
+  <div style={{ display: "flex", alignItems: "center", gap: "4px", background: "#f8f9fa", padding: "5px 10px", borderRadius: "8px", fontSize: "12px", color: "#495057" }}>
+    <CgWorkAlt size={14} color="#667eea" />
+    <span style={{ fontWeight: "600" }}>{job.experienceMin}-{job.experienceMax} yrs</span>
+  </div>
+  <div style={{ display: "flex", alignItems: "center", gap: "4px", background: "#f8f9fa", padding: "5px 10px", borderRadius: "8px", fontSize: "12px", color: "#495057" }}>
+    <IoLocationOutline size={14} color="#667eea" />
+    <span style={{ fontWeight: "600" }}>{job.location}</span>
+  </div>
+</div>
+
+{/* Action Buttons */}
+<div style={{ borderTop: "1px solid #e9ecef", paddingTop: "14px" }}>
+  {/* Star rating row */}
+  <div style={{ marginBottom: "12px" }}>
+    {renderStarBadge(s.rating)}
+  </div>
+  {/* Buttons row */}
+  <div style={{ display: "flex", gap: "8px" }}>
+    <button
+      onClick={() => { window.scrollTo({ top: 0 }); navigate(`/jobs/${job._id}`); }}
+      style={{
+        flex: 1, padding: "9px",
+        background: "linear-gradient(135deg, #0d6efd, #2563eb)",
+        color: "white", border: "none", borderRadius: "10px",
+        cursor: "pointer", fontWeight: "600", fontSize: "13px"
+      }}
+    >
+      View Job
+    </button>
+    <button
+      disabled={s.applied}
+      onClick={() => toggleApply(job._id)}
+      style={{
+        flex: 1, padding: "9px",
+        background: s.applied
+          ? "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)"
+          : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        color: "white", border: "none", borderRadius: "10px",
+        cursor: s.applied ? "not-allowed" : "pointer",
+        fontWeight: "600", fontSize: "13px"
+      }}
+    >
+      {s.applied ? "✓ Applied" : "Apply"}
+    </button>
+    <button
+      onClick={() => handleUnsave(job._id)}
+      style={{
+        width: "38px", height: "38px", border: "2px solid #ffc107",
+        borderRadius: "10px", cursor: "pointer", background: "#fff8e1",
+        color: "#ffc107", display: "flex", alignItems: "center",
+        justifyContent: "center", fontSize: "16px", flexShrink: 0
+      }}
+      title="Remove from saved"
+    >
+      <BsBookmarkFill />
+    </button>
+  </div>
+              </div>
+            </div>
               );
             })}
           </div>
