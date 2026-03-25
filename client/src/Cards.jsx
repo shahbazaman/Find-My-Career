@@ -732,7 +732,30 @@ const toggleApply = async (jobId) => {
                   lineHeight: "1.6"
                 }}
               >
-                {job.skills}
+                {(() => {
+                  const words = job.skills?.split(" ") || [];
+                  if (words.length <= 10) return job.skills;
+                  const preview = words.slice(0, 10).join(" ").trim();
+                  return (
+                    <>
+                      {preview}
+                      <span
+                        onClick={() => {
+                          window.scrollTo({ top: 0, behavior: "instant" });
+                          navigate(`/jobs/${job._id}`);
+                        }}
+                        style={{
+                          color: "#667eea",
+                          fontWeight: "600",
+                          cursor: "pointer",
+                          marginLeft: "4px"
+                        }}
+                      >
+                        ...read more
+                      </span>
+                    </>
+                  );
+                })()}
               </p>
 
             <div style={{height:"80px",display:"flex"}}>
