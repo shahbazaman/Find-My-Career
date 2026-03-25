@@ -65,6 +65,12 @@ const AddUserForm = () => {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
+  const token = localStorage.getItem("adminToken");
+  if (!token) {
+    toast.error("Unauthorized. Please login as admin.");
+    return;
+  }
+
   try {
     const request = axios.post(
       `${import.meta.env.VITE_API_BASE_URL}/users/create`,
@@ -103,7 +109,7 @@ const handleSubmit = async (e) => {
       provider: "local",
     });
 
-    navigate("/admin/home");
+    navigate("/home");
 
   } catch (error) {
     console.error("Create user error:", error);
