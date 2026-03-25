@@ -75,7 +75,7 @@ export default function JobSearchPage() {
         });
         const cats = Object.entries(countMap)
           .sort((a, b) => b[1] - a[1])
-          .slice(0, 4)
+          .slice(0, 8)
           .map(([title, count]) => {
             const s = getStyle(title);
             return { title, jobs: count.toLocaleString(), ...s };
@@ -128,7 +128,7 @@ export default function JobSearchPage() {
 
   const companyList     = buildCompanyList();
   const loopedCompanies = [...companyList, ...companyList, ...companyList];
-
+  const loopedCategories = [...realCategories, ...realCategories, ...realCategories, ...realCategories, ...realCategories];
   const handleSearch = (e) => {
     e.preventDefault();
     console.log({ skills, experience, location });
@@ -241,53 +241,67 @@ if (!CAN_VIEW_SEARCH(role)) return null;
                   </p>
                 </div>
 
-                <Row className="g-4 mb-5">
-                  {displayCategories.map((cat, i) => (
-                    <Col key={i} xs={12} sm={6} md={3}>
-                      <Card
-                        className="h-100"
-                        style={{
-                          background: hoveredCategory === i ? cat.gradient : cat.bgColor,
-                          borderRadius: "25px", textAlign: "center", border: "none",
-                          cursor: "pointer",
-                          transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                          transform: hoveredCategory === i ? "translateY(-15px) scale(1.05)" : "translateY(0) scale(1)",
-                          boxShadow: hoveredCategory === i ? "0 25px 50px rgba(0,0,0,0.25)" : "0 5px 15px rgba(0,0,0,0.08)"
-                        }}
-                        onMouseEnter={() => setHoveredCategory(i)}
-                        onMouseLeave={() => setHoveredCategory(null)}
-                        onClick={() => navigate(`/jobs?title=${encodeURIComponent(cat.title)}`)} 
-                      >
-                        <Card.Body style={{ padding: "28px 16px" }}>
-                          <div style={{
-                            fontSize: "3rem",
-                            color: hoveredCategory === i ? "white" : cat.color,
-                            marginBottom: "16px",
-                            transition: "all 0.3s ease",
-                            display: "flex", justifyContent: "center"
-                          }}>
-                            {cat.icon}
-                          </div>
-                          <h5 style={{
-                            fontSize: "1.2rem", fontWeight: "700",
-                            color: hoveredCategory === i ? "white" : "#1f2937",
-                            marginBottom: "8px",
-                            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"
-                          }}>
-                            {cat.title}
-                          </h5>
-                          <p style={{
-                            fontSize: "1rem",
-                            color: hoveredCategory === i ? "rgba(255,255,255,0.9)" : "#6b7280",
-                            margin: 0, fontWeight: "500"
-                          }}>
-                            {cat.jobs} {parseInt(String(cat.jobs).replace(/,/g, "")) === 1 ? "Job" : "Jobs"}
-                          </p>
-                        </Card.Body>
-                      </Card>
-                    </Col>
-                  ))}
-                </Row>
+                {/* ── Scrolling Categories ── */}
+<div style={{ overflow: "hidden", position: "relative", marginBottom: "40px" }}>
+  {/* fade edges */}
+  <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "60px", background: "linear-gradient(to right, rgba(255,255,255,1), transparent)", zIndex: 2, pointerEvents: "none" }} />
+  <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "60px", background: "linear-gradient(to left, rgba(255,255,255,1), transparent)", zIndex: 2, pointerEvents: "none" }} />
+
+  <div style={{
+    display: "flex",
+    gap: "20px",
+    animation: "scroll 20s linear infinite",
+    paddingBottom: "8px"
+  }}>
+    {(loadingCategories ? dummyCategories : loopedCategories).map((cat, i) => (
+      <div
+        key={i}
+        style={{
+          minWidth: "160px",
+          background: hoveredCategory === i ? cat.gradient : cat.bgColor,
+          borderRadius: "25px",
+          textAlign: "center",
+          border: "none",
+          cursor: "pointer",
+          transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+          transform: hoveredCategory === i ? "translateY(-15px) scale(1.05)" : "translateY(0) scale(1)",
+          boxShadow: hoveredCategory === i ? "0 25px 50px rgba(0,0,0,0.25)" : "0 5px 15px rgba(0,0,0,0.08)",
+          padding: "28px 16px",
+          flexShrink: 0
+        }}
+        onMouseEnter={() => setHoveredCategory(i)}
+        onMouseLeave={() => setHoveredCategory(null)}
+        onClick={() => navigate(`/jobs?title=${encodeURIComponent(cat.title)}`)}
+      >
+        <div style={{
+          fontSize: "2.5rem",
+          color: hoveredCategory === i ? "white" : cat.color,
+          marginBottom: "12px",
+          transition: "all 0.3s ease",
+          display: "flex",
+          justifyContent: "center"
+        }}>
+          {cat.icon}
+        </div>
+        <h5 style={{
+          fontSize: "1rem", fontWeight: "700",
+          color: hoveredCategory === i ? "white" : "#1f2937",
+          marginBottom: "6px",
+          whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"
+        }}>
+          {cat.title}
+        </h5>
+        <p style={{
+          fontSize: "0.85rem",
+          color: hoveredCategory === i ? "rgba(255,255,255,0.9)" : "#6b7280",
+          margin: 0, fontWeight: "500"
+        }}>
+          {cat.jobs} {parseInt(String(cat.jobs).replace(/,/g, "")) === 1 ? "Job" : "Jobs"}
+        </p>
+      </div>
+    ))}
+  </div>
+</div>
 
                 <div style={{ textAlign: "center", marginBottom: "30px" }}>
                   <h2 style={{ fontSize: "2.5rem", fontWeight: "700", color: "#1f2937" }}>Top Companies Hiring Now</h2>
