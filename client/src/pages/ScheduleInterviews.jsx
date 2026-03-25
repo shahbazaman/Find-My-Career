@@ -298,18 +298,23 @@ const payload = {
       fontFamily: "'Inter', sans-serif"
     },
     card: {
-      background: "#fff",
-      padding: "clamp(1.25rem, 4vw, 2rem)",
-      borderRadius: "16px",
-      boxShadow: "0 10px 25px rgba(0,0,0,0.05)",
-      border: "1px solid #f0f0f0"
-    },
+    background: "#fff",
+    padding: "clamp(1.25rem, 4vw, 2rem)",
+    borderRadius: "16px",
+    boxShadow: "0 10px 25px rgba(0,0,0,0.05)",
+    border: "1px solid #f0f0f0",
+    overflow: "hidden",
+    width: "100%",
+    boxSizing: "border-box"
+  },
     inputGroup: {
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 250px), 1fr))",
-      gap: "1rem",
-      marginBottom: "1.5rem"
-    },
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 220px), 1fr))",
+    gap: "1rem",
+    marginBottom: "1.5rem",
+    width: "100%",
+    boxSizing: "border-box"
+  },
     label: {
       display: "flex",
       alignItems: "center",
@@ -398,25 +403,25 @@ const payload = {
 
       <form onSubmit={handleSubmit} style={styles.card}>
         <div style={styles.inputGroup}>
-          <div>
-            <label style={styles.label}><FiCalendar /> Interview Date</label>
-            <CustomDatePicker
-              name="date"
-              value={form.date}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
-            />
-          </div>
-          <div>
-            <label style={styles.label}><FiClock /> Interview Time</label>
-            <input 
-              type="time" 
-              name="time" 
-              style={styles.input} 
-              required 
-              onChange={handleChange} 
-            />
-          </div>
-        </div>
+  <div>
+    <label style={styles.label}><FiCalendar /> Interview Date</label>
+    <CustomDatePicker
+      name="date"
+      value={form.date}
+      onChange={(e) => setForm({ ...form, date: e.target.value })}
+    />
+  </div>
+  <div>
+    <label style={styles.label}><FiClock /> Interview Time</label>
+    <input 
+      type="time" 
+      name="time" 
+      style={{ ...styles.input, display: "block", width: "100%", minWidth: 0 }} 
+      required 
+      onChange={handleChange} 
+    />
+  </div>
+</div>
 
         <div style={styles.inputGroup}>
           <div>
