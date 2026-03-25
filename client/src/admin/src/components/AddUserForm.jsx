@@ -109,7 +109,7 @@ const handleSubmit = async (e) => {
       provider: "local",
     });
 
-    navigate("/home");
+    navigate(-1);
 
   } catch (error) {
     console.error("Create user error:", error);
