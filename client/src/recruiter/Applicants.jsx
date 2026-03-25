@@ -886,7 +886,7 @@ const paginatedApplicants = useMemo(() => {
               <FiSearch className="search-icon" />
               <input
                 type="text"
-                placeholder="Search by name or job title ..."
+                placeholder="  Search by name or job title ..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />

@@ -107,12 +107,12 @@ export default function Page2() {
               Explore Job Opportunities in <br className="d-none d-md-block" />
               <span className="text-primary-gradient"> Popular Roles</span>
             </h2>
-            <p className="text-muted lead mb-4 description-text">
+            <p className="text-muted lead mb-4 description-text fs-6 fs-lg-5">
               {allRoles.length > 0
                 ? `Showing ${allRoles.length} unique roles. Page ${currentPage + 1} of ${totalPages || 1}.`
                 : "Loading available roles..."}
             </p>
-            <div className="d-flex flex-wrap gap-3">
+            <div className="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
               <Button
                 variant="primary"
                 className="btn-custom rounded-pill shadow-lg"

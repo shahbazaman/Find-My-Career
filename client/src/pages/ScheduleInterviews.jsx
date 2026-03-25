@@ -1,10 +1,178 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useRef} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { 
   FiArrowLeft, FiCalendar, FiX, FiUsers, FiClock, 
   FiVideo, FiMapPin, FiInfo, FiCheckCircle 
 } from "react-icons/fi";
+
 import { toast } from "react-toastify";
+const MONTHS = [
+  "Jan","Feb","Mar","Apr","May","Jun",
+  "Jul","Aug","Sep","Oct","Nov","Dec"
+];
+const navBtn = {
+  background: "none", border: "none", cursor: "pointer",
+  fontSize: "20px", color: "#555", padding: "0 6px", lineHeight: 1
+};
+function CustomDatePicker({ value, onChange, name }) {
+  const [open, setOpen] = useState(false);
+  const [viewYear, setViewYear] = useState(new Date().getFullYear());
+  const [viewMonth, setViewMonth] = useState(new Date().getMonth());
+  const [mode, setMode] = useState("day"); // "day" | "month" | "year"
+  const ref = useRef(null);
+
+  const selected = value ? new Date(value + "T00:00:00") : null;
+
+  useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) { setOpen(false); setMode("day"); } };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  useEffect(() => {
+    if (selected) { setViewYear(selected.getFullYear()); setViewMonth(selected.getMonth()); }
+  }, [value]);
+
+  const fire = (y, m, d) => {
+    onChange({ target: { name, value: `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}` } });
+    setOpen(false); setMode("day");
+  };
+
+  const daysInMonth = (m, y) => new Date(y, m + 1, 0).getDate();
+  const firstDay    = new Date(viewYear, viewMonth, 1).getDay();
+  const totalDays   = daysInMonth(viewMonth, viewYear);
+  const cells = [];
+  for (let i = 0; i < firstDay; i++) cells.push(null);
+  for (let d = 1; d <= totalDays; d++) cells.push(d);
+
+  const isSelected = (d) => selected && selected.getFullYear()===viewYear && selected.getMonth()===viewMonth && selected.getDate()===d;
+  const isToday    = (d) => { const t=new Date(); return t.getFullYear()===viewYear && t.getMonth()===viewMonth && t.getDate()===d; };
+
+  const displayValue = selected ? `${selected.getDate()} ${MONTHS[selected.getMonth()]} ${selected.getFullYear()}` : "";
+
+  // Year grid: show 12 years centered around viewYear
+  const startYear = Math.floor(viewYear / 12) * 12;
+  const yearGrid  = Array.from({ length: 12 }, (_, i) => startYear + i);
+
+  return (
+    <div ref={ref} style={{ position: "relative", display: "inline-block", width: "100%" }}>
+      {/* Trigger */}
+      <div onClick={() => { setOpen(o => !o); setMode("day"); }}
+        style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
+          padding:"8px 12px", border:"1px solid #ced4da", borderRadius:"8px",
+          background:"white", cursor:"pointer", fontSize:"14px",
+          color: displayValue ? "#333" : "#aaa", userSelect:"none" }}>
+        <span>{displayValue || "Select date"}</span>
+        <span style={{ fontSize:"16px" }}>📅</span>
+      </div>
+
+      {open && (
+        <div style={{ position:"absolute", top:"calc(100% + 6px)", left:0, zIndex:9999,
+          background:"white", border:"1px solid #e0e0e0", borderRadius:"12px",
+          boxShadow:"0 8px 24px rgba(0,0,0,0.12)", padding:"16px", width:"280px" }}>
+
+          {/* ── Header ── */}
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"12px" }}>
+            {/* Prev */}
+            <button onClick={() => {
+              if (mode==="day")  { viewMonth===0 ? (setViewMonth(11),setViewYear(y=>y-1)) : setViewMonth(m=>m-1); }
+              if (mode==="month") setViewYear(y=>y-1);
+              if (mode==="year")  setViewYear(y=>y-12);
+            }} style={navBtn}>‹</button>
+
+            {/* Title — clickable to switch mode */}
+            <div style={{ display:"flex", gap:"6px" }}>
+              <span onClick={() => setMode(m => m==="month" ? "day" : "month")}
+                style={{ fontWeight:600, fontSize:"14px", color:"#4f46e5", cursor:"pointer",
+                  padding:"2px 8px", borderRadius:"6px", background: mode==="month"?"#eef2ff":"transparent" }}>
+                {MONTHS[viewMonth]}
+              </span>
+              <span onClick={() => setMode(m => m==="year" ? "day" : "year")}
+                style={{ fontWeight:600, fontSize:"14px", color:"#4f46e5", cursor:"pointer",
+                  padding:"2px 8px", borderRadius:"6px", background: mode==="year"?"#eef2ff":"transparent" }}>
+                {mode==="year" ? `${startYear}–${startYear+11}` : viewYear}
+              </span>
+            </div>
+
+            {/* Next */}
+            <button onClick={() => {
+              if (mode==="day")  { viewMonth===11 ? (setViewMonth(0),setViewYear(y=>y+1)) : setViewMonth(m=>m+1); }
+              if (mode==="month") setViewYear(y=>y+1);
+              if (mode==="year")  setViewYear(y=>y+12);
+            }} style={navBtn}>›</button>
+          </div>
+
+          {/* ── MONTH PICKER ── */}
+          {mode==="month" && (
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"6px" }}>
+              {MONTHS.map((m, i) => (
+                <div key={m} onClick={() => { setViewMonth(i); setMode("day"); }}
+                  style={{ textAlign:"center", padding:"8px 4px", borderRadius:"8px", cursor:"pointer", fontSize:"13px",
+                    fontWeight: i===viewMonth ? 700 : 400,
+                    background: i===viewMonth ? "#4f46e5" : "#f8f9fa",
+                    color: i===viewMonth ? "white" : "#333" }}
+                  onMouseEnter={e=>{ if(i!==viewMonth) e.currentTarget.style.background="#eef2ff"; }}
+                  onMouseLeave={e=>{ if(i!==viewMonth) e.currentTarget.style.background="#f8f9fa"; }}>
+                  {m}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* ── YEAR PICKER ── */}
+          {mode==="year" && (
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"6px" }}>
+              {yearGrid.map(y => (
+                <div key={y} onClick={() => { setViewYear(y); setMode("month"); }}
+                  style={{ textAlign:"center", padding:"8px 4px", borderRadius:"8px", cursor:"pointer", fontSize:"13px",
+                    fontWeight: y===viewYear ? 700 : 400,
+                    background: y===viewYear ? "#4f46e5" : "#f8f9fa",
+                    color: y===viewYear ? "white" : "#333" }}
+                  onMouseEnter={e=>{ if(y!==viewYear) e.currentTarget.style.background="#eef2ff"; }}
+                  onMouseLeave={e=>{ if(y!==viewYear) e.currentTarget.style.background="#f8f9fa"; }}>
+                  {y}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* ── DAY GRID ── */}
+          {mode==="day" && (<>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", marginBottom:"6px" }}>
+              {["Su","Mo","Tu","We","Th","Fr","Sa"].map(d => (
+                <div key={d} style={{ textAlign:"center", fontSize:"11px", fontWeight:600, color:"#999", padding:"4px 0" }}>{d}</div>
+              ))}
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:"2px" }}>
+              {cells.map((d, i) => (
+                <div key={i} onClick={() => d && fire(viewYear, viewMonth, d)}
+                  style={{ textAlign:"center", padding:"7px 0", fontSize:"13px", borderRadius:"50%",
+                    cursor: d ? "pointer" : "default",
+                    background: d && isSelected(d) ? "#4f46e5" : "transparent",
+                    color: d && isSelected(d) ? "white" : d && isToday(d) ? "#4f46e5" : d ? "#333" : "transparent",
+                    fontWeight: d && (isSelected(d)||isToday(d)) ? 700 : 400,
+                    border: d && isToday(d) && !isSelected(d) ? "1px solid #4f46e5" : "1px solid transparent",
+                    transition:"background 0.15s" }}
+                  onMouseEnter={e=>{ if(d&&!isSelected(d)) e.currentTarget.style.background="#f0f0f0"; }}
+                  onMouseLeave={e=>{ if(d&&!isSelected(d)) e.currentTarget.style.background="transparent"; }}>
+                  {d||""}
+                </div>
+              ))}
+            </div>
+          </>)}
+
+          {/* Clear */}
+          {selected && (
+            <div onClick={() => { onChange({ target:{name,value:""} }); setOpen(false); setMode("day"); }}
+              style={{ marginTop:"10px", textAlign:"center", fontSize:"12px", color:"#999", cursor:"pointer" }}>
+              ✕ Clear
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const ScheduleInterview = () => {
   const navigate = useNavigate();
@@ -138,8 +306,8 @@ const payload = {
     },
     inputGroup: {
       display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-      gap: "1.5rem",
+      gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 250px), 1fr))",
+      gap: "1rem",
       marginBottom: "1.5rem"
     },
     label: {
@@ -159,7 +327,9 @@ const payload = {
       fontSize: "1rem",
       outline: "none",
       transition: "border-color 0.2s",
-      boxSizing: "border-box"
+      boxSizing: "border-box",
+      maxWidth: "100%",
+      height: "46px"
     },
     badge: {
       background: "#ebf4ff",
@@ -229,15 +399,11 @@ const payload = {
       <form onSubmit={handleSubmit} style={styles.card}>
         <div style={styles.inputGroup}>
           <div>
-            <label htmlFor="date" style={styles.label}><FiCalendar /> Interview Date</label>
-            <input 
-              id="date" // 👈 Added ID
-              type="date" 
-              name="date" 
-              autoComplete="off" // 👈 Added autocomplete
-              style={styles.input} 
-              required 
-              onChange={handleChange} 
+            <label style={styles.label}><FiCalendar /> Interview Date</label>
+            <CustomDatePicker
+              name="date"
+              value={form.date}
+              onChange={(e) => setForm({ ...form, date: e.target.value })}
             />
           </div>
           <div>
@@ -285,7 +451,7 @@ const payload = {
           <textarea 
             name="notes" 
             rows={4} 
-            style={{ ...styles.input, resize: "vertical" }} 
+            style={{ ...styles.input, height: "auto", resize: "vertical" }} 
             placeholder="Tell candidates what to prepare..."
             onChange={handleChange} 
           />
