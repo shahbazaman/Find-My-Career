@@ -22,7 +22,22 @@ function App() {
         <Route path="/" element={<AdminHome />} />
         <Route path="/home" element={<AdminHome2/>} />
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/addUserForm" element={<AddUserForm />} />
+        <Route path="/addUserForm" element={
+  <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+    <AdminNavigationBar />
+    <div style={{ paddingTop: "80px" }}>
+      <AddUserForm />
+    </div>
+  </div>
+} />
+<Route path="/admin/addUserForm" element={
+  <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+    <AdminNavigationBar />
+    <div style={{ paddingTop: "80px" }}>
+      <AddUserForm />
+    </div>
+  </div>
+} />
         <Route path="/admin/user/view/:id" element={<ViewUser />} />
         <Route path="/admin/user/edit/:id" element={<EditUser />} />
 

@@ -1966,7 +1966,7 @@ const handleDeleteJob = (jobId) => {
                       gap: "8px",
                       boxShadow: "0 2px 6px rgba(111, 66, 193, 0.3)",
                     }}
-                    onClick={() => navigate("/addUserForm")}
+                    onClick={() => navigate("/admin/addUserForm")}
                   >
                     <BsPersonPlusFill /> Add Recruiters
                   </button>
@@ -2397,7 +2397,7 @@ const handleDeleteJob = (jobId) => {
                         gap: "8px",
                         boxShadow: "0 2px 6px rgba(111, 66, 193, 0.3)",
                       }}
-                      onClick={() => navigate("/addUserForm")}
+                      onClick={() => navigate("/admin/addUserForm")}
                     >
                       <BsPersonPlusFill /> Add Job Seeker
                     </button>

@@ -7,6 +7,7 @@ import AdminProtectedRoute from "./src/AdminProtectedRoute";
 import AddUserForm from "./src/components/AddUserForm";
 import ViewUser from "./src/components/ViewUser";
 import EditUser from "./src/components/EditUser";
+import AdminNavigationBar from "./src/components/AdminNavigationBar";
 
 const AdminRoutes = () => {
   return (
@@ -15,28 +16,31 @@ const AdminRoutes = () => {
       <Route path="login" element={<AdminLogin />} />
       <Route path="" element={<AdminHome />} />
       <Route path="home" element={<AdminHome2 />} />
-      <Route path="addUserForm" element={<AddUserForm />} />
+      <Route path="addUserForm" element={
+        <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+          <AdminNavigationBar />
+          <div style={{ paddingTop: "80px" }}>
+            <AddUserForm />
+          </div>
+        </div>
+      } />
       <Route path="user/view/:id" element={<ViewUser />} />
       <Route path="user/edit/:id" element={<EditUser />} />
+      <Route path="dashboard" element={
+        <AdminProtectedRoute>
+          <AdminDashboard />
+        </AdminProtectedRoute>
+      } />
 
       {/* Protected Routes */}
-      <Route
+      {/* <Route
         path=""
         element={
           <AdminProtectedRoute>
             <AdminDashboard />
           </AdminProtectedRoute>
         }
-      />
-
-      <Route
-        path="dashboard"
-        element={
-          <AdminProtectedRoute>
-            <AdminDashboard />
-          </AdminProtectedRoute>
-        }
-      />
+      /> */}
     </Routes>
   );
 };
