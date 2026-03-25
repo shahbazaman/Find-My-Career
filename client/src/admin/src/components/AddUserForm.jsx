@@ -190,26 +190,71 @@ const handleSubmit = async (e) => {
           </div>
 
           <div className="form-group full-width">
-            <label><FaImage /> Profile Image</label>
-            <div className="logo-upload-container">
-              <input
-                type="text"
-                name="logo"
-                value={formData.logo}
-                placeholder="Image URL"
-                onChange={handleChange}
-              />
-              <label className="cloudinary-button">
-                {uploading ? "..." : <FaCloudUploadAlt />}
-                <input
-                  type="file"
-                  hidden
-                  accept="image/*"
-                  onChange={handleFileUpload}
-                />
-              </label>
-            </div>
-          </div>
+  <label><FaImage /> Profile Image</label>
+  <div style={{
+    display: "flex",
+    alignItems: "center",
+    border: "1px solid #dee2e6",
+    borderRadius: "8px",
+    overflow: "hidden",
+    background: "white"
+  }}>
+    <input
+      type="text"
+      name="logo"
+      value={formData.logo}
+      placeholder="Paste image URL or click upload →"
+      onChange={handleChange}
+      style={{
+        flex: 1,
+        border: "none",
+        outline: "none",
+        padding: "10px 14px",
+        fontSize: "14px",
+        background: "transparent"
+      }}
+    />
+    <label style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      padding: "10px 18px",
+      background: uploading
+        ? "#adb5bd"
+        : "linear-gradient(135deg, #667eea, #764ba2)",
+      color: "white",
+      cursor: uploading ? "not-allowed" : "pointer",
+      fontSize: "14px",
+      fontWeight: "600",
+      whiteSpace: "nowrap",
+      transition: "opacity 0.2s",
+      borderLeft: "1px solid #dee2e6"
+    }}>
+      <FaCloudUploadAlt style={{ fontSize: "18px" }} />
+      {uploading ? "Uploading..." : "Upload Image"}
+      <input
+        type="file"
+        hidden
+        accept="image/*"
+        onChange={handleFileUpload}
+      />
+    </label>
+  </div>
+  {formData.logo && (
+    <img
+      src={formData.logo}
+      alt="preview"
+      style={{
+        marginTop: "10px",
+        height: "60px",
+        width: "60px",
+        objectFit: "cover",
+        borderRadius: "8px",
+        border: "1px solid #dee2e6"
+      }}
+    />
+  )}
+</div>
         </div>
 
         <button
