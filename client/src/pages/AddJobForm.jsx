@@ -496,11 +496,7 @@ const handleSubmit = async (e) => {
                     <Form.Label className="fw-semibold text-muted mb-2">Salary Range (₹)</Form.Label>
                     <Row>
                       <Col md={6}>
-                        <div className="position-relative">
-                          <BsCurrencyDollar 
-                            className="position-absolute top-50 start-0 translate-middle-y ms-3" 
-                            style={{ color: "#667eea", fontSize: "18px", zIndex: 3 }}
-                          />
+                        <div className="position-relative">                        
                           <Form.Control
                             type="number"
                             name="salaryMin"
