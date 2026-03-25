@@ -416,13 +416,13 @@ const payload = {
     <input 
       type="time" 
       name="time" 
-      style={{ ...styles.input, display: "block", width: "100%", minWidth: 0 }} 
+      style={{ ...styles.input }} 
       required 
       onChange={handleChange} 
     />
   </div>
 </div>
-
+{/* , display: "block", width: "100%", minWidth: 0 */}
         <div style={styles.inputGroup}>
           <div>
             <label style={styles.label}><FiVideo /> Interview Mode</label>
