@@ -716,13 +716,13 @@ const handleDeleteJob = (jobId) => {
 
     {/* ── QUICK INFO CARDS ── */}
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "20px" }}>
-      <div style={{ background: "white", borderRadius: "16px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
+      {/* <div style={{ background: "white", borderRadius: "16px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
         <h3 style={{ margin: "0 0 16px", fontWeight: "700", color: "#1a1a1a", fontSize: "16px" }}>📊 Job Fill Rate</h3>
         <div style={{ fontSize: "36px", fontWeight: "800", color: "#20c997" }}>
           {stats.totalJobs > 0 ? Math.round((stats.activeJobs / stats.totalJobs) * 100) : 0}%
         </div>
         <p style={{ color: "#6c757d", fontSize: "13px", margin: "4px 0 0" }}>of posted jobs are currently active</p>
-      </div>
+      </div> */}
 
       <div style={{ background: "white", borderRadius: "16px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
         <h3 style={{ margin: "0 0 16px", fontWeight: "700", color: "#1a1a1a", fontSize: "16px" }}>🕐 Pending Actions</h3>
