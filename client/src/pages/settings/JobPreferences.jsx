@@ -15,8 +15,8 @@ import { useNavigate } from "react-router-dom";
 
 const JobPreferences = () => {
   const [preferences, setPreferences] = useState({
-    roles: "",
-    locations: "",
+    roles: [],
+    locations: [],
     jobType: "Full-time",
     workMode: "Onsite",
     experienceLevel: "Fresher",
@@ -31,15 +31,28 @@ const JobPreferences = () => {
   const handleChange = (e) => {
     setPreferences({ ...preferences, [e.target.name]: e.target.value });
   };
-
+  const handleMultiToggle = (field, value) => {
+  setPreferences(prev => {
+    const current = Array.isArray(prev[field]) ? prev[field] : [];
+    return {
+      ...prev,
+      [field]: current.includes(value)
+        ? current.filter(v => v !== value)   // deselect
+        : [...current, value]                 // select
+    };
+  });
+};
   const handleClear = (fieldName) => {
-    setPreferences({ ...preferences, [fieldName]: "" });
+    setPreferences(prev => ({
+      ...prev,
+      [fieldName]: fieldName === 'roles' || fieldName === 'locations' ? [] : ""
+    }));
   };
 
   const handleClearAll = () => {
     setPreferences({
-      roles: "",
-      locations: "",
+      roles: [],
+      locations: [],
       jobType: "Full-time",
       workMode: "Onsite",
       experienceLevel: "Fresher",
@@ -67,8 +80,8 @@ useEffect(() => {
       // Only fill fields that exist in the response
       setPreferences(prev => ({
         ...prev,
-        roles:           data.roles           || prev.roles,
-        locations:       data.locations       || prev.locations,
+        roles:     data.roles     ? data.roles.split(",")     : prev.roles,
+        locations: data.locations ? data.locations.split(",") : prev.locations,
         jobType:         data.jobType         || prev.jobType,
         workMode:        data.workMode        || prev.workMode,
         experienceLevel: data.experienceLevel || prev.experienceLevel,
@@ -89,13 +102,14 @@ const handleSubmit = async (e) => {
     const payload = JSON.parse(atob(token.split(".")[1]));
     const userId = payload.id || payload._id;
 
-    await fetch(`${import.meta.env.VITE_API_BASE_URL}/preferences/${userId}`, {
+    await fetch(`...`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(preferences)
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        ...preferences,
+        roles:     Array.isArray(preferences.roles)     ? preferences.roles.join(",")     : preferences.roles,
+        locations: Array.isArray(preferences.locations) ? preferences.locations.join(",") : preferences.locations,
+      })
     });
 
     setSaved(true);
@@ -148,69 +162,57 @@ const handleSubmit = async (e) => {
       <div className="settings-card fade-in-up">
         <div className="settings-card-content">
           <div className="form-sections">
-            {/* Job Role Section */}
-            <div className="form-section slide-right" style={{animationDelay: '0.1s'}}>
-              <label className="section-label">
-                <div className="label-icon indigo">
-                  <Briefcase className="w-5 h-5" />
-                </div>
-                Preferred Job Role
-              </label>
-
-              <div className="input-wrapper">
-                <select
-                  name="roles"
-                  value={preferences.roles}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField('roles')}
-                  onBlur={() => setFocusedField(null)}
-                  className={`form-select ${focusedField === 'roles' ? 'focused indigo-focus' : ''}`}
+            {/* Preferred Job Role */}
+          <div className="form-section slide-right" style={{animationDelay: '0.1s'}}>
+            <label className="section-label">
+              <div className="label-icon indigo"><Briefcase className="w-5 h-5" /></div>
+              Preferred Job Role
+            </label>
+            <div className="multi-select-grid">
+              {jobRoles.filter(r => r !== "Select a role...").map(role => (
+                <button
+                  key={role}
+                  type="button"
+                  onClick={() => handleMultiToggle('roles', role)}
+                  className={`multi-tag ${preferences.roles.includes(role) ? 'selected indigo-selected' : ''}`}
                 >
-                  {jobRoles.map((role) => (
-                    <option key={role} value={role === "Select a role..." ? "" : role}>
-                      {role}
-                    </option>
-                  ))}
-                </select>
-                {preferences.roles && (
-                  <button onClick={() => handleClear('roles')} className="clear-btn">
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
+                  {preferences.roles.includes(role) && <CheckCircle className="w-4 h-4" />}
+                  {role}
+                </button>
+              ))}
             </div>
+            {preferences.roles.length > 0 && (
+              <button onClick={() => handleClear('roles')} className="clear-selection-btn">
+                <X className="w-3 h-3" /> Clear roles
+              </button>
+            )}
+          </div>
 
-            {/* Location Section */}
-            <div className="form-section slide-right" style={{animationDelay: '0.2s'}}>
-              <label className="section-label">
-                <div className="label-icon purple">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                Preferred Location
-              </label>
-
-              <div className="input-wrapper">
-                <select
-                  name="locations"
-                  value={preferences.locations}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField('locations')}
-                  onBlur={() => setFocusedField(null)}
-                  className={`form-select ${focusedField === 'locations' ? 'focused purple-focus' : ''}`}
+           {/* Preferred Location */}
+          <div className="form-section slide-right" style={{animationDelay: '0.2s'}}>
+            <label className="section-label">
+              <div className="label-icon purple"><MapPin className="w-5 h-5" /></div>
+              Preferred Location
+            </label>
+            <div className="multi-select-grid">
+              {locations.filter(l => l !== "Select location...").map(loc => (
+                <button
+                  key={loc}
+                  type="button"
+                  onClick={() => handleMultiToggle('locations', loc)}
+                  className={`multi-tag ${preferences.locations.includes(loc) ? 'selected purple-selected' : ''}`}
                 >
-                  {locations.map((location) => (
-                    <option key={location} value={location === "Select location..." ? "" : location}>
-                      {location}
-                    </option>
-                  ))}
-                </select>
-                {preferences.locations && (
-                  <button onClick={() => handleClear('locations')} className="clear-btn">
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
+                  {preferences.locations.includes(loc) && <CheckCircle className="w-4 h-4" />}
+                  {loc}
+                </button>
+              ))}
             </div>
+            {preferences.locations.length > 0 && (
+              <button onClick={() => handleClear('locations')} className="clear-selection-btn">
+                <X className="w-3 h-3" /> Clear locations
+              </button>
+            )}
+          </div>
 
             {/* Job Type & Work Mode Row */}
             <div className="form-row slide-right" style={{animationDelay: '0.3s'}}>
@@ -698,6 +700,67 @@ const handleSubmit = async (e) => {
             grid-template-columns: 1fr;
           }
         }
+          .multi-select-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.multi-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.multi-tag:hover {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+  transform: translateY(-1px);
+}
+
+.multi-tag.selected {
+  color: white;
+  border-color: transparent;
+}
+
+.multi-tag.indigo-selected {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+}
+
+.multi-tag.purple-selected {
+  background: linear-gradient(135deg, #a855f7, #9333ea);
+  box-shadow: 0 4px 10px rgba(168, 85, 247, 0.3);
+}
+
+.clear-selection-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  border: 1px solid #fca5a5;
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-selection-btn:hover {
+  background: #fecaca;
+}
       `}</style>
     </div>
   );
