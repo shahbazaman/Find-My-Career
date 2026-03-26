@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  BsBellFill, 
-  BsCheckCircleFill, 
-  BsExclamationTriangleFill, 
-  BsInfoCircleFill, 
+import { useNavigate } from "react-router-dom";
+import {
+  BsBellFill,
+  BsCheckCircleFill,
+  BsExclamationTriangleFill,
+  BsInfoCircleFill,
   BsTrash3,
 } from "react-icons/bs";
 import { toast, ToastContainer } from "react-toastify";
@@ -13,32 +14,35 @@ import "../css/Notification.css";
 import axios from "axios";
 import { getUserId } from "../utils/auth";
 
+const JOB_PREP_TITLE = "Prepare for Your Interview!";
+
 export default function Notification() {
   const [items, setItems] = useState([]);
   const [filter, setFilter] = useState("all");
   const userId = getUserId();
-  
-const formatTime = (dateStr) => {
-  if (!dateStr) return "Just now";
-  
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffMs = now - date;
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMs / 3600000);
-  const diffDays = Math.floor(diffMs / 86400000);
+  const navigate = useNavigate();
 
-  if (diffMins < 1) return "Just now";
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
+  const formatTime = (dateStr) => {
+    if (!dateStr) return "Just now";
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
 
-  return date.toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: diffDays > 365 ? "numeric" : undefined,
-  });
-};
+    if (diffMins < 1) return "Just now";
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+
+    return date.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: diffDays > 365 ? "numeric" : undefined,
+    });
+  };
+
   useEffect(() => {
     if (!userId) return;
     fetchNotifications();
@@ -47,28 +51,23 @@ const formatTime = (dateStr) => {
   const fetchNotifications = () => {
     axios
       .get(`${import.meta.env.VITE_API_BASE_URL}/notifications/user/${userId}`)
-      .then(res => setItems(res.data || []))
-      .catch(err => {
+      .then((res) => setItems(res.data || []))
+      .catch((err) => {
         console.error("Fetch error:", err);
         toast.error("Failed to load notifications");
       });
   };
 
   const markAllAsRead = async () => {
-    if (items.filter(i => !i.isRead).length === 0) {
+    if (items.filter((i) => !i.isRead).length === 0) {
       toast.info("No unread notifications to mark.");
       return;
     }
-
     try {
-      // Sending POST to the "mark-all-read" endpoint
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/notifications/user/${userId}/mark-all-read`);
-      
-      // Update local state immediately so the filter updates
-      setItems(prevItems => 
-        prevItems.map(item => ({ ...item, isRead: true }))
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/notifications/user/${userId}/mark-all-read`
       );
-      
+      setItems((prev) => prev.map((item) => ({ ...item, isRead: true })));
       toast.success("All notifications marked as read!");
     } catch (err) {
       console.error("Mark all error:", err);
@@ -77,12 +76,15 @@ const formatTime = (dateStr) => {
   };
 
   const markSingleAsRead = async (id, currentStatus) => {
-    if (currentStatus) return; // Already read
-
+    if (currentStatus) return;
     try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/notifications/${id}/read`);
-      setItems(prevItems => 
-        prevItems.map(item => item._id === id ? { ...item, isRead: true } : item)
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/notifications/${id}/read`
+      );
+      setItems((prev) =>
+        prev.map((item) =>
+          item._id === id ? { ...item, isRead: true } : item
+        )
       );
     } catch (err) {
       console.error("Error marking single notification:", err);
@@ -91,48 +93,59 @@ const formatTime = (dateStr) => {
 
   const deleteNotification = async (id) => {
     try {
-      // Optional: Add backend delete call here
-      // await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/notifications/${id}`);
-      setItems(items.filter(item => item._id !== id));
+      setItems(items.filter((item) => item._id !== id));
       toast.info("Notification removed");
     } catch (err) {
       toast.error("Could not delete notification");
     }
   };
 
-  // Logic to filter the list based on state
-  const displayedItems = filter === "unread" 
-    ? items.filter(item => item.isRead === false) 
-    : items;
+  const isJobPrepNotification = (title = "") =>
+    title === JOB_PREP_TITLE;
+
+  const displayedItems =
+    filter === "unread"
+      ? items.filter((item) => item.isRead === false)
+      : items;
 
   const getStatusConfig = (title = "") => {
     const t = title.toLowerCase();
-    if (t.includes("success") || t.includes("hired")) 
+    if (t.includes("success") || t.includes("hired"))
       return { icon: <BsCheckCircleFill />, color: "#10b981", bg: "#ecfdf5" };
-    if (t.includes("warning") || t.includes("urgent")) 
-      return { icon: <BsExclamationTriangleFill />, color: "#f59e0b", bg: "#fffbeb" };
+    if (t.includes("warning") || t.includes("urgent"))
+      return {
+        icon: <BsExclamationTriangleFill />,
+        color: "#f59e0b",
+        bg: "#fffbeb",
+      };
+    if (t.includes("interview") || t.includes("prepare"))
+      return { icon: <BsCheckCircleFill />, color: "#8b5cf6", bg: "#f5f3ff" };
     return { icon: <BsInfoCircleFill />, color: "#3b82f6", bg: "#eff6ff" };
   };
 
   return (
     <div className="notif-page">
       <ToastContainer position="top-right" autoClose={2000} theme="colored" />
-      
+
       <div className="notif-container">
         <header className="notif-header">
           <div className="header-left">
             <div className="bell-icon-container">
               <BsBellFill />
-              {items.some(i => !i.isRead) && <span className="notif-dot" />}
+              {items.some((i) => !i.isRead) && (
+                <span className="notif-dot" />
+              )}
             </div>
             <h1>Notifications</h1>
           </div>
           <div className="header-actions">
-            <button 
-              className={`filter-btn ${filter === 'unread' ? 'active' : ''}`}
-              onClick={() => setFilter(filter === 'all' ? 'unread' : 'all')}
+            <button
+              className={`filter-btn ${filter === "unread" ? "active" : ""}`}
+              onClick={() =>
+                setFilter(filter === "all" ? "unread" : "all")
+              }
             >
-              {filter === 'all' ? "Show Unread" : "Show All"}
+              {filter === "all" ? "Show Unread" : "Show All"}
             </button>
             <button className="mark-read-btn" onClick={markAllAsRead}>
               Mark all as read
@@ -145,6 +158,8 @@ const formatTime = (dateStr) => {
             {displayedItems.length > 0 ? (
               displayedItems.map((item) => {
                 const config = getStatusConfig(item.title);
+                const isJobPrep = isJobPrepNotification(item.title);
+
                 return (
                   <motion.div
                     key={item._id}
@@ -152,27 +167,53 @@ const formatTime = (dateStr) => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: -20 }}
-                    className={`notif-card ${item.isRead ? 'read' : 'unread'}`}
+                    className={`notif-card ${item.isRead ? "read" : "unread"}`}
                     onClick={() => markSingleAsRead(item._id, item.isRead)}
                   >
-                    <div className="notif-indicator" style={{ backgroundColor: config.color }} />
-                    <div className="notif-icon-box" style={{ color: config.color, backgroundColor: config.bg }}>
+                    <div
+                      className="notif-indicator"
+                      style={{ backgroundColor: config.color }}
+                    />
+                    <div
+                      className="notif-icon-box"
+                      style={{
+                        color: config.color,
+                        backgroundColor: config.bg,
+                      }}
+                    >
                       {config.icon}
                     </div>
                     <div className="notif-content">
                       <div className="notif-title-row">
                         <h4>
-                          {item.title} 
-                          {!item.isRead && <span className="unread-badge">•</span>}
+                          {item.title}
+                          {!item.isRead && (
+                            <span className="unread-badge">•</span>
+                          )}
                         </h4>
-                        <span className="notif-time">{formatTime(item.deliveredAt || item.createdAt)}</span>
+                        <span className="notif-time">
+                          {formatTime(item.deliveredAt || item.createdAt)}
+                        </span>
                       </div>
                       <p>{item.message || item.label}</p>
+
+                      {/* ✅ Job prep CTA — only for interview prep notifications */}
+                      {isJobPrep && (
+                        <button
+                          className="job-prep-link"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate("/jobPrep");
+                          }}
+                        >
+                          Click here to prepare →
+                        </button>
+                      )}
                     </div>
-                    <button 
-                      className="delete-btn" 
+                    <button
+                      className="delete-btn"
                       onClick={(e) => {
-                        e.stopPropagation(); // Prevent marking as read when deleting
+                        e.stopPropagation();
                         deleteNotification(item._id);
                       }}
                     >
@@ -184,7 +225,11 @@ const formatTime = (dateStr) => {
             ) : (
               <div className="empty-state">
                 <BsBellFill className="empty-icon" />
-                <p>{filter === 'unread' ? "No unread notifications!" : "All caught up!"}</p>
+                <p>
+                  {filter === "unread"
+                    ? "No unread notifications!"
+                    : "All caught up!"}
+                </p>
               </div>
             )}
           </AnimatePresence>

@@ -35,7 +35,9 @@ const loginMethodColor =
   storedUser?.provider !== "google" ||
   storedUser?.hasLocalPassword === false;
 const [resetEmail, setResetEmail] = useState("");
-
+const [showCurrentPasswordModal, setShowCurrentPasswordModal] = useState(false);
+const [currentPassword, setCurrentPassword] = useState("");
+const [verifyingPassword, setVerifyingPassword] = useState(false);
   const [profile, setProfile] = useState({
     avatar: "",
     name: "",
@@ -228,26 +230,29 @@ const quickActions = [
           icon: FaLock,
           label: isGoogleUser ? "Set Password" : "Change Password",
           color: "from-blue-500 to-cyan-500",
-          onClick: () => setShowPasswordModal(true),
+          onClick: () => {
+          setCurrentPassword("");
+          setShowCurrentPasswordModal(true);
+        },
         },
       ]
     : []),
-  {
-    icon: FaShieldAlt,
-    label: "Privacy Settings",
-    color: "from-purple-500 to-pink-500",
-  },
+  // {
+  //   icon: FaShieldAlt,
+  //   label: "Privacy Settings",
+  //   color: "from-purple-500 to-pink-500",
+  // },
   {
     icon: FaBell,
     label: "Notifications",
     color: "from-green-500 to-emerald-500",
     onClick: () => navigate("/notification"),
   },
-  {
-    icon: FaGlobe,
-    label: "Language",
-    color: "from-orange-500 to-red-500",
-  },
+  // {
+  //   icon: FaGlobe,
+  //   label: "Language",
+  //   color: "from-orange-500 to-red-500",
+  // },
   {
     icon: FaTrash,
     label: "Delete Account",
@@ -545,6 +550,96 @@ const debouncedSaveName = () => {
     </div>
   </div>
 </div>
+      {/* ── STEP 1: Enter current password ── */}
+{showCurrentPasswordModal && (
+  <div
+    style={{
+      position: "fixed",
+      inset: 0,
+      backgroundColor: "rgba(0,0,0,0.5)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 9999,
+    }}
+  >
+    <div
+      style={{
+        background: "white",
+        padding: "1.5rem",
+        borderRadius: "12px",
+        width: "24rem",
+      }}
+    >
+      <h3 style={{ fontSize: "1.25rem", fontWeight: 600, marginBottom: "1rem" }}>
+        Confirm Current Password
+      </h3>
+      <p style={{ fontSize: "0.9rem", color: "#64748b", marginBottom: "1rem" }}>
+        Enter your current password to continue.
+      </p>
+      <input
+        type="password"
+        value={currentPassword}
+        onChange={(e) => setCurrentPassword(e.target.value)}
+        placeholder="Current password"
+        style={{
+          width: "100%",
+          padding: "0.5rem",
+          border: "1px solid #cbd5e1",
+          borderRadius: "6px",
+          marginBottom: "1rem",
+        }}
+      />
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem" }}>
+        <button
+          className="btn-danger btn1"
+          onClick={() => {
+            setShowCurrentPasswordModal(false);
+            setCurrentPassword("");
+          }}
+        >
+          Cancel
+        </button>
+        <button
+          className="btn-success btn1"
+          disabled={verifyingPassword || !currentPassword}
+          onClick={async () => {
+            try {
+              setVerifyingPassword(true);
+              const res = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/auth/verify-password`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify({ password: currentPassword }),
+                }
+              );
+
+              if (!res.ok) {
+                toast.error("Incorrect password. Please try again.");
+                return;
+              }
+
+              // ✅ Correct — close step 1, open step 2
+              setShowCurrentPasswordModal(false);
+              setCurrentPassword("");
+              setShowPasswordModal(true);
+            } catch {
+              toast.error("Something went wrong. Try again.");
+            } finally {
+              setVerifyingPassword(false);
+            }
+          }}
+        >
+          {verifyingPassword ? "Verifying..." : "Confirm"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       {showPasswordModal && (
         <div

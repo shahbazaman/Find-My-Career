@@ -2,12 +2,12 @@ import express from "express";
 import cors from "cors";
 // import dotenv from "dotenv";
 import connectDB from "./config/db.js";
+import { startCronJobs } from "./utils/cronJobs.js";
 
 // dotenv.config();
 connectDB();
-
+startCronJobs();
 const app = express();
-
 /* ===================== CORS CONFIG (FINAL & SAFE) ===================== */
 const allowedOrigins = [
   "http://localhost:5173",

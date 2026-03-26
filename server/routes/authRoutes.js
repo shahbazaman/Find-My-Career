@@ -4,7 +4,7 @@ import {
   loginUser,
   requestPasswordReset,
   resetPassword,
-  googleLogin
+  googleLogin,verifyPassword
 } from "../controllers/authController.js";
 import protect from "../middleware/authMiddleware.js";
 import { setPassword } from "../controllers/authController.js";
@@ -18,4 +18,5 @@ router.post("/google", googleLogin);
 router.post("/password-reset", requestPasswordReset);
 router.post("/reset-password/:token", resetPassword);
 router.post("/set-password", protect, setPassword);
+router.post("/verify-password", protect, verifyPassword);
 export default router;
