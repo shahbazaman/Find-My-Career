@@ -16,7 +16,7 @@ import {
   FaBug
 } from "react-icons/fa";
  import { useNavigate } from "react-router-dom";
- import useCourseProgress from "../hooks/useCourseProgress";
+ import useCourseProgress from "../../hooks/useCourseProgress";
 const DsaNotes = () => {
   const topicsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);

@@ -37,7 +37,7 @@ import {
   FaInfinity
 } from "react-icons/fa";
  import { useNavigate } from "react-router-dom";
- import useCourseProgress from "../hooks/useCourseProgress";
+ import useCourseProgress from "../../hooks/useCourseProgress";
 const AptitudeNotes = () => {
   const topicsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);

@@ -25,7 +25,7 @@ import {
 } from "react-icons/fa";
 import React, { useState, useEffect, useRef } from "react";
  import { useNavigate } from "react-router-dom";
-import useCourseProgress from "../hooks/useCourseProgress";
+import useCourseProgress from "../../hooks/useCourseProgress";
 const OopsNotes = () => {
   const topicsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);
