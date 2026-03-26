@@ -22,12 +22,12 @@ import {
   FaKey
 } from "react-icons/fa";
  import { useNavigate } from "react-router-dom";
+ import useCourseProgress from "../hooks/useCourseProgress";
 const DbmsNotes = () => {
   const topicsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);
   const topRef = useRef(null);
   const navigate  = useNavigate();
- 
 
 const handleBack = () => {
   navigate("/jobPrep");
@@ -737,8 +737,9 @@ const handleBack = () => {
   ]
 },
   ];
-
-  const totalPages = Math.ceil(topics.length / topicsPerPage);
+const totalPages = Math.ceil(topics.length / topicsPerPage);
+// ADD THIS LINE:
+const { markPageComplete, progressPercent } = useCourseProgress("javascript", totalPages);
   const startIndex = (currentPage - 1) * topicsPerPage;
   const paginatedTopics = topics.slice(startIndex, startIndex + topicsPerPage);
 
@@ -785,6 +786,9 @@ const handleBack = () => {
         <p style={styles.subtitle} className="js-notes-subtitle">           
           Starter notes for beginners with interview-focused explanations
         </p>
+        <p style={{ color: "#f59e0b", fontWeight: 600, fontSize: "0.95rem" }}>
+  📖 Your Progress: {progressPercent}%
+</p>
       </header>
 
       <section style={styles.topicsGrid}>
@@ -810,34 +814,40 @@ const handleBack = () => {
 
       {/* Pagination */}
       <div style={styles.pagination}>
-        <button style={styles.pageBtn} className="js-page-btn"
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((p) => p - 1)}
-        >
-          Prev
-        </button>
+        {/* Prev */}
+<button style={styles.pageBtn} className="js-page-btn"
+  disabled={currentPage === 1}
+  onClick={() => {
+    markPageComplete(currentPage);
+    setCurrentPage((p) => p - 1);
+  }}
+>Prev</button>
 
-        {Array.from({ length: totalPages }).map((_, i) => (
-          <button
-            key={i}
-            style={{
-              ...styles.pageBtn,
-              backgroundColor: currentPage === i + 1 ? "#f59e0b" : "#fff",
-              color: currentPage === i + 1 ? "#fff" : "#333"
-            }}
-            onClick={() => setCurrentPage(i + 1)}
-          >
-            {i + 1}
-          </button>
-        ))}
+{/* Page numbers */}
+{Array.from({ length: totalPages }).map((_, i) => (
+  <button
+    key={i}
+    style={{
+      ...styles.pageBtn,
+      backgroundColor: currentPage === i + 1 ? "#f59e0b" : "#fff",
+      color: currentPage === i + 1 ? "#fff" : "#333"
+    }}
+    onClick={() => {
+      markPageComplete(currentPage);
+      setCurrentPage(i + 1);
+    }}
+  >{i + 1}</button>
+))}
 
-        <button
-          style={styles.pageBtn}
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((p) => p + 1)}
-        >
-          Next
-        </button>
+{/* Next */}
+<button
+  style={styles.pageBtn}
+  disabled={currentPage === totalPages}
+  onClick={() => {
+    markPageComplete(currentPage);
+    setCurrentPage((p) => p + 1);
+  }}
+>Next</button>
       </div>
     </main>
     </>

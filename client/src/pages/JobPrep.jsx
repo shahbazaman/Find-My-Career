@@ -15,8 +15,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { BarChart } from "@mui/x-charts";
+import axios from "axios";
 
-// External Hero Background
 const HERO_BG = "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80";
 
 const customStyles = `
@@ -43,15 +43,36 @@ const customStyles = `
 `
 export default function CompleteLearningDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [progressMap, setProgressMap] = useState({});
   const navigate = useNavigate();
+  useEffect(() => {
+  const loadProgress = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/course-progress`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const map = {};
+      res.data.forEach(r => {
+        map[r.courseKey] = Math.round((r.completedPages.length / r.totalPages) * 100);
+      });
+      setProgressMap(map);
+    } catch (err) {
+      console.error("Failed to load course progress", err);
+    }
+  };
+  loadProgress();
+}, []);
   const courses = [
-    { title: "Data Structures & Algorithms", hours: 40, progress: 45, status: "In progress", icon: <MdOutlineClass />, notesUrl: () => navigate("/dsaNotes"), questionsUrl: () => navigate("/dsa"), category: "Coding" },
-    { title: "Technical Aptitude", hours: 12, progress: 100, status: "Completed", icon: <HiOutlineLightningBolt />, notesUrl: () => navigate("/aptitudeNotes"), questionsUrl: () => navigate("/aptitude"), category: "Interviews" },
-    { title: "Object Oriented Programming", hours: 4, progress: 0, status: "Not Started", icon: <FiTrendingUp />, notesUrl: () => navigate("/oopsNotes"), questionsUrl: () => navigate("/oops"), category: "Theory" },
-    { title: "Communication Skills", hours: 2, progress: 20, status: "In progress", icon: <FiBookOpen />, notesUrl: () => navigate("/englishNotes"), questionsUrl: () => navigate("/english"), category: "Soft Skills" },
-    { title: "JavaScript", hours: 4, progress: 0, status: "Not Started", icon: <FiDatabase />, notesUrl: () => navigate("/dbmsNotes"), questionsUrl: () => navigate("/dbms"), category: "Coding" },
-    { title: "React.js Mastery", hours: 10, progress: 0, status: "Not Started", icon: <FiLayout />,notesUrl: () => navigate("/reactNotes"), questionsUrl: () => navigate("/react"), category: "Coding" },
-    { title: "MERN Programming", hours: 12, progress: 0, status: "Not Started", icon: <FiCode />, notesUrl: () => navigate("/mernNotes"), questionsUrl: () => navigate("/mern"), category: "Coding" }
+    { title: "Data Structures & Algorithms",courseKey: "dsa", hours: 40, progress: 45, status: "In progress", icon: <MdOutlineClass />, notesUrl: () => navigate("/dsaNotes"), questionsUrl: () => navigate("/dsa"), category: "Coding" },
+    { title: "Technical Aptitude",courseKey: "aptitude", hours: 12, progress: 100, status: "Completed", icon: <HiOutlineLightningBolt />, notesUrl: () => navigate("/aptitudeNotes"), questionsUrl: () => navigate("/aptitude"), category: "Interviews" },
+    { title: "Object Oriented Programming",courseKey: "oops", hours: 4, progress: 0, status: "Not Started", icon: <FiTrendingUp />, notesUrl: () => navigate("/oopsNotes"), questionsUrl: () => navigate("/oops"), category: "Theory" },
+    { title: "Communication Skills", courseKey: "english",hours: 2, progress: 20, status: "In progress", icon: <FiBookOpen />, notesUrl: () => navigate("/englishNotes"), questionsUrl: () => navigate("/english"), category: "Soft Skills" },
+    { title: "JavaScript",courseKey: "javascript", hours: 4, progress: 0, status: "Not Started", icon: <FiDatabase />, notesUrl: () => navigate("/dbmsNotes"), questionsUrl: () => navigate("/dbms"), category: "Coding" },
+    { title: "React.js Mastery",courseKey: "react", hours: 10, progress: 0, status: "Not Started", icon: <FiLayout />,notesUrl: () => navigate("/reactNotes"), questionsUrl: () => navigate("/react"), category: "Coding" },
+    { title: "MERN Programming",courseKey: "mern", hours: 12, progress: 0, status: "Not Started", icon: <FiCode />, notesUrl: () => navigate("/mernNotes"), questionsUrl: () => navigate("/mern"), category: "Coding" }
    ];
 
   const filteredCourses = courses.filter(c => 
@@ -226,7 +247,16 @@ const handleNotesOnClick = () => {
           <div className="course-scroll-area">
             <div className="d-flex flex-column gap-3">
               {filteredCourses.map((item, idx) => (
-                <CourseCard key={idx} {...item} />
+                <CourseCard
+                  key={idx}
+                  {...item}
+                  progress={progressMap[item.courseKey] ?? item.progress}
+                  status={
+                    (progressMap[item.courseKey] ?? 0) === 100 ? "Completed" :
+                    (progressMap[item.courseKey] ?? 0) > 0    ? "In progress" :
+                    "Not Started"
+                  }
+                />
               ))}
             </div>
           </div>

@@ -71,6 +71,8 @@ import interviewRoutes from "./routes/interviewRoutes.js";
 import emailTestRoutes from "./routes/emailTestRoutes.js";
 import savedJobRoutes from "./routes/savedJobRoutes.js";
 import preferenceRoutes from "./routes/preferences.js";
+import courseProgressRoutes from "./routes/courseProgress.js";
+app.use("/api/course-progress", courseProgressRoutes);
 app.use("/api", emailTestRoutes);
 app.use("/api/admin", adminUserRoutes);
 app.use("/api/queries", queryRoutes);
