@@ -1,7 +1,7 @@
 import cron from "node-cron";
 import mongoose from "mongoose";
 import Notification from "../models/notificationModel.js";
-import User from "../models/userModel.js"; // adjust path if different
+import User from "../models/User.js";
 
 const JOB_PREP_TITLE = "Prepare for Your Interview!";
 
