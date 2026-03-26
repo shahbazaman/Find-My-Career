@@ -699,7 +699,6 @@ const handleDeleteJob = (jobId) => {
         { label: "Total Job Seekers", value: stats.totalJobSeekers, color: "#6f42c1", bg: "#f3f0ff", emoji: "👥" },
         { label: "Total Recruiters", value: stats.totalRecruiters, color: "#0d6efd", bg: "#e7f1ff", emoji: "🏢" },
         { label: "Total Jobs Posted", value: stats.totalJobs, color: "#20c997", bg: "#e6fff8", emoji: "💼" },
-        { label: "Active Jobs", value: stats.activeJobs, color: "#28a745", bg: "#e9f7ef", emoji: "✅" },
         { label: "Pending Approvals", value: stats.pendingRecruiters, color: "#fd7e14", bg: "#fff3e0", emoji: "⏳" },
         { label: "Total Queries", value: stats.totalQueries, color: "#dc3545", bg: "#fff5f5", emoji: "📨" },
       ].map(({ label, value, color, bg, emoji }) => (
