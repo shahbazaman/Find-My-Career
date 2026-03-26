@@ -150,7 +150,14 @@ const labelStyle = {
   useEffect(() => {
     setIsVisible(true);
   }, []);
-  
+  const [stats, setStats] = useState({
+  totalJobSeekers: 0,
+  totalRecruiters: 0,
+  totalJobs: 0,
+  totalQueries: 0,
+  pendingRecruiters: 0,
+  activeJobs: 0,
+});
 useEffect(() => {
   if (activeMenu === "jobs-list" || activeMenu === "add-job") {
     setIsJobsOpen(true);
@@ -177,6 +184,16 @@ useEffect(() => {
       .then((res) => setJobsData(res.data.jobs || []))
       .catch(() => toast.error("Failed to load jobs", { position: "top-center" }));
   }, []);
+  useEffect(() => {
+  setStats({
+    totalJobSeekers: allJobSeekers.length,
+    totalRecruiters: allRecruiters.length,
+    totalJobs: jobsData.length,
+    totalQueries: queries.length,
+    pendingRecruiters: recruiters.length, // recruiters = pending ones
+    activeJobs: jobsData.filter(j => j.status === "active").length,
+  });
+}, [allJobSeekers, allRecruiters, jobsData, queries, recruiters]);
   const fetchAllRecruiters = async () => {
     setLoadingRecruiters(true);
     try {
@@ -230,25 +247,20 @@ const fetchRecruiters = async () => {
   }
 };
 
-  useEffect(() => {
-    fetchRecruiters();
-  }, []);
-  useEffect(() => {
-    if (activeMenu !== "dashboard") return;
-    axios
-      .get(`${import.meta.env.VITE_API_BASE_URL}/queries/admin`)
-      .then((res) => setQueries(res.data || []))
-      .catch((err) => console.error("Query fetch error:", err));
-  }, [activeMenu]);
-  useEffect(() => {
-    if (activeMenu === "recruiters") {
-      fetchRecruiters();
-      fetchAllRecruiters();
-    }
-    if (activeMenu === "job-seekers") {
-      fetchJobSeekers();
-    }
-  }, [activeMenu]);
+useEffect(() => {
+  if (activeMenu !== "dashboard" && activeMenu !== "queries") return;
+  axios
+    .get(`${import.meta.env.VITE_API_BASE_URL}/queries/admin`)
+    .then((res) => setQueries(res.data || []))
+    .catch((err) => console.error("Query fetch error:", err));
+}, [activeMenu]);
+useEffect(() => {
+  if (activeMenu !== "dashboard") return;
+  fetchRecruiters();       // pending recruiters
+  fetchAllRecruiters();    // all recruiters
+  fetchJobSeekers();       // job seekers
+}, [activeMenu]);
+  
   const postNotification = async (id, title) => {
     try {
       await axios.post(`${import.meta.env.VITE_API_BASE_URL}/notifications/user/${id}`, {
@@ -294,6 +306,7 @@ const fetchRecruiters = async () => {
   };
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: <BsGrid size={20} /> },
+    { id: "queries", label: "Queries", icon: <BsEnvelope size={20} /> }, // ✅ ADD THIS
     { id: "recruiters", label: "Recruiters", icon: <BsPeople size={20} /> },
     { id: "job-seekers", label: "Job Seekers", icon: <BsPeople size={20} /> },
   ];
@@ -673,231 +686,174 @@ const handleDeleteJob = (jobId) => {
         }}
       >
         <div className="page">
-          {activeMenu === "dashboard" && (
-            <>
-              <div
-                className={`page-header ${isVisible ? "page-header-visible" : ""}`}
-              >
-                <h1>Dashboard</h1>
-                <p>Overview of your admin panel</p>
-              </div>
-              <div className="stat-card stat-card-visible">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", padding: "0 16px 16px" }}>
-                  <h2 className="text1" style={{ margin: 0 }}>User Queries</h2>
-                  <div style={{ display: "flex", gap: "8px" }}>
-                    {["all", "job seekers", "recruiters", "guest"].map((role) => (
-                      <button
-                        key={role}
-                        onClick={() => { setQueryRoleFilter(role); setQueryPage(1); }}
-                        style={{
-                          padding: "6px 14px",
-                          borderRadius: "20px",
-                          border: "none",
-                          cursor: "pointer",
-                          fontSize: "12px",
-                          fontWeight: "600",
-                          transition: "all 0.2s",
-                          background: queryRoleFilter === role
-                            ? role === "recruiters" ? "#0d6efd"
-                            : role === "job seekers" ? "#28a745"
-                            : role === "guest" ? "#6c757d"
-                            : "#667eea"
-                            : "#f1f5f9",
-                          color: queryRoleFilter === role ? "white" : "#64748b",
-                        }}
-                      >
-                        {role === "all" ? "All" : role === "job seekers" ? "Job Seekers" : role === "recruiters" ? "Recruiters" : "Guest"}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                {filteredQueries.length === 0 ? (
-                  <p style={{ opacity: 0.6 }}>No queries received yet.</p>
-                ) : (
-                  <div className="table-responsive">
-                    <table className="jobs-table responsive-table">
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Email</th>
-                          <th>Subject</th>
-                          <th>Message</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {paginatedQueries.map((q) => (
-                          <tr
-                            key={q._id}
-                            style={{
-                              opacity: q.isRead ? 0.5 : 1,
-                              filter: q.isRead ? "blur(0.5px)" : "none",
-                            }}
-                          >
-                            <td data-label="Name">{q.name}</td>
-                            <td data-label="Email">{q.email}</td>                            
-                            <td data-label="Subject">{q.subject}</td>
-                            <td data-label="Message">{q.message}</td>
-                            <td data-label="Action">
-                              <button
-                                className="btn-primary"
-                                onClick={() => setReplyingTo(q)}
-                              >Reply
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-                {totalQueryPages > 1 && (
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginTop: "20px",
-                      flexWrap: "wrap",
-                      gap: "12px",
-                    }}
-                  >
-                    <button
-                      onClick={() => setQueryPage((p) => Math.max(p - 1, 1))}
-                      disabled={queryPage === 1}
-                      style={{
-                        padding: "8px 16px",
-                        borderRadius: "8px",
-                        border: "1px solid #dee2e6",
-                        background: queryPage === 1 ? "#f1f3f5" : "white",
-                        fontWeight: "600",
-                        cursor: queryPage === 1 ? "not-allowed" : "pointer",
-                      }}
-                    >
-                      ⬅ Previous
-                    </button>
-                    <span style={{ fontWeight: "600" }}>
-                      {" "}
-                      Page {queryPage} of {totalQueryPages}{" "}
-                    </span>
-                    <button
-                      onClick={() =>
-                        setQueryPage((p) => Math.min(p + 1, totalQueryPages))
-                      }
-                      disabled={queryPage === totalQueryPages}
-                      style={{
-                        padding: "8px 16px",
-                        borderRadius: "8px",
-                        border: "1px solid #dee2e6",
-                        background:
-                          queryPage === totalQueryPages ? "#f1f3f5" : "white",
-                        fontWeight: "600",
-                        cursor:
-                          queryPage === totalQueryPages
-                            ? "not-allowed"
-                            : "pointer",
-                      }}
-                    >
-                      {" "}
-                      Next ➡
-                    </button>
-                  </div>
-                )}{" "}
-              </div>
-              {replyingTo && (
-  <div
-    style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100vw",
-      height: "100vh",
-      background: "rgba(0,0,0,0.4)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      zIndex: 9999,
-    }}
-  >
-    <div
-      style={{
-        background: "white",
-        width: "500px",
-        maxWidth: "90%",
-        padding: "24px",
-        borderRadius: "12px",
-        boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
-      }}
-    >
-      <h3 style={{ marginBottom: "16px" }}>
-        Reply to {replyingTo.name}
-      </h3>
+{activeMenu === "dashboard" && (
+  <>
+    <div className={`page-header ${isVisible ? "page-header-visible" : ""}`}>
+      <h1>Dashboard</h1>
+      <p>Welcome back! Here's what's happening today.</p>
+    </div>
 
-      <textarea
-        rows={5}
-        style={{
-          width: "100%",
-          marginBottom: "16px",
-          padding: "10px",
-          borderRadius: "8px",
-          border: "1px solid #ddd",
-        }}
-        value={replyText}
-        onChange={(e) => setReplyText(e.target.value)}
-      />
+    {/* ── STATS CARDS ── */}
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "20px", marginBottom: "32px" }}>
+      {[
+        { label: "Total Job Seekers", value: stats.totalJobSeekers, color: "#6f42c1", bg: "#f3f0ff", emoji: "👥" },
+        { label: "Total Recruiters", value: stats.totalRecruiters, color: "#0d6efd", bg: "#e7f1ff", emoji: "🏢" },
+        { label: "Total Jobs Posted", value: stats.totalJobs, color: "#20c997", bg: "#e6fff8", emoji: "💼" },
+        { label: "Active Jobs", value: stats.activeJobs, color: "#28a745", bg: "#e9f7ef", emoji: "✅" },
+        { label: "Pending Approvals", value: stats.pendingRecruiters, color: "#fd7e14", bg: "#fff3e0", emoji: "⏳" },
+        { label: "Total Queries", value: stats.totalQueries, color: "#dc3545", bg: "#fff5f5", emoji: "📨" },
+      ].map(({ label, value, color, bg, emoji }) => (
+        <div key={label} style={{ background: "white", borderRadius: "16px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)", borderLeft: `4px solid ${color}`, display: "flex", alignItems: "center", gap: "16px" }}>
+          <div style={{ width: "52px", height: "52px", borderRadius: "12px", background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", flexShrink: 0 }}>
+            {emoji}
+          </div>
+          <div>
+            <div style={{ fontSize: "28px", fontWeight: "800", color: "#1a1a1a", lineHeight: 1 }}>{value}</div>
+            <div style={{ fontSize: "13px", color: "#6c757d", fontWeight: "500", marginTop: "4px" }}>{label}</div>
+          </div>
+        </div>
+      ))}
+    </div>
 
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+    {/* ── QUICK INFO CARDS ── */}
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "20px" }}>
+      <div style={{ background: "white", borderRadius: "16px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
+        <h3 style={{ margin: "0 0 16px", fontWeight: "700", color: "#1a1a1a", fontSize: "16px" }}>📊 Job Fill Rate</h3>
+        <div style={{ fontSize: "36px", fontWeight: "800", color: "#20c997" }}>
+          {stats.totalJobs > 0 ? Math.round((stats.activeJobs / stats.totalJobs) * 100) : 0}%
+        </div>
+        <p style={{ color: "#6c757d", fontSize: "13px", margin: "4px 0 0" }}>of posted jobs are currently active</p>
+      </div>
+
+      <div style={{ background: "white", borderRadius: "16px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
+        <h3 style={{ margin: "0 0 16px", fontWeight: "700", color: "#1a1a1a", fontSize: "16px" }}>🕐 Pending Actions</h3>
+        <div style={{ fontSize: "36px", fontWeight: "800", color: "#fd7e14" }}>{stats.pendingRecruiters}</div>
+        <p style={{ color: "#6c757d", fontSize: "13px", margin: "4px 0 0" }}>recruiter accounts awaiting approval</p>
         <button
-          onClick={() => setReplyingTo(null)}
-          style={{
-            padding: "8px 16px",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-            background: "white",
-            cursor: "pointer",
-          }}
+          onClick={() => handleSetActiveMenu("recruiters")}
+          style={{ marginTop: "12px", background: "#fff3e0", border: "none", color: "#fd7e14", padding: "6px 14px", borderRadius: "8px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}
         >
-          Cancel
+          Review now →
         </button>
+      </div>
 
+      <div style={{ background: "white", borderRadius: "16px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
+        <h3 style={{ margin: "0 0 16px", fontWeight: "700", color: "#1a1a1a", fontSize: "16px" }}>📨 Unread Queries</h3>
+        <div style={{ fontSize: "36px", fontWeight: "800", color: "#dc3545" }}>
+          {queries.filter(q => !q.isRead).length}
+        </div>
+        <p style={{ color: "#6c757d", fontSize: "13px", margin: "4px 0 0" }}>queries need your response</p>
         <button
-          className="btn-primary"
-          onClick={async () => {
-            try {
-              await axios.post(
-                `${import.meta.env.VITE_API_BASE_URL}/queries/admin/reply/${replyingTo._id}`,
-                { reply: replyText },
-                {
-                  headers: {
-                    Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-                  },
-                }
-              );
-
-              setQueries((prev) =>
-                prev.map((q) =>
-                  q._id === replyingTo._id
-                    ? { ...q, isRead: true }
-                    : q
-                )
-              );
-
-              setReplyingTo(null);
-              setReplyText("");
-              toast.success("Reply sent successfully", { position: "top-center" });
-            } catch (err) {
-              toast.error("Failed to send reply", { position: "top-center" });
-            }
-          }}
+          onClick={() => handleSetActiveMenu("queries")}
+          style={{ marginTop: "12px", background: "#fff5f5", border: "none", color: "#dc3545", padding: "6px 14px", borderRadius: "8px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}
         >
-          Send Reply
+          View queries →
         </button>
       </div>
     </div>
-  </div>
+  </>
 )}
-            </>
-          )}
+
+{/* ── QUERIES TAB (moved from dashboard) ── */}
+{activeMenu === "queries" && (
+  <>
+    <div className={`page-header ${isVisible ? "page-header-visible" : ""}`}>
+      <h1>User Queries</h1>
+      <p>Review and respond to messages from users</p>
+    </div>
+    <div className="stat-card stat-card-visible">
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", padding: "0 16px 16px" }}>
+        <h2 className="text1" style={{ margin: 0 }}>All Queries</h2>
+        <div style={{ display: "flex", gap: "8px" }}>
+          {["all", "job seekers", "recruiters", "guest"].map((role) => (
+            <button
+              key={role}
+              onClick={() => { setQueryRoleFilter(role); setQueryPage(1); }}
+              style={{
+                padding: "6px 14px", borderRadius: "20px", border: "none",
+                cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "all 0.2s",
+                background: queryRoleFilter === role
+                  ? role === "recruiters" ? "#0d6efd"
+                  : role === "job seekers" ? "#28a745"
+                  : role === "guest" ? "#6c757d" : "#667eea"
+                  : "#f1f5f9",
+                color: queryRoleFilter === role ? "white" : "#64748b",
+              }}
+            >
+              {role === "all" ? "All" : role === "job seekers" ? "Job Seekers" : role === "recruiters" ? "Recruiters" : "Guest"}
+            </button>
+          ))}
+        </div>
+      </div>
+      {filteredQueries.length === 0 ? (
+        <p style={{ opacity: 0.6 }}>No queries received yet.</p>
+      ) : (
+        <div className="table-responsive">
+          <table className="jobs-table responsive-table">
+            <thead>
+              <tr>
+                <th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedQueries.map((q) => (
+                <tr key={q._id} style={{ opacity: q.isRead ? 0.5 : 1, filter: q.isRead ? "blur(0.5px)" : "none" }}>
+                  <td data-label="Name">{q.name}</td>
+                  <td data-label="Email">{q.email}</td>
+                  <td data-label="Subject">{q.subject}</td>
+                  <td data-label="Message">{q.message}</td>
+                  <td data-label="Action">
+                    <button className="btn-primary" onClick={() => setReplyingTo(q)}>Reply</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {totalQueryPages > 1 && (
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "20px", flexWrap: "wrap", gap: "12px" }}>
+          <button onClick={() => setQueryPage((p) => Math.max(p - 1, 1))} disabled={queryPage === 1}
+            style={{ padding: "8px 16px", borderRadius: "8px", border: "1px solid #dee2e6", background: queryPage === 1 ? "#f1f3f5" : "white", fontWeight: "600", cursor: queryPage === 1 ? "not-allowed" : "pointer" }}>
+            ⬅ Previous
+          </button>
+          <span style={{ fontWeight: "600" }}>Page {queryPage} of {totalQueryPages}</span>
+          <button onClick={() => setQueryPage((p) => Math.min(p + 1, totalQueryPages))} disabled={queryPage === totalQueryPages}
+            style={{ padding: "8px 16px", borderRadius: "8px", border: "1px solid #dee2e6", background: queryPage === totalQueryPages ? "#f1f3f5" : "white", fontWeight: "600", cursor: queryPage === totalQueryPages ? "not-allowed" : "pointer" }}>
+            Next ➡
+          </button>
+        </div>
+      )}
+    </div>
+    {/* Reply modal stays here too */}
+    {replyingTo && (
+      <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
+        <div style={{ background: "white", width: "500px", maxWidth: "90%", padding: "24px", borderRadius: "12px", boxShadow: "0 10px 40px rgba(0,0,0,0.2)" }}>
+          <h3 style={{ marginBottom: "16px" }}>Reply to {replyingTo.name}</h3>
+          <textarea rows={5} style={{ width: "100%", marginBottom: "16px", padding: "10px", borderRadius: "8px", border: "1px solid #ddd" }}
+            value={replyText} onChange={(e) => setReplyText(e.target.value)} />
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+            <button onClick={() => setReplyingTo(null)} style={{ padding: "8px 16px", borderRadius: "8px", border: "1px solid #ccc", background: "white", cursor: "pointer" }}>Cancel</button>
+            <button className="btn-primary" onClick={async () => {
+              try {
+                await axios.post(`${import.meta.env.VITE_API_BASE_URL}/queries/admin/reply/${replyingTo._id}`,
+                  { reply: replyText },
+                  { headers: { Authorization: `Bearer ${localStorage.getItem("adminToken")}` } }
+                );
+                setQueries((prev) => prev.map((q) => q._id === replyingTo._id ? { ...q, isRead: true } : q));
+                setReplyingTo(null);
+                setReplyText("");
+                toast.success("Reply sent successfully", { position: "top-center" });
+              } catch {
+                toast.error("Failed to send reply", { position: "top-center" });
+              }
+            }}>Send Reply</button>
+          </div>
+        </div>
+      </div>
+    )}
+  </>
+)}
    
           {activeMenu === "jobs-list" && (
             <div
