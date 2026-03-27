@@ -275,11 +275,29 @@ const payload = {
     const data = await response.json();
     console.log("🟢 [FRONTEND] Response data:", data);
 
-    if (!response.ok) {
-      throw new Error(data.message || "Interview failed");
-    }
+if (!response.ok) {
+  throw new Error(data.message || "Interview failed");
+}
 
-    navigate(`/recruiter/applicants/${jobId}`);
+// ── Send notification to each selected applicant ──
+const notificationPromises = selectedApplicants.map((applicant) =>
+  fetch(`${import.meta.env.VITE_API_BASE_URL}/notifications/user/${applicant.userId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    },
+    body: JSON.stringify({
+      title: "Prepare for Your Interview!",
+      label: `You have an interview scheduled for ${jobTitle} at ${companyName} on ${form.date} at ${form.time}. Mode: ${form.mode}. ${form.locationOrLink ? `Link/Location: ${form.locationOrLink}.` : ""} ${form.notes ? `Notes: ${form.notes}` : ""}`.trim(),
+      type: "meeting"
+    })
+  })
+);
+
+await Promise.allSettled(notificationPromises); // allSettled so one failure doesn't block navigation
+
+navigate(`/recruiter/applicants/${jobId}`);
   } catch (error) {
     console.error("🔴 [FRONTEND] Submit error:", error);
   } finally {
