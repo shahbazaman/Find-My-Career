@@ -360,38 +360,7 @@ const toggleApply = async (jobId) => {
     flexWrap: "wrap"
   }}>
     <button
-onClick={async () => {
-  try {
-    const token = localStorage.getItem("token");
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    const userId = payload.id || payload._id;
-
-    const res = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/preferences/${userId}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    const prefs = await res.json();
-
-    // roles and locations are stored as comma-separated strings
-    const roleList     = prefs.roles     ? prefs.roles.split(",").map(r => r.trim().toLowerCase())     : [];
-    const locationList = prefs.locations ? prefs.locations.split(",").map(l => l.trim().toLowerCase()) : [];
-    const skillsList   = prefs.skills    ? prefs.skills.split(",").map(s => s.trim().toLowerCase())    : [];
-
-    const filtered = allCards.filter(job => {
-      const roleMatch     = roleList.length === 0     || roleList.some(r => job.postion.toLowerCase().includes(r));
-      const locationMatch = locationList.length === 0 || locationList.some(l => job.location.toLowerCase().includes(l));
-      const skillsMatch   = skillsList.length === 0   || skillsList.some(s => job.skills.toLowerCase().includes(s));
-      return roleMatch && locationMatch && skillsMatch;
-    });
-
-    setCards(filtered);
-    setCurrentPage(1);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  } catch (err) {
-    console.error("Failed to fetch preferences", err);
-    toast.error("Could not load preferences");
-  }
-}}
+onClick={() => navigate("/recommended-jobs")}
   style={{
     padding: "10px 18px",
     background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
