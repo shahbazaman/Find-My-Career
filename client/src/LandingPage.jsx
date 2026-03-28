@@ -1,4 +1,4 @@
-import { FaRocket, FaBriefcase, FaCheckCircle, FaBuilding, FaCalendarDay } from "react-icons/fa";
+import { FaRocket, FaBriefcase, FaCheckCircle, FaBuilding, FaCalendarDay, FaUserPlus, FaSearch, FaPaperPlane } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -224,16 +224,12 @@ function LandingPage() {
          <div
   style={{
     display: "grid",
-    /* Responsiveness: 
-       Mobile: 1 column (if container < 450px)
-       Tablet/Laptop: Automatically wraps based on available width
-    */
     gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
     gap: "24px",
     width: "100%",
-    maxWidth: "1200px", // Prevents cards from getting too wide on Desktop
-    margin: "60px auto", // 'auto' centers the whole grid on the page
-    padding: "0 20px",    // Side padding for mobile screens
+    maxWidth: "1200px",
+    margin: "60px auto",
+    padding: "0 20px",
     boxSizing: "border-box"
   }}
 >
@@ -252,11 +248,10 @@ function LandingPage() {
         boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
         transition: "all 0.3s ease",
         cursor: "default",
-        /* --- ALIGNMENT FIXES --- */
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",    // Horizontal center
-        justifyContent: "center", // Vertical center
+        alignItems: "center",
+        justifyContent: "center",
         textAlign: "center"
       }}
       onMouseEnter={(e) => {
@@ -268,12 +263,9 @@ function LandingPage() {
         e.currentTarget.style.boxShadow = "0 4px 20px rgba(0, 0, 0, 0.08)";
       }}
     >
-      {/* Icon Styling */}
       <div style={{ fontSize: "32px", color: "#0d6efd", marginBottom: "16px" }}>
         {item.icon}
       </div>
-
-      {/* Count Styling - Responsive font size using 'vw' or clamp */}
       <h1 style={{ 
         fontSize: "clamp(2rem, 5vw, 2.5rem)", 
         fontWeight: "800", 
@@ -282,8 +274,6 @@ function LandingPage() {
       }}>
         {item.count}
       </h1>
-
-      {/* Label Styling */}
       <p style={{ 
         fontSize: "16px", 
         color: "#6c757d", 
@@ -302,17 +292,12 @@ function LandingPage() {
    <div
   style={{
     display: "grid",
-    /* Responsive Grid: 
-       - Mobile: 1 column
-       - Tablet: 2 columns
-       - Desktop: 4 columns 
-    */
     gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
     gap: "24px",
     width: "100%",
-    maxWidth: "1200px", // Centers the content on ultra-wide screens
-    margin: "60px auto", // 'auto' handles horizontal centering
-    padding: "0 20px",    // Prevents cards from touching screen edges on mobile
+    maxWidth: "1200px",
+    margin: "60px auto",
+    padding: "0 20px",
     boxSizing: "border-box"
   }}
 >
@@ -331,12 +316,10 @@ function LandingPage() {
         boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
         transition: "all 0.3s ease",
         cursor: "default",
-        
-        /* --- ALIGNMENT FIXES --- */
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",     // Centers icons/text horizontally
-        justifyContent: "center",  // Centers content vertically
+        alignItems: "center",
+        justifyContent: "center",
         textAlign: "center"
       }}
       onMouseEnter={(e) => {
@@ -348,12 +331,9 @@ function LandingPage() {
         e.currentTarget.style.boxShadow = "0 4px 20px rgba(0, 0, 0, 0.08)";
       }}
     >
-      {/* Icon Wrapper */}
       <div style={{ fontSize: "32px", color: "#0d6efd", marginBottom: "16px" }}>
         {item.icon}
       </div>
-
-      {/* Responsive Title: clamp makes it shrink on mobile and grow on desktop */}
       <h1 style={{ 
         fontSize: "clamp(1.8rem, 4vw, 2.5rem)", 
         fontWeight: "800", 
@@ -362,8 +342,6 @@ function LandingPage() {
       }}>
         {item.count}
       </h1>
-
-      {/* Label */}
       <p style={{ 
         fontSize: "16px", 
         color: "#6c757d", 
@@ -378,6 +356,158 @@ function LandingPage() {
 </div>
         )}
       </div>
+
+      {/* ================= HOW IT WORKS SECTION (GUEST ONLY) ================= */}
+      {role === "guest" && (
+        <div
+          style={{
+            background: "linear-gradient(135deg, #dce8ffcc 0%, #eaf0ffcc 100%)",
+            padding: "60px 20px 80px",
+            marginTop: "20px",
+          }}
+        >
+          <div style={{ maxWidth: "700px", margin: "0 auto" }}>
+            {/* Section Heading */}
+            <h2
+              style={{
+                textAlign: "center",
+                fontSize: "clamp(1.8rem, 5vw, 2.8rem)",
+                fontWeight: "900",
+                color: "#1a1a1a",
+                marginBottom: "48px",
+                letterSpacing: "-1px",
+              }}
+            >
+              How It Works
+            </h2>
+
+            {/* Steps */}
+            {[
+              {
+                number: "1",
+                icon: <FaUserPlus />,
+                title: "Create Profile",
+                description:
+                  "Sign up and build your professional profile to showcase your skills and experience.",
+              },
+              {
+                number: "2",
+                icon: <FaSearch />,
+                title: "Discover Jobs",
+                description:
+                  "Browse through thousands of job listings or get personalized job recommendations.",
+              },
+              {
+                number: "3",
+                icon: <FaPaperPlane />,
+                title: "Apply & Track",
+                description:
+                  "Apply to your dream jobs with one click and track your application status.",
+              },
+            ].map((step, index) => (
+              <div
+                key={index}
+                style={{
+                  background: "white",
+                  borderRadius: "20px",
+                  padding: "40px 32px",
+                  marginBottom: index < 2 ? "24px" : "0",
+                  boxShadow: "0 4px 20px rgba(13, 110, 253, 0.08)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  textAlign: "center",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-6px)";
+                  e.currentTarget.style.boxShadow = "0 16px 40px rgba(13, 110, 253, 0.15)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "0 4px 20px rgba(13, 110, 253, 0.08)";
+                }}
+              >
+                {/* Step Number Circle */}
+                <div
+                  style={{
+                    width: "64px",
+                    height: "64px",
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, #1a56db 0%, #0c248dff 100%)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "white",
+                    fontSize: "26px",
+                    fontWeight: "800",
+                    marginBottom: "20px",
+                    boxShadow: "0 8px 20px rgba(13, 110, 253, 0.35)",
+                  }}
+                >
+                  {step.number}
+                </div>
+
+                {/* Title */}
+                <h3
+                  style={{
+                    fontSize: "1.4rem",
+                    fontWeight: "800",
+                    color: "#1a1a1a",
+                    margin: "0 0 12px 0",
+                  }}
+                >
+                  {step.title}
+                </h3>
+
+                {/* Description */}
+                <p
+                  style={{
+                    fontSize: "1rem",
+                    color: "#6c757d",
+                    lineHeight: "1.7",
+                    margin: "0",
+                    maxWidth: "420px",
+                  }}
+                >
+                  {step.description}
+                </p>
+              </div>
+            ))}
+
+            {/* CTA Button */}
+            <div style={{ textAlign: "center", marginTop: "40px" }}>
+              <button
+                onClick={() => navigate("/login")}
+                style={{
+                  background: "linear-gradient(135deg, #060729ff 0%, #0c248dff 100%)",
+                  color: "white",
+                  border: "none",
+                  padding: "16px 44px",
+                  fontSize: "16px",
+                  fontWeight: "700",
+                  borderRadius: "12px",
+                  cursor: "pointer",
+                  boxShadow: "0 12px 28px rgba(13, 110, 253, 0.35)",
+                  transition: "all 0.3s ease",
+                  textTransform: "uppercase",
+                  letterSpacing: "1px",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = "translateY(-3px)";
+                  e.target.style.boxShadow = "0 16px 32px rgba(13, 110, 253, 0.45)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = "translateY(0)";
+                  e.target.style.boxShadow = "0 12px 28px rgba(13, 110, 253, 0.35)";
+                }}
+              >
+                Get Started Free →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style>{`
         @keyframes float {
